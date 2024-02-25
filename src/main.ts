@@ -5,6 +5,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import '@/style/tailwind.css'
 import WangEditor from '@/components/WangEditor/index.vue'
+import SideNavBar from '@/components/SideNavBar/index.vue'
 
 import App from './App.vue'
 import router from './router'
@@ -18,5 +19,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 app.component('WangEditor', WangEditor)
+app.component('SideNavBar', SideNavBar)
 
 app.mount('#app')

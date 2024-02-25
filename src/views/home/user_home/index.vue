@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { getDetailApi } from './home.api'
+import { getUserType } from '@/utils/auth'
 
 // 1.首页
 // 5.宠物领养
@@ -11,43 +12,40 @@ import { getDetailApi } from './home.api'
 // 2.领养须知等公告
 const menuList = [
   {
-    path: '/home',
+    code: '/home',
     name: '网站首页',
     module: 'home'
   },
   {
-    path: '/animal',
+    code: '/animal',
     name: '宠物领养',
     module: 'animal'
   },
   {
-    path: '/animal2',
-    name: '丢失认领',
-    module: 'animal2'
+    code: '/animal2',
+    name: '丢失认领'
   },
   {
-    path: '/animal3',
-    name: '爱心捐助',
-    module: 'animal3'
+    code: '/animal3',
+    name: '爱心捐助'
   },
   {
-    path: '/post',
+    code: '/post',
     name: '社区交流',
     module: 'post'
   },
   {
-    path: '/animal5',
-    name: '公告须知',
-    module: 'notice'
+    code: '/animal5',
+    name: '公告须知'
   }
 ]
 
 const avatar = computed(() => {
-  const data = getUserInfo()
-  if (data.avatar) {
+  const data = null
+  if (data) {
     return data.avatar
   } else {
-    return 'src/assets/user/default_avatar.png'
+    return '/src/assets/user/default_avatar.png'
   }
 })
 
@@ -55,74 +53,79 @@ const getDetail = async () => {
   await getDetailApi()
 }
 
-const getUserInfo = async () => {}
+const userType = ref()
 
 onMounted(() => {
   getDetail()
+  console.log(getUserType())
+  userType.value = getUserType()
+  console.log(userType)
 })
 </script>
 
 <template>
   <div class="w-full flex flex-col">
-    <div class="w-full h-[90px] px-[20px] py-[10px] border-b bg-white">
-      <div class="w-full flex items-center">
-        <div class="flex justify-center mr-[20px]">
-          <span class="font-medium text-[24px]">流浪动物救助平台</span>
+    <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex items-center">
+      <div class="w-[270px] px-[10px] items-baseline leading-[90px]">
+        <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
+        <span class="font-medium text-[16px]">用户端</span>
+      </div>
+      <el-menu router mode="horizontal" :default-active="$route.meta.module">
+        <div>
+          <el-menu-item v-for="item in menuList" :key="item.code" :index="item.module"
+            >{{ item.name }}
+          </el-menu-item>
         </div>
-        <el-menu router mode="horizontal" :default-active="$route.meta.module">
-          <div>
-            <el-menu-item v-for="item in menuList" :key="item.path" :index="item.module"
-              >{{ item.name }}
-            </el-menu-item>
-          </div>
-        </el-menu>
+      </el-menu>
 
-        <el-dropdown>
-          <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
-            <el-image class="rounded-[50%] object-fill" :src="avatar" />
-          </div>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>
-                <el-icon>
-                  <Bell />
-                </el-icon>
-                我的申请
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-icon>
-                  <Star />
-                </el-icon>
-                我的宠物
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-icon>
-                  <EditPen />
-                </el-icon>
-                我的帖子
-              </el-dropdown-item>
+      <el-dropdown>
+        <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
+          <el-image class="rounded-[50%] object-fill" :src="avatar" />
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>
+              <el-icon>
+                <Bell />
+              </el-icon>
+              我的申请
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-icon>
+                <Star />
+              </el-icon>
+              我的宠物
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-icon>
+                <EditPen />
+              </el-icon>
+              我的帖子
+            </el-dropdown-item>
+            <div v-if="userType === 'PLATFORM_ADMIN'">
               <el-dropdown-item divided>
                 <el-icon>
                   <Setting />
                 </el-icon>
                 管理端
               </el-dropdown-item>
-              <el-dropdown-item divided>
-                <el-icon>
-                  <SwitchButton />
-                </el-icon>
-                退 出
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
+            </div>
+            <el-dropdown-item divided>
+              <el-icon>
+                <SwitchButton />
+              </el-icon>
+              退 出
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
 
+    <div class="w-full h-[90px]"></div>
     <div class="container-wrapper bg-blue-50">
       <router-view />
     </div>
-    <div class="w-full h-[100px] border-t bg-white"></div>
+    <div class="footer-wrapper w-full h-[100px] border-t bg-white"></div>
   </div>
 </template>
 

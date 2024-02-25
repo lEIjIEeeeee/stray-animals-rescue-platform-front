@@ -12,25 +12,29 @@ const loginUser = reactive({
 })
 
 const login = async () => {
-  await loginApi({
-    account: loginUser.account,
-    password: loginUser.password
-  }).then((data) => {
-    if (data) {
-      const token = get(data.data, 'token')
-      const userType = get(data.data, 'userType')
-      if (token) {
-        setToken(token)
-        setUserType(userType)
-        ElMessage.success('登录成功')
-        if (userType === 'NORMAL_USER') {
-          router.replace('/home')
-        } else if (userType === 'PLATFORM_ADMIN') {
-          router.replace('/platform')
+  try {
+    await loginApi({
+      account: loginUser.account,
+      password: loginUser.password
+    }).then((data) => {
+      if (data) {
+        const token = get(data.data, 'token')
+        const userType = get(data.data, 'userType')
+        if (token) {
+          setToken(token)
+          setUserType(userType)
+          ElMessage.success('登录成功')
+          if (userType === 'NORMAL_USER') {
+            router.replace('/home')
+          } else if (userType === 'PLATFORM_ADMIN') {
+            router.replace('/platform')
+          }
         }
       }
-    }
-  })
+    })
+  } catch (e) {
+    ElMessage.error(e)
+  }
 }
 </script>
 

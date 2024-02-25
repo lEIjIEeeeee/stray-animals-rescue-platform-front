@@ -20,7 +20,7 @@ http.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = getToken()
     }
-    return config
+    return Promise.resolve(config)
   },
   (err) => {
     return Promise.reject(err)
