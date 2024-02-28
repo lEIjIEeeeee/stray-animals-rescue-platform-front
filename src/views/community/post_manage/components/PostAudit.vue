@@ -46,7 +46,7 @@ const formRules: FormRules = {
   ]
 }
 
-const postAudit = async (data) => {
+const handleSubmit = async (data) => {
   try {
     await formRef.value?.validate()
     await ElMessageBox.confirm('确定提交审核吗？提交之后无法撤销此操作。')
@@ -63,7 +63,7 @@ const postAudit = async (data) => {
 </script>
 
 <template>
-  <el-dialog title="帖子审核" v-model="show" width="600" :close-on-click-modal="false">
+  <el-dialog title="审核帖子" v-model="show" width="600" :close-on-click-modal="false">
     <el-form
       :model="formData"
       :rules="formRules"
@@ -82,11 +82,11 @@ const postAudit = async (data) => {
           type="textarea"
           v-model="formData.auditRemark"
           rows="5"
-          placeholder="请输入审核备注信息(审核拒绝必填)"
+          placeholder="请填写审核备注信息(审核拒绝必填)"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="postAudit(formData)">确认</el-button>
+        <el-button type="primary" @click="handleSubmit(formData)">确认</el-button>
         <el-button @click="closePopup"> 取消</el-button>
       </el-form-item>
     </el-form>

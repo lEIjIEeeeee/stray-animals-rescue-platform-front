@@ -23,6 +23,7 @@ export class PostAuditInfo {
   auditRemark
 }
 
-export class PostIdRequest {
+export class PostCloseInfo {
   id
+  closeReason
 }

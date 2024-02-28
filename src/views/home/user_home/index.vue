@@ -57,9 +57,7 @@ const userType = ref()
 
 onMounted(() => {
   getDetail()
-  console.log(getUserType())
   userType.value = getUserType()
-  console.log(userType)
 })
 </script>
 

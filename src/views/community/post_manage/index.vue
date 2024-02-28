@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { SearchParams, PlatformPostList, PostIdRequest } from '@/views/community/post_manage/types'
-import { getPlatformPostListApi, postClosedApi } from '@/views/community/post_manage/post.api'
+import { SearchParams, PlatformPostList } from '@/views/community/post_manage/types'
+import { getPlatformPostListApi, postDeleteApi } from '@/views/community/post_manage/post.api'
 import PostAudit from './components/PostAudit.vue'
+import PostClose from './components/PostClose.vue'
 import { bizTypeDict, postStatusDict } from '@/stores/enums'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import useMainLoading from '@/hooks/useMainLoading'
+import { id } from 'element-plus/es/locale'
+
+const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
+const loading = computed(() => mainLoading.value)
 
 const searchTypeList = [
   {
@@ -135,15 +141,15 @@ const platformPostList = reactive(new PlatformPostList())
 
 const getPlatformPostList = async () => {
   try {
-    openElPageFormLoading()
+    openMainLoading()
     const result = await getPlatformPostListApi(searchParams)
     platformPostList.pageNo = result.data.pageNo
     platformPostList.pageSize = result.data.pageSize
     platformPostList.total = result.data.total
     platformPostList.dataList = result.data.dataList
-    closeElPageFormLoading()
+    closeMainLoading()
   } catch (e) {
-    closeElPageFormLoading()
+    closeMainLoading()
   }
 }
 
@@ -160,17 +166,6 @@ const handleClearSearchParams = () => {
   getPlatformPostList()
 }
 
-const disabled = ref(false)
-const loading = computed(() => disabled.value)
-
-const openElPageFormLoading = () => {
-  disabled.value = true
-}
-
-const closeElPageFormLoading = () => {
-  disabled.value = false
-}
-
 const handleCurrentPageChange = (val: number) => {
   searchParams.pageNo = val
   getPlatformPostList()
@@ -182,19 +177,34 @@ const handlePageSizeChange = (val: number) => {
 }
 
 const postAuditRef = ref<InstanceType<typeof PostAudit>>()
-const postAudit = (id) => {
+const handlePostAudit = (id) => {
   postAuditRef.value?.open(id)
 }
 
-const postIdRequest = reactive(new PostIdRequest())
-const postClosed = async (id) => {
-  await ElMessageBox.confirm('确定关闭该帖子吗？关闭之后无法撤销此操作。')
-  postIdRequest.id = id
-  await postClosedApi(postIdRequest)
-  getPlatformPostList()
+const postCloseRef = ref<InstanceType<typeof PostClose>>()
+const handlePostClose = async (item) => {
+  postCloseRef.value?.open(item)
 }
 
-const tableHeight = ref(415)
+const getPostCloseReson = (item) => {
+  postCloseRef.value?.open(item)
+}
+
+const handlePostDelete = async (id) => {
+  try {
+    await ElMessageBox.confirm('确定删除该帖子吗？删除之后无法撤销此操作。', {
+      type: 'warning'
+    })
+    openMainLoading()
+    await postDeleteApi({ id: id })
+    ElMessage.success('删除成功')
+    await getPlatformPostList()
+  } catch (e) {
+    closeMainLoading()
+  }
+}
+
+const tableHeight = ref()
 onMounted(() => {
   getPlatformPostList()
   const clientHeight = document.documentElement.clientHeight
@@ -350,16 +360,18 @@ onMounted(() => {
             {{ bizTypeDict[scope.row.bizType - 1].label }}
           </template>
         </el-table-column>
+        <el-table-column prop="status" label="状态" width="120" align="center">
+          <template #default="scope">
+            {{ postStatusDict[scope.row.status - 1].label }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="auditRemark" label="审核备注" width="180" show-overflow-tooltip>
+        </el-table-column>
         <el-table-column prop="postAbstract" label="帖子摘要" width="600">
           <template #default="scope">
             <el-tooltip :content="scope.row.postAbstract" placement="top" show-after="1000">
               <span class="show-over-line-2">{{ scope.row.postAbstract }}</span>
             </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="120" align="center">
-          <template #default="scope">
-            {{ postStatusDict[scope.row.status - 1].label }}
           </template>
         </el-table-column>
         <el-table-column
@@ -368,17 +380,31 @@ onMounted(() => {
           width="180"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="操作" min-width="180" align="center" fixed="right">
+        <el-table-column label="操作" min-width="160" align="center" fixed="right">
           <template #default="{ row }">
-            <div class="operation-column flex flex-row justify-around">
+            <div class="operation-column flex flex-row justify-around items-center">
               <span>查看</span>
               <span
                 v-if="row.status === 1 && searchParams.status == 'AUDIT_WAIT'"
-                @click="postAudit(row.id)"
+                @click="handlePostAudit(row.id)"
                 >审核</span
               >
-              <span v-if="row.status !== 4" @click="postClosed(row.id)">关闭</span>
-              <span>删除</span>
+              <el-dropdown trigger="click">
+                <span>更多</span>
+                <template #dropdown>
+                  <el-dropdown-menu :split-button="true">
+                    <el-dropdown-item v-if="row.status !== 4" @click="handlePostClose(row)"
+                      >关闭</el-dropdown-item
+                    >
+                    <el-dropdown-item v-if="row.status === 4" @click="getPostCloseReson(row)"
+                      >查看关闭原因</el-dropdown-item
+                    >
+                    <el-dropdown-item divided @click="handlePostDelete(row.id)"
+                      >删除</el-dropdown-item
+                    >
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
           </template>
         </el-table-column>
@@ -401,6 +427,7 @@ onMounted(() => {
     </div>
 
     <PostAudit ref="postAuditRef" @audit="getPlatformPostList" />
+    <PostClose ref="postCloseRef" @submit="getPlatformPostList" />
   </div>
 </template>
 
@@ -467,5 +494,8 @@ onMounted(() => {
 .operation-column span {
   cursor: pointer;
   color: #0152d9;
+}
+
+.el-dropdown-menu {
 }
 </style>

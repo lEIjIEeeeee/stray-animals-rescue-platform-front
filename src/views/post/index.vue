@@ -79,7 +79,6 @@ const addPost = () => {
 }
 
 const getDetail = (id) => {
-  console.log(id)
   const target = router.resolve({
     path: '/detail',
     query: {

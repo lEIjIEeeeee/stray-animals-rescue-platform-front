@@ -82,7 +82,6 @@ const createFilter = (query) => {
 
 const handleSelect = (data) => {
   data.animalId ? (formData.animalId = data.animalId) : (formData.animalId = '')
-  console.log(formData.animalId)
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()
