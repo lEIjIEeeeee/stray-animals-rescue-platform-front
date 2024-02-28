@@ -56,11 +56,11 @@ const login = async () => {
           <el-input type="password" v-model="loginUser.password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item>
-          <el-button class="w-full bg-[#409eff]" type="primary" @click="login">登 录</el-button>
+          <el-button class="w-full" type="primary" @click="login">登 录</el-button>
         </el-form-item>
       </el-form>
       <div class="mt-[10px] text-[14px] font-normal text-right">
-        还没有账号？请<a class="text-[#0152d9]" href="">注册</a>
+        还没有账号？请<a class="text-[#409eff]" href="">注册</a>
       </div>
     </div>
   </div>

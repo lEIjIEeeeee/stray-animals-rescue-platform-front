@@ -3,25 +3,15 @@ import { indexOf } from 'lodash';
 import { computed, onMounted, reactive, ref } from 'vue'
 import { getPostListApi } from './post.api'
 import { SearchParams, PostList } from './types'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import router from '@/router/index'
 
-const locale = {
-  ...zhCn,
-  el: {
-    pagination: {
-      ...zhCn.el.pagination,
-      goto: '跳至'
-    }
-  }
-}
 const searchParams = new SearchParams()
 const postList = reactive(new PostList())
 
-const getPostList = async (params) => {
+const getPostList = async () => {
   try {
     openElPageFormLoading()
-    const result = await getPostListApi(params)
+    const result = await getPostListApi(searchParams)
     postList.pageNo = result.data.pageNo
     postList.pageSize = result.data.pageSize
     postList.total = result.data.total
@@ -45,16 +35,16 @@ const closeElPageFormLoading = () => {
 
 const handleCurrentPageChange = (val: number) => {
   searchParams.pageNo = val
-  getPostList(searchParams)
+  getPostList()
 }
 
 const handlePageSizeChange = (val: number) => {
   searchParams.pageSize = val
-  getPostList(searchParams)
+  getPostList()
 }
 
 const init = async () => {
-  getPostList(searchParams)
+  getPostList()
 }
 
 onMounted(() => {
@@ -133,7 +123,7 @@ const getDetail = (id) => {
         </li>
       </ul>
       <div class="w-full flex justify-end pr-[24px] pb-[20px]">
-        <el-config-provider :locale="locale">
+        <el-config-provider>
           <el-pagination
             :current-page="searchParams.pageNo"
             :page-size="searchParams.pageSize"

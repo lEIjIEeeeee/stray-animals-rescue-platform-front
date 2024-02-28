@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { getDetailApi } from '../user_home/home.api'
 import router from '@/router'
+import SideNavBar from '@/components/SideNavBar/index.vue'
 
 const avatar = ref()
 
@@ -10,11 +11,13 @@ const menuList = [
     code: '/platform/home',
     name: '概况',
     module: 'home',
+    icon: 'MostlyCloudy',
     children: [
       {
         code: '/platform/home/workbench',
         name: '工作台',
         module: 'workbench',
+        icon: 'Notification',
         children: []
       }
     ]
@@ -23,17 +26,20 @@ const menuList = [
     code: '/platform/animal',
     name: '动物管理',
     module: 'animal',
+    icon: 'Menu',
     children: [
       {
         code: '/platform/animal/animalManage',
         name: '动物信息管理',
         module: 'animalManage',
+        icon: 'Star',
         children: []
       },
       {
         code: '/platform/animal/categoryManage',
         name: '动物类别管理',
         module: 'categoryManage',
+        icon: 'Files',
         children: []
       }
     ]
@@ -42,22 +48,42 @@ const menuList = [
     code: '/platform/community',
     name: '社区管理',
     module: 'community',
+    icon: 'MapLocation',
     children: [
       {
         code: '/platform/community/postManage',
         name: '帖子管理',
         module: 'postManage',
+        icon: 'Edit',
         children: []
       },
       {
         code: '/platform/community/commentManage',
         name: '评论管理',
         module: 'commentManage',
+        icon: 'ChatDotSquare',
         children: []
       }
     ]
   }
 ]
+
+const isCollapse = ref(false)
+const reviewWrapper = ref(null)
+const sideNavBar = ref(null)
+const containerWrapper = ref(null)
+
+const handleCollapse = async () => {
+  isCollapse.value = !isCollapse.value
+  getContainerWrapperWidth()
+}
+
+const getContainerWrapperWidth = () => {
+  const reviewWrapperWidth = reviewWrapper.value.offsetWidth
+  const sideNavBarWidth = isCollapse.value ? 64 : 200
+  const containerWrapperWidth = reviewWrapperWidth - sideNavBarWidth
+  containerWrapper.value.style.width = containerWrapperWidth + 'px'
+}
 
 const handleSelect = (key, keyPath) => {
   const toPath = '/platform/' + keyPath[0] + '/' + key
@@ -71,6 +97,7 @@ const getDetail = async () => {
 
 onMounted(() => {
   getDetail()
+  getContainerWrapperWidth()
 })
 </script>
 
@@ -82,7 +109,13 @@ onMounted(() => {
           <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
           <span class="font-medium text-[16px]">管理端</span>
         </div>
-        <expand style="width: 20px" />
+        <div
+          class="collapse-icon px-[10px] h-[60px] flex items-center cursor-pointer"
+          @click="handleCollapse"
+        >
+          <fold v-if="!isCollapse" />
+          <expand v-else />
+        </div>
 
         <div class="ml-auto">
           <el-dropdown>
@@ -130,20 +163,21 @@ onMounted(() => {
 
     <div class="w-full h-[90px]"></div>
 
-    <div class="flex flex-row bg-blue-50">
-      <div class="side-nav-bar bg-white">
+    <div class="flex flex-row bg-blue-50" ref="reviewWrapper">
+      <div class="side-nav-bar bg-white" ref="sideNavBar">
         <el-menu
           router
-          class="h-full min-w-[200px]"
+          class="el-menu-vertical-demo h-full"
           mode="vertical"
           :default-active="$route.meta.module"
           :unique-opened="true"
+          :collapse="isCollapse"
           @select="handleSelect"
         >
           <SideNavBar :menu="menuList" />
         </el-menu>
       </div>
-      <div class="container-wrapper w-full bg-white">
+      <div class="container-wrapper" ref="containerWrapper">
         <router-view></router-view>
       </div>
     </div>
@@ -158,5 +192,17 @@ onMounted(() => {
 .side-nav-bar,
 .container-wrapper {
   min-height: calc(100vh - 90px);
+}
+
+.collapse-icon:hover {
+  background-color: #ecf5ff;
+}
+
+.collapse-icon svg {
+  width: 20px;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
 }
 </style>

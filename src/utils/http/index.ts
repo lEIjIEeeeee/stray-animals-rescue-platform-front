@@ -44,7 +44,8 @@ http.interceptors.response.use(
     return result.data
   },
   (err) => {
-    return Promise.reject(err.response.data.message)
+    ElMessage.error(err.response.data.message)
+    return Promise.reject(err)
   }
 )
 

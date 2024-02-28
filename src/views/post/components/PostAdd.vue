@@ -4,6 +4,7 @@ import { AddPostForm } from '../types'
 import { FormRules, ElForm, ElMessage } from 'element-plus'
 import router from '@/router/index'
 import { submitPostApi } from '../post.api'
+import WangEditor from '@/components/WangEditor/index.vue'
 
 const show = ref(false)
 const loading = computed(() => show.value)
@@ -138,7 +139,6 @@ const submitPost = async (data) => {
     router.go(-1)
   } catch (e) {
     closeElFromLoading()
-    ElMessage.error(e)
   }
 }
 
@@ -239,9 +239,7 @@ onMounted(() => {
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button class="bg-[#409eff]" type="primary" @click="submitPost(formData)"
-            >确认发帖</el-button
-          >
+          <el-button type="primary" @click="submitPost(formData)">确认发帖</el-button>
           <el-button @click="submitCancel">取消</el-button>
         </el-form-item>
       </el-form>

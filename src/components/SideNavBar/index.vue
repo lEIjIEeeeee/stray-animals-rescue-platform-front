@@ -1,27 +1,31 @@
 <script setup lang="ts">
+import SideNavBar from '@/components/SideNavBar/index.vue'
+
 const props = defineProps<{
   menu
 }>()
 </script>
 
 <template>
-  <div v-for="item in props.menu" :key="item.code">
+  <template v-for="item in props.menu" :key="item.code">
     <el-menu-item v-if="item.children.length === 0" :index="item.module">
       <el-icon>
-        <Notification />
+        <component :is="item.icon" />
       </el-icon>
-      {{ item.name }}
+      <template #title>
+        {{ item.name }}
+      </template>
     </el-menu-item>
     <el-sub-menu v-if="item.children.length > 0" :index="item.module">
       <template #title>
         <el-icon>
-          <Menu />
+          <component :is="item.icon" />
         </el-icon>
         <span>{{ item.name }}</span>
       </template>
       <SideNavBar :menu="item.children" />
     </el-sub-menu>
-  </div>
+  </template>
 </template>
 
 <style scoped>
