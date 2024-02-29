@@ -106,6 +106,13 @@ const router = createRouter({
                   component: () => import('@/views/community/post_manage/index.vue')
                 },
                 {
+                  path: 'postManage/detail',
+                  meta: {
+                    module: 'postManage'
+                  },
+                  component: () => import('@/views/community/post_manage/detail.vue')
+                },
+                {
                   path: 'commentManage',
                   meta: {
                     module: 'commentManage'

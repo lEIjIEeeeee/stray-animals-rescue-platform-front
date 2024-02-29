@@ -235,7 +235,7 @@ onMounted(() => {
         </el-select>
       </div>
       <div class="search-item category-search ml-[50px]">
-        <span>动物类别：</span>
+        <span>动物类目：</span>
         <el-cascader
           :options="categoryList"
           :props="{
@@ -330,7 +330,7 @@ onMounted(() => {
           width="120"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column prop="categoryName" label="动物类别" width="120"></el-table-column>
+        <el-table-column prop="categoryName" label="动物类目" width="120"></el-table-column>
         <el-table-column
           prop="bizType"
           label="业务类型"

@@ -6,7 +6,7 @@ import { PostAuditInfo } from '../types'
 import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
 import { postAuditApi } from '../post.api'
 
-const { show, closePopup } = usePopup()
+const { show, openPopup, closePopup } = usePopup()
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
 const loading = computed(() => mainLoading.value)
@@ -21,7 +21,7 @@ defineExpose({
 
 function open(postId) {
   formData.id = postId
-  show.value = true
+  openPopup()
 }
 
 const formData = reactive(new PostAuditInfo())

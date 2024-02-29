@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getDetailApi } from '../user_home/home.api'
 import router from '@/router'
 import SideNavBar from '@/components/SideNavBar/index.vue'
@@ -37,7 +37,7 @@ const menuList = [
       },
       {
         code: '/platform/animal/categoryManage',
-        name: '动物类别管理',
+        name: '动物类目管理',
         module: 'categoryManage',
         icon: 'Files',
         children: []
@@ -69,20 +69,9 @@ const menuList = [
 ]
 
 const isCollapse = ref(false)
-const reviewWrapper = ref(null)
-const sideNavBar = ref(null)
-const containerWrapper = ref(null)
 
 const handleCollapse = async () => {
   isCollapse.value = !isCollapse.value
-  getContainerWrapperWidth()
-}
-
-const getContainerWrapperWidth = () => {
-  const reviewWrapperWidth = reviewWrapper.value.offsetWidth
-  const sideNavBarWidth = isCollapse.value ? 64 : 200
-  const containerWrapperWidth = reviewWrapperWidth - sideNavBarWidth
-  containerWrapper.value.style.width = containerWrapperWidth + 'px'
 }
 
 const handleSelect = (key, keyPath) => {
@@ -97,12 +86,11 @@ const getDetail = async () => {
 
 onMounted(() => {
   getDetail()
-  getContainerWrapperWidth()
 })
 </script>
 
 <template>
-  <div>
+  <div class="main-wrapper">
     <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex items-center">
       <div class="w-full flex flex-row items-center justify-center">
         <div class="w-[270px] px-[10px] items-baseline leading-[90px]">
@@ -161,10 +149,10 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="w-full h-[90px]"></div>
+    <div class="h-[90px]"></div>
 
-    <div class="flex flex-row bg-blue-50" ref="reviewWrapper">
-      <div class="side-nav-bar bg-white" ref="sideNavBar">
+    <div class="flex flex-row bg-blue-50" style="min-height: calc(100vh - 90px)">
+      <div class="bg-white">
         <el-menu
           router
           class="el-menu-vertical-demo h-full"
@@ -177,7 +165,8 @@ onMounted(() => {
           <SideNavBar :menu="menuList" />
         </el-menu>
       </div>
-      <div class="container-wrapper" ref="containerWrapper">
+
+      <div class="overflow-hidden flex-1">
         <router-view></router-view>
       </div>
     </div>
@@ -187,11 +176,6 @@ onMounted(() => {
 <style scoped>
 :deep(.el-tooltip__trigger:focus-visible) {
   outline: unset;
-}
-
-.side-nav-bar,
-.container-wrapper {
-  min-height: calc(100vh - 90px);
 }
 
 .collapse-icon:hover {

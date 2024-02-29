@@ -67,7 +67,7 @@ const animalAllList = ref([
 const animalQueryList = ref([])
 
 const searchAnimalByName = (query, callback) => {
-  //TODO 待优化-根据动物类别id筛选返回的列表
+  //TODO 待优化-根据动物类目id筛选返回的列表
   var resultList = query ? animalQueryList.value.filter(createFilter(query)) : animalQueryList.value
   // 调用 callback 返回建议列表的数据
   callback(resultList)
@@ -96,7 +96,7 @@ const formRules: FormRules = {
   categoryId: [
     {
       required: true,
-      message: '请选择动物类别',
+      message: '请选择动物类目',
       trigger: 'blur'
     }
   ],
@@ -176,10 +176,10 @@ onMounted(() => {
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="动物类别：" prop="categoryId">
+            <el-form-item label="动物类目：" prop="categoryId">
               <el-select
                 v-model="formData.categoryId"
-                placeholder="请选择动物类别"
+                placeholder="请选择动物类目"
                 filterable
                 clearable
               >

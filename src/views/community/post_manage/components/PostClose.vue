@@ -6,7 +6,7 @@ import { PostCloseInfo } from '../types'
 import useMainLoading from '@/hooks/useMainLoading'
 import { postClosedApi, getCloseReasonApi } from '../post.api'
 
-const { show, closePopup } = usePopup()
+const { show, openPopup, closePopup } = usePopup()
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
 const loading = computed(() => mainLoading.value)
@@ -21,13 +21,13 @@ defineExpose({
 
 function open(item) {
   postStatus.value = item.status
-  show.value = true
   if (postStatus.value === 4) {
     postCloseParamsFormData.id = item.id
     init()
   } else {
     closedInfoFormData.id = item.id
   }
+  openPopup()
 }
 const postStatus = ref()
 const postCloseParamsFormData = reactive(new PostCloseInfo())
