@@ -1,4 +1,3 @@
-import { indexOf } from 'lodash';
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { getPostListApi } from './post.api'

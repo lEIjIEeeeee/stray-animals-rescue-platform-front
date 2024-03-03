@@ -82,7 +82,7 @@ const handleSubmit = async (data) => {
           type="textarea"
           v-model="formData.auditRemark"
           rows="5"
-          placeholder="请填写审核备注信息(审核拒绝必填)"
+          placeholder="请输入审核备注信息(审核拒绝必填)"
         />
       </el-form-item>
       <el-form-item>

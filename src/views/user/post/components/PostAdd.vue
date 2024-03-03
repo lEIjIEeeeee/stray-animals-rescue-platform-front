@@ -5,6 +5,7 @@ import { FormRules, ElForm, ElMessage } from 'element-plus'
 import router from '@/router/index'
 import { submitPostApi } from '../post.api'
 import WangEditor from '@/components/WangEditor/index.vue'
+import { getCategoryTreeApi } from '@/views/platform/animal/category_manage/category.api'
 
 const show = ref(false)
 const loading = computed(() => show.value)
@@ -145,8 +146,27 @@ const submitCancel = () => {
   router.go(-1)
 }
 
+const categoryTreeData = reactive([])
+const getCategoryTree = async () => {
+  const data = await getCategoryTreeApi()
+  console.log(data.data)
+  categoryTreeData[0] = data.data
+  console.log(categoryTreeData)
+}
+
+const init = () => {
+  getCategoryTree()
+}
+
 onMounted(() => {
   animalQueryList.value = unref(animalAllList)
+  init()
+})
+
+const categoryCascaderProps = reactive({
+  value: 'id',
+  label: 'name',
+  checkStrictly: true
 })
 </script>
 
@@ -177,19 +197,15 @@ onMounted(() => {
         <el-row>
           <el-col :span="12">
             <el-form-item label="动物类目：" prop="categoryId">
-              <el-select
+              <el-cascader
+                class="w-[100%]"
                 v-model="formData.categoryId"
-                placeholder="请选择动物类目"
-                filterable
+                :options="categoryTreeData"
+                :props="categoryCascaderProps"
                 clearable
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                :disabled="loading"
+                placeholder="请选择父级类目"
+              ></el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="12">

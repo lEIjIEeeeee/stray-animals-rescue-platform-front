@@ -38,3 +38,16 @@ export const postStatusDict = [
     value: 4
   }
 ]
+
+export const enableDict = [
+  {
+    label: '启用',
+    code: 'ENABLE',
+    value: 1
+  },
+  {
+    label: '禁用',
+    code: 'DISABLE',
+    value: 2
+  }
+]

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { getDetailApi } from '@/views/home/user_home/home.api'
+import { getDetailApi } from '@/views/user/home/home.api'
 
 const getDetail = async () => {
   await getDetailApi()

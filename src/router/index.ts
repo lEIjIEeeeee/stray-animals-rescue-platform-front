@@ -11,35 +11,35 @@ const router = createRouter({
       children: [
         {
           path: '',
-          component: () => import('@/views/home/user_home/index.vue'),
+          component: () => import('@/views/user/home/index.vue'),
           children: [
             {
               path: 'home',
               meta: {
                 module: 'home'
               },
-              component: () => import('@/views/home/user_home/components/HomePage.vue')
+              component: () => import('@/views/user/home/components/HomePage.vue')
             },
             {
               path: 'animal',
               meta: {
                 module: 'animal'
               },
-              component: () => import('@/views/animal/user/index.vue')
+              component: () => import('@/views/user/animal/index.vue')
             },
             {
               path: 'post',
               meta: {
                 module: 'post'
               },
-              component: () => import('@/views/post/index.vue')
+              component: () => import('@/views/user/post/index.vue')
             },
             {
               path: 'detail',
               meta: {
                 module: 'post'
               },
-              component: () => import('@/views/post/components/PostDetail.vue')
+              component: () => import('@/views/user/post/components/PostDetail.vue')
             }
           ]
         }
@@ -51,7 +51,7 @@ const router = createRouter({
       children: [
         {
           path: '',
-          component: () => import('@/views/home/platform_home/index.vue'),
+          component: () => import('@/views/platform/home/index.vue'),
           redirect: '/platform/home',
           children: [
             {
@@ -66,7 +66,7 @@ const router = createRouter({
                   meta: {
                     module: 'workbench'
                   },
-                  component: () => import('@/views/home/platform_home/components/HomePage.vue')
+                  component: () => import('@/views/platform/home/components/HomePage.vue')
                 }
               ]
             },
@@ -81,14 +81,14 @@ const router = createRouter({
                   meta: {
                     module: 'animalManage'
                   },
-                  component: () => import('@/views/animal/platform/animal_manage/index.vue')
+                  component: () => import('@/views/platform/animal/animal_manage/index.vue')
                 },
                 {
                   path: 'categoryManage',
                   meta: {
                     module: 'categoryManage'
                   },
-                  component: () => import('@/views/animal/platform/category_manage/index.vue')
+                  component: () => import('@/views/platform/animal/category_manage/index.vue')
                 }
               ]
             },
@@ -103,21 +103,21 @@ const router = createRouter({
                   meta: {
                     module: 'postManage'
                   },
-                  component: () => import('@/views/community/post_manage/index.vue')
+                  component: () => import('@/views/platform/community/post_manage/index.vue')
                 },
                 {
                   path: 'postManage/detail',
                   meta: {
                     module: 'postManage'
                   },
-                  component: () => import('@/views/community/post_manage/detail.vue')
+                  component: () => import('@/views/platform/community/post_manage/detail.vue')
                 },
                 {
                   path: 'commentManage',
                   meta: {
                     module: 'commentManage'
                   },
-                  component: () => import('@/views/community/comment_manage/index.vue')
+                  component: () => import('@/views/platform/community/comment_manage/index.vue')
                 }
               ]
             }
@@ -136,7 +136,7 @@ const router = createRouter({
       children: [
         {
           path: 'addPost',
-          component: () => import('@/views/post/components/PostAdd.vue')
+          component: () => import('@/views/user/post/components/PostAdd.vue')
         }
       ]
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getDetailApi } from '../user_home/home.api'
+import { getDetailApi } from '@/views/user/home/home.api'
 import router from '@/router'
 import SideNavBar from '@/components/SideNavBar/index.vue'
 
@@ -87,6 +87,10 @@ const getDetail = async () => {
 onMounted(() => {
   getDetail()
 })
+
+const goUserHomePage = () => {
+  router.replace('/home')
+}
 </script>
 
 <template>
@@ -130,7 +134,7 @@ onMounted(() => {
                   </el-icon>
                   我的帖子
                 </el-dropdown-item>
-                <el-dropdown-item divided>
+                <el-dropdown-item divided @click="goUserHomePage">
                   <el-icon>
                     <user />
                   </el-icon>
@@ -190,3 +194,4 @@ onMounted(() => {
   width: 200px;
 }
 </style>
+../../user/home/home.api

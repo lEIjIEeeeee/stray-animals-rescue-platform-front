@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { getDetailApi } from './home.api'
 import { getUserType } from '@/utils/auth'
+import router from '@/router'
 
 // 1.首页
 // 5.宠物领养
@@ -59,6 +60,10 @@ onMounted(() => {
   getDetail()
   userType.value = getUserType()
 })
+
+const goAdminHomePage = () => {
+  router.replace('/platform')
+}
 </script>
 
 <template>
@@ -101,7 +106,7 @@ onMounted(() => {
               我的帖子
             </el-dropdown-item>
             <div v-if="userType === 'PLATFORM_ADMIN'">
-              <el-dropdown-item divided>
+              <el-dropdown-item divided @click="goAdminHomePage">
                 <el-icon>
                   <Setting />
                 </el-icon>

@@ -38,7 +38,7 @@ const closedFormRules: FormRules = {
   closeReason: [
     {
       required: true,
-      message: '请填写帖子关闭原因',
+      message: '请输入帖子关闭原因',
       trigger: 'blur'
     }
   ]
@@ -109,7 +109,7 @@ const getPostCloseReson = async () => {
           type="textarea"
           v-model="closedInfoFormData.closeReason"
           rows="5"
-          placeholder="请填写关闭原因(必填)"
+          placeholder="请输入关闭原因(必填)"
         ></el-input>
       </el-form-item>
       <el-form-item>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { SearchParams, PlatformPostList } from '@/views/community/post_manage/types'
-import { getPlatformPostListApi, postDeleteApi } from '@/views/community/post_manage/post.api'
+import { SearchParams, PlatformPostList } from './types'
+import { getPlatformPostListApi, postDeleteApi } from './post.api'
 import PostAudit from './components/PostAudit.vue'
 import PostClose from './components/PostClose.vue'
 import { bizTypeDict, postStatusDict } from '@/stores/enums'
@@ -347,36 +347,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- table-column至少有一列是有min-width属性保证列的伸缩，整体table得有width保证不溢出外层div，
-      使得固定列生效。外层div得根据table宽度进行伸缩。
-      
-      1.先锁定table宽度
-      2.实现外层div根据table表格宽度伸缩（不设定宽度）
-      3.搞定高度问题
-    -->
-    <!-- <div class="px-[14px] pt-[14px] flex-1">
-      <el-table :data="platformPostList.dataList">
-        <el-table-column
-          type="index"
-          label="序号"
-          width="55"
-          align="center"
-          fixed="left"
-        ></el-table-column>
-        <el-table-column
-          prop="title"
-          label="帖子标题"
-          min-width="1200"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          label="操作"
-          min-width="180"
-          align="center"
-          fixed="right"
-        ></el-table-column>
-      </el-table>
-    </div> -->
     <div class="w-full px-[14px] pt-[14px] flex-1">
       <div class="bg-white w-full">
         <el-table
@@ -396,7 +366,7 @@ onMounted(() => {
             align="center"
             fixed="left"
           ></el-table-column>
-          <el-table-column prop="title" label="帖子标题" min-width="200" show-overflow-tooltip>
+          <el-table-column prop="title" label="帖子标题" min-width="120" show-overflow-tooltip>
           </el-table-column>
           <el-table-column
             prop="createUser"
@@ -427,13 +397,12 @@ onMounted(() => {
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column prop="postAbstract" label="帖子摘要" width="200">
-            <template #default="scope">
-              <el-tooltip :content="scope.row.postAbstract" placement="top" show-after="1000">
-                <span class="show-over-line-2">{{ scope.row.postAbstract }}</span>
-              </el-tooltip>
-            </template>
-          </el-table-column>
+          <el-table-column
+            prop="postAbstract"
+            label="帖子摘要"
+            width="200"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column
             prop="createTime"
             label="发帖时间"
@@ -554,7 +523,6 @@ onMounted(() => {
 }
 
 .el-table {
-  width: 100%;
   height: calc(100vh - 299px);
 }
 </style>
