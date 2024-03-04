@@ -25,7 +25,7 @@ const id = ref()
 const categoryTreeData = ref([])
 
 function open(categoryId?) {
-  categoryTreeData.value[0] = props.categoryTree
+  categoryTreeData.value = props.categoryTree
   if (props.type === 'edit') {
     id.value = categoryId
     init()
@@ -39,9 +39,7 @@ const init = async () => {
   try {
     openMainLoading()
     const data = await getCategoryDetailApi(id.value)
-    console.log(data.data)
     categoryDetail.pid = data.data.pid
-    console.log(categoryDetail.pid)
     categoryDetail.name = data.data.name
     categoryDetail.status = data.data.status
     categoryDetail.sort = data.data.sort
@@ -168,7 +166,7 @@ const edit = async () => {
         <el-cascader
           class="w-[100%]"
           v-model="categoryDetail.pid"
-          :options="categoryTreeData"
+          :options="categoryTreeData.children"
           :props="categoryCascaderProps"
           clearable
           :disabled="loading"
@@ -207,4 +205,3 @@ const edit = async () => {
     </el-form>
   </el-dialog>
 </template>
-../../../../platform/animal/category_manage/types../../../../platform/animal/category_manage/category.api

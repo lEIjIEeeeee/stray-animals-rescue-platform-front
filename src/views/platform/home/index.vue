@@ -194,4 +194,3 @@ const goUserHomePage = () => {
   width: 200px;
 }
 </style>
-../../user/home/home.api

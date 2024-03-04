@@ -33,7 +33,7 @@ const login = async () => {
       }
     })
   } catch (e) {
-    ElMessage.error(e)
+    console.log(e)
   }
 }
 </script>

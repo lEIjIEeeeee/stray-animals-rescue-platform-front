@@ -18,11 +18,10 @@ export class SearchParams {
 
 export class AddPostForm {
   title = ''
-  bizType = 'ADOPT_BIZ'
   categoryId = ''
   animalId = ''
   animalName = ''
-  animalGender = ''
+  bizType = 'ADOPT_BIZ'
   postAbstract = ''
   content = ''
 }
