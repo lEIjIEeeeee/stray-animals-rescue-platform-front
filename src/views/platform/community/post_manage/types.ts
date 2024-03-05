@@ -1,12 +1,26 @@
+export class PostListRequest {
+  pageNo = 1
+  pageSize = 20
+  searchType = 'POST_TITLE'
+  searchContent = ''
+  bizType = ''
+  categoryIds = []
+  auditStartDate = ''
+  auditEndDate = ''
+  createStartDate = ''
+  createEndDate = ''
+  status = ''
+}
+
 export class SearchParams {
   pageNo = 1
   pageSize = 20
   searchType = 'POST_TITLE'
   searchContent = ''
-  bizType
+  bizType = ''
   categoryIds = []
-  auditTime = []
-  createTime = []
+  auditDate = []
+  createDate = []
   status = ''
 }
 

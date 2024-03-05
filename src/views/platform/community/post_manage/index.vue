@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { SearchParams, PlatformPostList } from './types'
+import { SearchParams, PostListRequest, PlatformPostList } from './types'
 import { getPlatformPostListApi, postDeleteApi } from './post.api'
 import PostAudit from './components/PostAudit.vue'
 import PostClose from './components/PostClose.vue'
@@ -8,6 +8,7 @@ import { bizTypeDict, postStatusDict } from '@/stores/enums'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import useMainLoading from '@/hooks/useMainLoading'
 import router from '@/router'
+import { getCategoryTreeApi } from '../../animal/category_manage/category.api'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => mainLoading.value)
@@ -18,77 +19,12 @@ const searchTypeList = [
     name: '帖子标题'
   },
   {
+    code: 'CREATE_USER',
+    name: '作者'
+  },
+  {
     code: 'ANIMAL_NAME',
     name: '动物名称'
-  }
-]
-
-const bizTypeList = [
-  {
-    code: 'ADOPT_BIZ',
-    name: '领养'
-  },
-  {
-    code: 'LOSS_BIZ',
-    name: '挂失'
-  },
-  {
-    code: 'OTHER',
-    name: '其他'
-  }
-]
-
-const categoryList = [
-  {
-    value: 'CAT1',
-    pid: '0',
-    label: '大类1',
-    level: '1',
-    children: [
-      {
-        value: 'CAT1-1',
-        pid: 'CAT1',
-        label: '二级类目1',
-        level: '2',
-        children: [
-          {
-            value: 'CAT1-1-1',
-            pid: 'CAT1-1',
-            label: '三级类目1',
-            level: '3',
-            children: []
-          }
-        ]
-      },
-      {
-        value: 'CAT1-2',
-        pid: 'CAT1',
-        label: '二级类目2',
-        level: '2',
-        children: []
-      },
-      {
-        value: 'CAT1-3',
-        pid: 'CAT1',
-        label: '二级类目3',
-        level: '2',
-        children: []
-      }
-    ]
-  },
-  {
-    value: 'CAT2',
-    pid: '0',
-    label: '大类2',
-    level: '1',
-    children: []
-  },
-  {
-    value: 'CAT3',
-    pid: '0',
-    label: '大类3',
-    level: '1',
-    children: []
   }
 ]
 
@@ -100,7 +36,7 @@ const disabledDate = (time) => {
     new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59).getTime()
   )
 }
-const shortcuts = [
+const auditDateShortcuts = [
   {
     text: '最近一周',
     value: () => {
@@ -109,7 +45,7 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditTime = [start, end]
+      searchParams.auditDate = [start, end]
     }
   },
   {
@@ -120,7 +56,7 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditTime = [start, end]
+      searchParams.auditDate = [start, end]
     }
   },
   {
@@ -131,49 +67,120 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditTime = [start, end]
+      searchParams.auditDate = [start, end]
+    }
+  }
+]
+const createDateShortcuts = [
+  {
+    text: '最近一周',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+      start.setHours(0, 0, 0)
+      end.setHours(23, 59, 59)
+      searchParams.createDate = [start, end]
+    }
+  },
+  {
+    text: '最近一个月',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+      start.setHours(0, 0, 0)
+      end.setHours(23, 59, 59)
+      searchParams.createDate = [start, end]
+    }
+  },
+  {
+    text: '最近三个月',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+      start.setHours(0, 0, 0)
+      end.setHours(23, 59, 59)
+      searchParams.createDate = [start, end]
     }
   }
 ]
 
 const searchParams = reactive(new SearchParams())
+const postListRequest = reactive(new PostListRequest())
 const platformPostList = reactive(new PlatformPostList())
 
 const getPlatformPostList = async () => {
   try {
     openMainLoading()
-    const result = await getPlatformPostListApi(searchParams)
-    platformPostList.pageNo = result.data.pageNo
-    platformPostList.pageSize = result.data.pageSize
-    platformPostList.total = result.data.total
-    platformPostList.dataList = result.data.dataList
+    await copySearchParams()
+    const data = await getPlatformPostListApi(postListRequest)
+    fillPostListData(data.data)
     closeMainLoading()
   } catch (e) {
     closeMainLoading()
   }
 }
 
-const handleClearSearchParams = () => {
+const copySearchParams = () => {
+  Object.assign(postListRequest, searchParams)
+  delete postListRequest.categoryIds
+  delete postListRequest.auditDate
+  delete postListRequest.createDate
+  postListRequest['categoryIds'] = []
+  if (searchParams.categoryIds.length > 0) {
+    searchParams.categoryIds.forEach(function (item, index) {
+      postListRequest.categoryIds[index] = item[item.length - 1]
+    })
+  }
+
+  postListRequest.auditStartDate = searchParams.auditDate ? searchParams.auditDate[0] : ''
+  postListRequest.auditEndDate = searchParams.auditDate ? searchParams.auditDate[1] : ''
+  postListRequest.createStartDate = searchParams.createDate ? searchParams.createDate[0] : ''
+  postListRequest.createEndDate = searchParams.createDate ? searchParams.createDate[1] : ''
+}
+
+const fillPostListData = (data) => {
+  platformPostList.pageNo = data.pageNo
+  platformPostList.pageSize = data.pageSize
+  platformPostList.total = data.total
+  platformPostList.dataList = data.dataList
+}
+
+const handleClearSearchParams = async () => {
+  resetSearchParams()
+}
+
+const resetSearchParams = () => {
   searchParams.pageNo = 1
   searchParams.pageSize = 20
   searchParams.searchType = 'POST_TITLE'
   searchParams.searchContent = ''
-  searchParams.bizType = null
+  searchParams.bizType = ''
   searchParams.categoryIds = []
-  searchParams.auditTime = []
-  searchParams.createTime = []
+  searchParams.auditDate = []
+  searchParams.createDate = []
   searchParams.status = ''
   getPlatformPostList()
 }
 
-const handleCurrentPageChange = (val: number) => {
+const handleCurrentPageChange = async (val: number) => {
+  openMainLoading()
   searchParams.pageNo = val
-  getPlatformPostList()
+  postListRequest.pageNo = val
+  const data = await getPlatformPostListApi(postListRequest)
+  fillPostListData(data.data)
+  closeMainLoading()
 }
 
-const handlePageSizeChange = (val: number) => {
+const handlePageSizeChange = async (val: number) => {
+  openMainLoading()
   searchParams.pageSize = val
-  getPlatformPostList()
+  postListRequest.pageSize = val
+  const data = await getPlatformPostListApi(postListRequest)
+  fillPostListData(data.data)
+  closeMainLoading()
 }
 
 const postAuditRef = ref<InstanceType<typeof PostAudit>>()
@@ -198,7 +205,10 @@ const handlePostDelete = async (id) => {
     openMainLoading()
     await postDeleteApi({ id: id })
     ElMessage.success('删除成功')
-    await getPlatformPostList()
+    copySearchParams()
+    const data = await getPlatformPostListApi(postListRequest)
+    fillPostListData(data.data)
+    closeMainLoading()
   } catch (e) {
     closeMainLoading()
   }
@@ -213,17 +223,47 @@ const handleOpenDetail = (postId) => {
   })
 }
 
-const tableHeight = ref()
-const mainRef = ref(null)
-onMounted(() => {
+const categoryTree = ref([])
+const getCategoryTree = async () => {
+  try {
+    openMainLoading()
+    const data = await getCategoryTreeApi()
+    categoryTree.value = data.data.children
+    closeMainLoading()
+  } catch (e) {
+    closeMainLoading()
+  }
+}
+
+const searchButtonClick = () => {
   getPlatformPostList()
-  // const mainRefHeight = mainRef.value.clientHeight
-  // tableHeight.value = mainRefHeight - 209
+}
+
+const init = async () => {
+  await getCategoryTree()
+  await getPlatformPostList()
+}
+
+onMounted(() => {
+  init()
 })
+
+const tabClick = async (val) => {
+  try {
+    openMainLoading()
+    searchParams.status = val.props.name
+    await copySearchParams()
+    const data = await getPlatformPostListApi(postListRequest)
+    fillPostListData(data.data)
+    closeMainLoading()
+  } catch (e) {
+    closeMainLoading()
+  }
+}
 </script>
 
 <template>
-  <div class="h-full flex-col">
+  <div class="flex-col">
     <div class="px-[14px] pt-[10px] bg-white flex flex-col">
       <div class="mb-[20px] flex flex-row">
         <div class="search-item keywords-search">
@@ -261,9 +301,9 @@ onMounted(() => {
             placeholder="请选择"
           >
             <el-option
-              v-for="item in bizTypeList"
+              v-for="item in bizTypeDict"
               :key="item.code"
-              :label="item.name"
+              :label="item.label"
               :value="item.code"
             >
             </el-option>
@@ -272,8 +312,10 @@ onMounted(() => {
         <div class="search-item category-search ml-[50px]">
           <span>动物类目：</span>
           <el-cascader
-            :options="categoryList"
+            :options="categoryTree"
             :props="{
+              value: 'id',
+              label: 'name',
               multiple: true,
               checkStrictly: true
             }"
@@ -281,7 +323,6 @@ onMounted(() => {
             :disabled="loading"
             :show-all-levels="false"
             :collapse-tags="true"
-            separator=","
             v-model="searchParams.categoryIds"
             placeholder="请选择"
           >
@@ -292,13 +333,13 @@ onMounted(() => {
         <div class="search-item">
           <span>审核日期：</span>
           <el-date-picker
-            v-model="searchParams.auditTime"
+            v-model="searchParams.auditDate"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :shortcuts="shortcuts"
+            :shortcuts="auditDateShortcuts"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD HH:mm:ss"
             :default-time="defaultTime"
@@ -311,13 +352,13 @@ onMounted(() => {
           <span>创建日期：</span>
           <el-date-picker
             class="w-[200px]"
-            v-model="searchParams.createTime"
+            v-model="searchParams.createDate"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :shortcuts="shortcuts"
+            :shortcuts="createDateShortcuts"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD HH:mm:ss"
             :default-time="defaultTime"
@@ -330,14 +371,14 @@ onMounted(() => {
           class="search-button ml-[20px]"
           type="primary"
           :disabled="loading"
-          @click="getPlatformPostList"
+          @click="searchButtonClick"
           >搜索</el-button
         >
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
       </div>
 
       <div>
-        <el-tabs v-model="searchParams.status" @tab-click="getPlatformPostList">
+        <el-tabs v-model="searchParams.status" @tab-click="tabClick">
           <el-tab-pane label="全部" name="" />
           <el-tab-pane label="待审核" name="AUDIT_WAIT" />
           <el-tab-pane label="审核通过" name="AUDIT_PASS" />
@@ -347,7 +388,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="w-full px-[14px] pt-[14px] flex-1">
+    <div class="px-[14px] pt-[14px] flex-1">
       <div class="bg-white w-full">
         <el-table
           :data="platformPostList.dataList"
@@ -374,6 +415,8 @@ onMounted(() => {
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
+          <el-table-column prop="animalName" label="动物名称" width="120" show-overflow-tooltip>
+          </el-table-column>
           <el-table-column
             prop="categoryName"
             label="动物类目"

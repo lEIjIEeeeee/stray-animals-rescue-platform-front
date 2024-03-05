@@ -1,8 +1,12 @@
 import http from '@/utils/http'
+import { stringify } from 'qs'
 
 export const getPlatformPostListApi = (params) =>
   http.get('/postModule/platform/post/listPage', {
-    params
+    params,
+    paramsSerializer: function (params) {
+      return stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 
 export const getCloseReasonApi = (id) =>

@@ -5,8 +5,8 @@ export const bizTypeDict = [
     value: 1
   },
   {
-    label: '挂失',
-    code: 'LOSS_BIZ',
+    label: '遗失',
+    code: 'LOST_BIZ',
     value: 2
   },
   {

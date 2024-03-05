@@ -90,7 +90,7 @@ const submitCancel = () => {
 const categoryTreeData = ref([])
 const getCategoryTree = async () => {
   const data = await getCategoryTreeApi()
-  categoryTreeData.value = data.data
+  categoryTreeData.value = data.data.children
 }
 
 const animalList = ref([])
@@ -172,10 +172,6 @@ const handleChange = (val: string) => {
     animalInfoTemp.animalName = val
   }
 }
-// 1.类目清空时，名称也要清空
-// 2.类目更换时，名称也要清空
-// 3.名称选中节点时，附带类目要选中同时加载对应的animalList
-// 4.
 </script>
 
 <template>
@@ -208,7 +204,7 @@ const handleChange = (val: string) => {
               <el-cascader
                 class="w-[100%]"
                 v-model="formData.categoryId"
-                :options="categoryTreeData.children"
+                :options="categoryTreeData"
                 :props="categoryCascaderProps"
                 clearable
                 :disabled="loading"
@@ -243,7 +239,7 @@ const handleChange = (val: string) => {
             <el-form-item label="发帖类型：" prop="bizType">
               <el-radio-group v-model="formData.bizType">
                 <el-radio :label="'ADOPT_BIZ'">领养</el-radio>
-                <el-radio :label="'LOSS_BIZ'">挂失</el-radio>
+                <el-radio :label="'LOST_BIZ'">遗失</el-radio>
                 <el-radio :label="'OTHER'">其他</el-radio>
               </el-radio-group>
             </el-form-item>

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { CustomParamsSerializer } from 'axios'
 import { getToken, removeToken, removeUserType } from '../auth'
 import router from '@/router'
 import { get } from 'lodash'

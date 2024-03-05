@@ -7,6 +7,12 @@ import useMainLoading from '@/hooks/useMainLoading'
 import { getCategoryDetailApi, categoryAddApi, categoryEditApi } from '../category.api'
 import { enableDict } from '@/stores/enums'
 
+const { show, openPopup, closePopup } = usePopup()
+const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
+
+const loading = computed(() => mainLoading.value)
+const title = computed(() => (props.type === 'add' ? '新增动物类目' : '编辑动物类目'))
+
 const props = defineProps<{
   categoryTree
   type: 'add' | 'edit'
@@ -25,7 +31,7 @@ const id = ref()
 const categoryTreeData = ref([])
 
 function open(categoryId?) {
-  categoryTreeData.value = props.categoryTree
+  categoryTreeData.value[0] = props.categoryTree
   if (props.type === 'edit') {
     id.value = categoryId
     init()
@@ -49,11 +55,6 @@ const init = async () => {
     closeMainLoading()
   }
 }
-
-const { show, openPopup, closePopup } = usePopup()
-const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
-const loading = computed(() => mainLoading.value)
-const title = computed(() => (props.type === 'add' ? '新增动物类目' : '编辑动物类目'))
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 const rules: FormRules = {
@@ -98,6 +99,7 @@ const categorySubmitDetail = reactive(new CategorySubmitDetail())
 
 const handleSave = async () => {
   try {
+    openPopup()
     await formRef.value?.validate()
     const length = categoryDetail.pid.length
     const pid = categoryDetail.pid[length - 1]
@@ -111,6 +113,7 @@ const handleSave = async () => {
     if (props.type === 'edit') {
       edit()
     }
+    closePopup()
   } catch (e) {
     console.log(e)
   }
@@ -145,13 +148,14 @@ const edit = async () => {
 </script>
 
 <template>
-  <el-dialog :title="title" v-model="show" :close-on-click-modal="false" width="40%">
+  <el-dialog :title="title" :model-value="show" :close-on-click-modal="false" width="40%">
     <el-form
       :model="categoryDetail"
       ref="formRef"
       :rules="rules"
       label-width="93"
       v-loading="loading"
+      v-if="show"
     >
       <el-form-item label="类目名称：" prop="name">
         <el-input
@@ -166,7 +170,7 @@ const edit = async () => {
         <el-cascader
           class="w-[100%]"
           v-model="categoryDetail.pid"
-          :options="categoryTreeData.children"
+          :options="categoryTreeData"
           :props="categoryCascaderProps"
           clearable
           :disabled="loading"
@@ -200,7 +204,7 @@ const edit = async () => {
       </el-form-item>
       <el-form-item label="">
         <el-button type="primary" :disabled="loading" @click="handleSave">确定</el-button>
-        <el-button :disabled="loading" @click="closePopup()">取消</el-button>
+        <el-button :disabled="loading" @click="closePopup">取消</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
