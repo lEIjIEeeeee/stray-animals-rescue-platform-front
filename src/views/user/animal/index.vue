@@ -12,5 +12,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>动物</div>
+  <div>宠物</div>
 </template>

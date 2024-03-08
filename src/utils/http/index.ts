@@ -44,7 +44,11 @@ http.interceptors.response.use(
     return result.data
   },
   (err) => {
-    ElMessage.error(err.response.data.message)
+    if (err.response.data.message) {
+      ElMessage.error(err.response.data.message)
+    } else {
+      ElMessage.error(err.message)
+    }
     return Promise.reject(err)
   }
 )

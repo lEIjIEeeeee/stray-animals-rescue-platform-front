@@ -84,7 +84,7 @@ const getPostCloseReson = async () => {
     :close-on-click-modal="false"
   >
     <div>
-      <el-form :model="postCloseParamsFormData" label="100" v-loading="loading">
+      <el-form :model="postCloseParamsFormData" label="100" v-loading="loading" @submit.prevent>
         <el-form-item label="拒绝原因：" prop="closeReason">
           <el-input
             type="textarea"

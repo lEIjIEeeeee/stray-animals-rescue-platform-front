@@ -51,3 +51,58 @@ export const enableDict = [
     value: 2
   }
 ]
+
+export const flagDict = [
+  {
+    label: '是',
+    code: 'Y',
+    value: 1
+  },
+  {
+    label: '否',
+    code: 'N',
+    value: 0
+  }
+]
+
+export const genderDict = [
+  {
+    label: '男',
+    code: 'M'
+  },
+  {
+    label: '女',
+    code: 'F'
+  }
+]
+
+export const animalGenderDict = [
+  {
+    label: '雄性',
+    code: 'M'
+  },
+  {
+    label: '雌性',
+    code: 'F'
+  }
+]
+
+export const getEnumNameByCode = (enumType, code: string) => {
+  let enumName = ''
+  enumType.forEach(function (item, inex) {
+    if (item.code === code) {
+      enumName = item.label
+    }
+  })
+  return enumName
+}
+
+export const getEnumNameByValue = (enumType, val: number) => {
+  let enumName = ''
+  enumType.forEach(function (item, inex) {
+    if (item.value === val) {
+      enumName = item.label
+    }
+  })
+  return enumName
+}

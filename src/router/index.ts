@@ -84,6 +84,20 @@ const router = createRouter({
                   component: () => import('@/views/platform/animal/animal_manage/index.vue')
                 },
                 {
+                  path: 'animalManage/detail',
+                  meta: {
+                    module: 'animalManage'
+                  },
+                  component: () => import('@/views/platform/animal/animal_manage/detail.vue')
+                },
+                {
+                  path: 'animalManage/edit',
+                  meta: {
+                    module: 'animalManage'
+                  },
+                  component: () => import('@/views/platform/animal/animal_manage/edit.vue')
+                },
+                {
                   path: 'categoryManage',
                   meta: {
                     module: 'categoryManage'

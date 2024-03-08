@@ -70,6 +70,7 @@ const handleSubmit = async (data) => {
       ref="formRef"
       label-width="100"
       v-loading="loading"
+      @submit.prevent
     >
       <el-form-item label="审核结果：" prop="auditResult">
         <el-radio-group v-model="formData.auditResult">

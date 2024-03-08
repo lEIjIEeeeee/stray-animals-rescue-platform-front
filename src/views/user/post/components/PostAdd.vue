@@ -40,7 +40,7 @@ const formRules: FormRules = {
   animalName: [
     {
       required: true,
-      message: '请输入动物名称',
+      message: '请输入宠物名称',
       trigger: 'blur'
     }
   ],
@@ -68,12 +68,12 @@ const formRules: FormRules = {
 const submitPost = async (data) => {
   try {
     await formRef.value?.validate()
-    openElFromLoading()
     if (animalInfoTemp.animalId === '') {
       await ElMessageBox.confirm('检测到新宠物信息，帖子审核通过后系统将会自动录入该信息。')
     } else {
       formData.animalId = animalInfoTemp.animalId
     }
+    openElFromLoading()
     await submitPostApi(data)
     closeElFromLoading()
     ElMessage.success('发帖成功')
@@ -184,6 +184,7 @@ const handleChange = (val: string) => {
         :rules="formRules"
         :model="formData"
         v-loading="loading"
+        @submit.prevent
       >
         <el-row>
           <el-col :span="24">
@@ -216,7 +217,7 @@ const handleChange = (val: string) => {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="动物名称：" prop="animalName">
+            <el-form-item label="宠物名称：" prop="animalName">
               <el-autocomplete
                 value-key="name"
                 v-model="formData.animalName"
@@ -225,7 +226,7 @@ const handleChange = (val: string) => {
                 @change="handleChange"
                 clearable
                 highlight-first-item
-                placeholder="请输入/选择动物名称"
+                placeholder="请输入/选择宠物名称"
               >
                 <template #default="{ item }">
                   <div>{{ item.name + '(' + item.animalNo + ')' }}</div>

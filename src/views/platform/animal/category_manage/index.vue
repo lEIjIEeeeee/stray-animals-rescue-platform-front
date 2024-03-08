@@ -97,8 +97,8 @@ const handleStatusChange = async (item) => {
     searchParams.pid = item.pid
     await getCategoryList()
   } catch (e) {
-    closeMainLoading()
     await getCategoryList()
+    closeMainLoading()
   }
 }
 

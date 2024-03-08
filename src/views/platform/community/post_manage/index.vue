@@ -24,7 +24,7 @@ const searchTypeList = [
   },
   {
     code: 'ANIMAL_NAME',
-    name: '动物名称'
+    name: '宠物名称'
   }
 ]
 
@@ -148,7 +148,7 @@ const fillPostListData = (data) => {
   platformPostList.dataList = data.dataList
 }
 
-const handleClearSearchParams = async () => {
+const handleClearSearchParams = () => {
   resetSearchParams()
 }
 
@@ -225,23 +225,17 @@ const handleOpenDetail = (postId) => {
 
 const categoryTree = ref([])
 const getCategoryTree = async () => {
-  try {
-    openMainLoading()
-    const data = await getCategoryTreeApi()
-    categoryTree.value = data.data.children
-    closeMainLoading()
-  } catch (e) {
-    closeMainLoading()
-  }
+  const data = await getCategoryTreeApi()
+  categoryTree.value = data.data.children
 }
 
 const searchButtonClick = () => {
   getPlatformPostList()
 }
 
-const init = async () => {
-  await getCategoryTree()
-  await getPlatformPostList()
+const init = () => {
+  getCategoryTree()
+  getPlatformPostList()
 }
 
 onMounted(() => {
@@ -263,8 +257,8 @@ const tabClick = async (val) => {
 </script>
 
 <template>
-  <div class="flex-col">
-    <div class="px-[14px] pt-[10px] bg-white flex flex-col">
+  <div class="flex-col bg-white">
+    <div class="px-[14px] pt-[10px] flex flex-col">
       <div class="mb-[20px] flex flex-row">
         <div class="search-item keywords-search">
           <el-select v-model="searchParams.searchType" :disabled="loading" placeholder="请选择">
@@ -277,7 +271,7 @@ const tabClick = async (val) => {
             </el-option>
           </el-select>
           <el-input
-            class="search-content-input ml-[10px]"
+            class="ml-[10px]"
             type="text"
             clearable
             :disabled="loading"
@@ -377,19 +371,17 @@ const tabClick = async (val) => {
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
       </div>
 
-      <div>
-        <el-tabs v-model="searchParams.status" @tab-click="tabClick">
-          <el-tab-pane label="全部" name="" />
-          <el-tab-pane label="待审核" name="AUDIT_WAIT" />
-          <el-tab-pane label="审核通过" name="AUDIT_PASS" />
-          <el-tab-pane label="审核拒绝" name="AUDIT_REJECT" />
-          <el-tab-pane label="已关闭" name="CLOSED" />
-        </el-tabs>
-      </div>
+      <el-tabs v-model="searchParams.status" @tab-click="tabClick">
+        <el-tab-pane label="全部" name="" />
+        <el-tab-pane label="待审核" name="AUDIT_WAIT" />
+        <el-tab-pane label="审核通过" name="AUDIT_PASS" />
+        <el-tab-pane label="审核拒绝" name="AUDIT_REJECT" />
+        <el-tab-pane label="已关闭" name="CLOSED" />
+      </el-tabs>
     </div>
 
     <div class="px-[14px] pt-[14px] flex-1">
-      <div class="bg-white w-full">
+      <div>
         <el-table
           :data="platformPostList.dataList"
           stripe
@@ -399,6 +391,7 @@ const tabClick = async (val) => {
             backgroundColor: '#f2f2f2',
             color: '#666666'
           }"
+          style="height: calc(100vh - 299px)"
         >
           <el-table-column
             type="index"
@@ -415,12 +408,13 @@ const tabClick = async (val) => {
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column prop="animalName" label="动物名称" width="120" show-overflow-tooltip>
+          <el-table-column prop="animalName" label="宠物名称" width="120" show-overflow-tooltip>
           </el-table-column>
           <el-table-column
             prop="categoryName"
             label="动物类目"
             min-width="120"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column prop="bizType" label="业务类型" width="120" align="center">
@@ -450,9 +444,10 @@ const tabClick = async (val) => {
             prop="createTime"
             label="发帖时间"
             min-width="180"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" min-width="160" align="center" fixed="right">
+          <el-table-column label="操作" min-width="150" align="center" fixed="right">
             <template #default="{ row }">
               <div class="operation-column flex flex-row justify-around items-center">
                 <span @click="handleOpenDetail(row.id)">查看</span>
@@ -483,7 +478,7 @@ const tabClick = async (val) => {
         </el-table>
       </div>
 
-      <div class="py-[5px] pr-[10px] flex justify-end bg-white">
+      <div class="py-[5px] pr-[10px] flex justify-end">
         <el-config-provider>
           <el-pagination
             :current-page="searchParams.pageNo"
@@ -544,28 +539,8 @@ const tabClick = async (val) => {
   position: static !important;
 }
 
-.show-over-line-1,
-.show-over-line-2 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-}
-
-.show-over-line-1 {
-  -webkit-line-clamp: 1;
-}
-
-.show-over-line-2 {
-  -webkit-line-clamp: 2;
-}
-
 .operation-column span {
   cursor: pointer;
   color: #0152d9;
-}
-
-.el-table {
-  height: calc(100vh - 299px);
 }
 </style>

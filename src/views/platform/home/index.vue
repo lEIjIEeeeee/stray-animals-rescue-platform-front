@@ -24,13 +24,13 @@ const menuList = [
   },
   {
     code: '/platform/animal',
-    name: '动物管理',
+    name: '宠物管理',
     module: 'animal',
     icon: 'Menu',
     children: [
       {
         code: '/platform/animal/animalManage',
-        name: '动物信息管理',
+        name: '宠物信息管理',
         module: 'animalManage',
         icon: 'Star',
         children: []

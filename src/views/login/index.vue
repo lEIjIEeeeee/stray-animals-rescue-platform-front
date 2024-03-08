@@ -48,7 +48,7 @@ const login = async () => {
       style="background-color: rgba(255, 255, 255, 40%)"
     >
       <div class="mb-[20px] text-[24px] font-blob text-center">流浪动物救助平台</div>
-      <el-form :model="loginUser">
+      <el-form :model="loginUser" @submit.prevent>
         <el-form-item>
           <el-input type="text" v-model="loginUser.account" placeholder="请输入账号/手机号" />
         </el-form-item>

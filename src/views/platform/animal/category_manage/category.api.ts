@@ -1,23 +1,25 @@
 import http from '@/utils/http'
 
-export const getCategoryTreeApi = () => http.get('/categoryModule/category/getCategoryTree')
+export const getCategoryTreeApi = () => http.get('/commonModule/common/getCategoryTree')
 
 export const getCategoryListApi = (params) =>
-  http.get('/categoryModule/category/listPage', {
+  http.get('/categoryModule/platform/category/listPage', {
     params
   })
 
 export const getCategoryDetailApi = (id) =>
-  http.get('/categoryModule/category/get', {
+  http.get('/categoryModule/platform/category/get', {
     params: {
       id
     }
   })
 
-export const categoryAddApi = (data) => http.post('/categoryModule/category/add', data)
+export const categoryAddApi = (data) => http.post('/categoryModule/platform/category/add', data)
 
-export const categoryEditApi = (data) => http.post('/categoryModule/category/edit', data)
+export const categoryEditApi = (data) => http.post('/categoryModule/platform/category/edit', data)
 
-export const changeStatusApi = (data) => http.post('/categoryModule/category/changeStatus', data)
+export const changeStatusApi = (data) =>
+  http.post('/categoryModule/platform/category/changeStatus', data)
 
-export const categoryDeleteApi = (data) => http.post('/categoryModule/category/delete', data)
+export const categoryDeleteApi = (data) =>
+  http.post('/categoryModule/platform/category/delete', data)

@@ -156,6 +156,7 @@ const edit = async () => {
       label-width="93"
       v-loading="loading"
       v-if="show"
+      @submit.prevent
     >
       <el-form-item label="类目名称：" prop="name">
         <el-input
