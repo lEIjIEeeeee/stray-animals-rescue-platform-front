@@ -406,7 +406,7 @@ const animalDelete = async (item) => {
             backgroundColor: '#f2f2f2',
             color: '#666666'
           }"
-          style="height: calc(100vh - 299px)"
+          style="height: calc(100vh - 260px)"
         >
           <el-table-column type="index" label="序号" width="55" align="center" fixed="left">
           </el-table-column>

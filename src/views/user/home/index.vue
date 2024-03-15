@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { getDetailApi } from './home.api'
-import { getUserType } from '@/utils/auth'
+import { getUserType, removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
+import { ElMessageBox } from 'element-plus'
 
 // 1.首页
 // 5.宠物领养
@@ -19,16 +20,8 @@ const menuList = [
   },
   {
     code: '/animal',
-    name: '宠物领养',
+    name: '全部萌宠',
     module: 'animal'
-  },
-  {
-    code: '/animal2',
-    name: '丢失认领'
-  },
-  {
-    code: '/animal3',
-    name: '爱心捐助'
   },
   {
     code: '/post',
@@ -36,8 +29,12 @@ const menuList = [
     module: 'post'
   },
   {
-    code: '/animal5',
+    code: '/notice',
     name: '公告须知'
+  },
+  {
+    code: '/feedback',
+    name: '用户反馈'
   }
 ]
 
@@ -64,6 +61,36 @@ onMounted(() => {
 const goAdminHomePage = () => {
   router.replace('/platform')
 }
+
+const goPersonalAnimal = () => {
+  const target = router.resolve({
+    path: 'personal/personalAnimal'
+  })
+  window.open(target.href, '_blank')
+}
+
+const goPersonalPost = () => {
+  const target = router.resolve({
+    path: 'personal/personalPost'
+  })
+  window.open(target.href, '_blank')
+}
+
+const goPersonalApply = () => {
+  const target = router.resolve({
+    path: 'personal/personalApply'
+  })
+  window.open(target.href, '_blank')
+}
+
+const logout = async () => {
+  await ElMessageBox.confirm('是否确认退出登录？', {
+    type: 'warning'
+  })
+  removeToken()
+  removeUserType()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -80,31 +107,31 @@ const goAdminHomePage = () => {
           </el-menu-item>
         </div>
       </el-menu>
-
       <el-dropdown>
         <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
           <el-image class="rounded-[50%] object-fill" :src="avatar" />
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>
-              <el-icon>
-                <Bell />
-              </el-icon>
-              我的申请
-            </el-dropdown-item>
-            <el-dropdown-item>
+            <el-dropdown-item @click="goPersonalAnimal">
               <el-icon>
                 <Star />
               </el-icon>
               我的宠物
             </el-dropdown-item>
-            <el-dropdown-item>
+            <el-dropdown-item @click="goPersonalPost">
               <el-icon>
                 <EditPen />
               </el-icon>
               我的帖子
             </el-dropdown-item>
+            <el-dropdown-item @click="goPersonalApply">
+              <el-icon>
+                <Bell />
+              </el-icon>
+              我的申请
+            </el-dropdown-item>
+
             <div v-if="userType === 'PLATFORM_ADMIN'">
               <el-dropdown-item divided @click="goAdminHomePage">
                 <el-icon>
@@ -113,7 +140,7 @@ const goAdminHomePage = () => {
                 管理端
               </el-dropdown-item>
             </div>
-            <el-dropdown-item divided>
+            <el-dropdown-item divided @click="logout">
               <el-icon>
                 <SwitchButton />
               </el-icon>
@@ -123,12 +150,10 @@ const goAdminHomePage = () => {
         </template>
       </el-dropdown>
     </div>
-
     <div class="w-full h-[90px]"></div>
-    <div class="container-wrapper bg-blue-50">
+    <div class="h-full bg-blue-50">
       <router-view />
     </div>
-    <div class="footer-wrapper w-full h-[100px] border-t bg-white"></div>
   </div>
 </template>
 
@@ -155,9 +180,5 @@ const goAdminHomePage = () => {
 
 :deep(.el-tooltip__trigger:focus-visible) {
   outline: unset;
-}
-
-.container-wrapper {
-  min-height: calc(100vh - 190px);
 }
 </style>

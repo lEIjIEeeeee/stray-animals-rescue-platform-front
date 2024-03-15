@@ -35,13 +35,41 @@ const router = createRouter({
               component: () => import('@/views/user/post/index.vue')
             },
             {
-              path: 'detail',
+              path: 'post/detail',
               meta: {
                 module: 'post'
               },
               component: () => import('@/views/user/post/components/PostDetail.vue')
             }
           ]
+        }
+      ]
+    },
+    {
+      path: '/personal',
+      name: 'personal',
+      component: () => import('@/views/user/personal/index.vue'),
+      children: [
+        {
+          path: 'personalAnimal',
+          meta: {
+            module: 'personalAnimal'
+          },
+          component: () => import('@/views/user/personal/components/PersonalAnimal.vue')
+        },
+        {
+          path: 'personalPost',
+          meta: {
+            module: 'personalPost'
+          },
+          component: () => import('@/views/user/personal/components/PersonalPost.vue')
+        },
+        {
+          path: 'personalApply',
+          meta: {
+            module: 'personalApply'
+          },
+          component: () => import('@/views/user/personal/components/PersonalApply.vue')
         }
       ]
     },
@@ -134,6 +162,21 @@ const router = createRouter({
                   component: () => import('@/views/platform/community/comment_manage/index.vue')
                 }
               ]
+            },
+            {
+              path: 'system',
+              meta: {
+                module: 'system'
+              },
+              children: [
+                {
+                  path: 'userManage',
+                  meta: {
+                    module: 'userManage'
+                  },
+                  component: () => import('@/views/platform/system/user_manage/index.vue')
+                }
+              ]
             }
           ]
         }
@@ -142,7 +185,12 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/login/index.vue')
+      component: () => import('@/views/login/login.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/login/register.vue')
     },
     {
       path: '/post',
@@ -157,7 +205,7 @@ const router = createRouter({
   ]
 })
 
-const whiteList = ['/login']
+const whiteList = ['/login', '/register']
 
 router.beforeEach(async (to, from, next) => {
   if (whiteList.includes(to.path)) {

@@ -158,6 +158,8 @@ const categoryChange = (val) => {
     animalDetail.categoryId = val[val.length - 1]
   }
 }
+
+const adoptReacordList = ref([])
 </script>
 
 <template>
@@ -192,6 +194,7 @@ const categoryChange = (val) => {
                 <el-select
                   v-model="animalDetail.ownerId"
                   :disabled="loading"
+                  filterable
                   clearable
                   placeholder="请选择宠物主人"
                 >
@@ -363,7 +366,25 @@ const categoryChange = (val) => {
         <span class="font-semibold">领养记录</span>
       </div>
       <div class="mb-[20px]">
+        <el-table :data="adoptReacordList">
+          <el-table-column label="序号" type="index" width="100"></el-table-column>
+          <el-table-column label="领养人" width="180"></el-table-column>
+          <el-table-column label="领养开始时间" min-width="180"></el-table-column>
+          <el-table-column label="领养结束时间" min-width="180"></el-table-column>
+        </el-table>
+      </div>
+      <div class="mb-[20px]">
         <span class="font-semibold">捐助记录</span>
+      </div>
+      <div class="mb-[20px]">
+        <el-table :data="adoptReacordList">
+          <el-table-column label="序号" type="index" width="100"></el-table-column>
+          <el-table-column label="捐助人" width="180"></el-table-column>
+          <el-table-column label="捐助名称" min-width="180"></el-table-column>
+          <el-table-column label="捐助类型" min-width="180"></el-table-column>
+          <el-table-column label="捐助图片" min-width="180"></el-table-column>
+          <el-table-column label="捐助时间" min-width="180"></el-table-column>
+        </el-table>
       </div>
     </div>
 

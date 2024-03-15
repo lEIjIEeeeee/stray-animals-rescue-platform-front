@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue'
 import { getDetailApi } from '@/views/user/home/home.api'
 import router from '@/router'
 import SideNavBar from '@/components/SideNavBar/index.vue'
+import { removeToken, removeUserType } from '@/utils/auth'
+import { ElMessageBox } from 'element-plus'
 
 const avatar = ref()
 
@@ -48,7 +50,7 @@ const menuList = [
     code: '/platform/community',
     name: '社区管理',
     module: 'community',
-    icon: 'MapLocation',
+    icon: 'LocationFilled',
     children: [
       {
         code: '/platform/community/postManage',
@@ -62,6 +64,21 @@ const menuList = [
         name: '评论管理',
         module: 'commentManage',
         icon: 'ChatDotSquare',
+        children: []
+      }
+    ]
+  },
+  {
+    code: '/platform/system',
+    name: '系统管理',
+    module: 'system',
+    icon: 'Tools',
+    children: [
+      {
+        code: '/platform/system/userManage',
+        name: '用户管理',
+        module: 'userManage',
+        icon: 'User',
         children: []
       }
     ]
@@ -91,6 +108,15 @@ onMounted(() => {
 const goUserHomePage = () => {
   router.replace('/home')
 }
+
+const logout = async () => {
+  await ElMessageBox.confirm('是否确认退出登录？', {
+    type: 'warning'
+  })
+  removeToken()
+  removeUserType()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -116,13 +142,7 @@ const goUserHomePage = () => {
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>
-                  <el-icon>
-                    <Bell />
-                  </el-icon>
-                  我的申请
-                </el-dropdown-item>
-                <el-dropdown-item>
+                <!-- <el-dropdown-item>
                   <el-icon>
                     <Star />
                   </el-icon>
@@ -134,13 +154,19 @@ const goUserHomePage = () => {
                   </el-icon>
                   我的帖子
                 </el-dropdown-item>
-                <el-dropdown-item divided @click="goUserHomePage">
+                <el-dropdown-item>
+                  <el-icon>
+                    <Bell />
+                  </el-icon>
+                  我的申请
+                </el-dropdown-item> -->
+                <el-dropdown-item @click="goUserHomePage">
                   <el-icon>
                     <user />
                   </el-icon>
                   用户端
                 </el-dropdown-item>
-                <el-dropdown-item divided>
+                <el-dropdown-item divided @click="logout">
                   <el-icon>
                     <SwitchButton />
                   </el-icon>

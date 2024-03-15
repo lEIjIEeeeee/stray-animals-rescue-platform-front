@@ -79,7 +79,7 @@ const addPost = () => {
 
 const getDetail = (id) => {
   const target = router.resolve({
-    path: '/detail',
+    path: 'post/detail',
     query: {
       id: id
     }
@@ -168,7 +168,7 @@ const getDetail = (id) => {
     <div v-if="postDivDisable" class="text-white font-medium text-[15px]">发帖</div>
   </div>
 
-  <el-backtop class="w-[50px] h-[50px]" :bottom="100" :right="50" visibility-height="90">
+  <el-backtop class="w-[50px] h-[50px]" :bottom="100" :right="55" visibility-height="90">
     <div
       class="w-full h-full rounded-[50%] flex flex-col items-center justify-center"
       style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.12)"
