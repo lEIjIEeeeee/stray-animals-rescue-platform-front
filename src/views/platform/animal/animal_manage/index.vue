@@ -106,7 +106,7 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -117,7 +117,7 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -128,7 +128,7 @@ const shortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   }
 ]
@@ -252,10 +252,10 @@ const animalDelete = async (item) => {
 </script>
 
 <template>
-  <div class="flex-col bg-white">
-    <div class="px-[14px] pt-[10px] flex flex-col">
-      <div class="mb-[20px] flex flex-row">
-        <div class="search-item">
+  <div class="px-[14px] pt-[10px] flex flex-col bg-white">
+    <div class="flex flex-col">
+      <div class="mb-[20px] flex">
+        <div class="flex">
           <el-select
             v-model="searchParams.searchType"
             :disabled="loading"
@@ -278,7 +278,7 @@ const animalDelete = async (item) => {
             v-model="searchParams.searchContent"
             maxlength="100"
             placeholder="请输入搜索关键字"
-            style="width: 300px"
+            style="width: 200px"
           >
             <template #prefix>
               <el-icon>
@@ -287,14 +287,14 @@ const animalDelete = async (item) => {
             </template>
           </el-input>
         </div>
-        <div class="search-item ml-[50px]">
-          <span>宠物性别：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">宠物性别：</span>
           <el-select
             v-model="searchParams.gender"
             clearable
             :disabled="loading"
             placeholder="请选择"
-            style="width: 120px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in animalGenderDict"
@@ -305,8 +305,8 @@ const animalDelete = async (item) => {
             </el-option>
           </el-select>
         </div>
-        <div class="search-item ml-[50px]">
-          <span>动物类目：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">动物类目：</span>
           <el-cascader
             :options="categoryTree"
             :props="{
@@ -321,21 +321,18 @@ const animalDelete = async (item) => {
             :collapse-tags="true"
             v-model="searchParams.categoryIds"
             placeholder="请选择"
-            style="width: 180px"
+            style="width: 190px"
           >
           </el-cascader>
         </div>
-      </div>
-
-      <div class="mb-[20px] flex flex-row">
-        <div class="search-item">
-          <span>是否领养：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">是否领养：</span>
           <el-select
             v-model="searchParams.isAdopt"
             clearable
             :disabled="loading"
             placeholder="请选择"
-            style="width: 120px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in flagDict"
@@ -346,14 +343,16 @@ const animalDelete = async (item) => {
             </el-option>
           </el-select>
         </div>
-        <div class="search-item ml-[50px]">
-          <span>是否遗失：</span>
+      </div>
+      <div class="mb-[20px] flex">
+        <div class="flex items-center">
+          <span class="text-[14px] min-w-[70px]">是否遗失：</span>
           <el-select
             v-model="searchParams.isLost"
             clearable
             :disabled="loading"
             placeholder="请选择"
-            style="width: 120px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in flagDict"
@@ -364,10 +363,9 @@ const animalDelete = async (item) => {
             </el-option>
           </el-select>
         </div>
-        <div class="search-item ml-[50px]">
-          <span>创建日期：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">创建日期：</span>
           <el-date-picker
-            class="w-[200px]"
             v-model="searchParams.createDate"
             type="daterange"
             unlink-panels
@@ -380,22 +378,18 @@ const animalDelete = async (item) => {
             :default-time="defaultTime"
             :disabledDate="disabledDate"
             :disabled="loading"
-            style="width: 350px"
+            style="width: 360px"
           >
           </el-date-picker>
         </div>
-        <el-button
-          class="search-button ml-[20px]"
-          type="primary"
-          :disabled="loading"
-          @click="searchButtonClick"
+        <el-button class="ml-[20px]" type="primary" :disabled="loading" @click="searchButtonClick"
           >搜索</el-button
         >
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
       </div>
     </div>
 
-    <div class="px-[14px] pt-[14px] flex-1">
+    <div class="flex-1">
       <div>
         <el-table
           :data="platformAnimalList.dataList"
@@ -522,17 +516,7 @@ const animalDelete = async (item) => {
 </template>
 
 <style scoped>
-@import '@/style/element-plus/switch.css';
-
-.search-item {
-  display: flex;
-  align-items: center;
-}
-
-.search-item > span {
-  font-size: 14px;
-  width: 70px;
-}
+@import '@/style/element-plus/switch-table.css';
 
 .operation-column span {
   cursor: pointer;

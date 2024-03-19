@@ -1,0 +1,24 @@
+.el-switch :deep(.el-switch__label) {
+  position: absolute;
+  display: none;
+  color: #fff;
+}
+
+.el-switch :deep(.el-switch__label--left) {
+  z-index: 9;
+  left: 6px;
+}
+
+.el-switch :deep(.el-switch__label--right) {
+  z-index: 9;
+  left: -16px;
+}
+
+.el-switch :deep(.el-switch__label.is-active) {
+  display: block;
+}
+
+.el-switch :deep(.el-switch__core),
+.el-switch :deep(.el-switch__label) {
+  width: 50px !important;
+}

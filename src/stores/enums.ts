@@ -87,6 +87,35 @@ export const animalGenderDict = [
   }
 ]
 
+export const userTypeDict = [
+  {
+    label: '普通用户',
+    code: 'NORMAL_USER'
+  },
+  {
+    label: '平台管理员',
+    code: 'PLATFORM_ADMIN'
+  }
+]
+
+export const userStatusDict = [
+  {
+    label: '正常',
+    code: 'NORMAL',
+    value: 1
+  },
+  {
+    label: '禁用',
+    code: 'FREEZE',
+    value: 2
+  }
+  // {
+  //   label: '删除',
+  //   code: 'DELETE',
+  //   value: 99
+  // }
+]
+
 export const getEnumNameByCode = (enumType, code: string) => {
   let enumName = ''
   enumType.forEach(function (item, inex) {

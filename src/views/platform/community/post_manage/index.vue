@@ -45,7 +45,7 @@ const auditDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -56,7 +56,7 @@ const auditDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -67,7 +67,7 @@ const auditDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.auditDate = [start, end]
+      return [start, end]
     }
   }
 ]
@@ -80,7 +80,7 @@ const createDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -91,7 +91,7 @@ const createDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   },
   {
@@ -102,7 +102,7 @@ const createDateShortcuts = [
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
       start.setHours(0, 0, 0)
       end.setHours(23, 59, 59)
-      searchParams.createDate = [start, end]
+      return [start, end]
     }
   }
 ]
@@ -257,11 +257,16 @@ const tabClick = async (val) => {
 </script>
 
 <template>
-  <div class="flex-col bg-white">
-    <div class="px-[14px] pt-[10px] flex flex-col">
-      <div class="mb-[20px] flex flex-row">
-        <div class="search-item keywords-search">
-          <el-select v-model="searchParams.searchType" :disabled="loading" placeholder="请选择">
+  <div class="px-[14px] pt-[10px] flex flex-col bg-white">
+    <div class="flex flex-col">
+      <div class="mb-[20px] flex">
+        <div class="flex">
+          <el-select
+            v-model="searchParams.searchType"
+            :disabled="loading"
+            placeholder="请选择"
+            style="width: 120px"
+          >
             <el-option
               v-for="item in searchTypeList"
               :key="item.code"
@@ -278,6 +283,7 @@ const tabClick = async (val) => {
             v-model="searchParams.searchContent"
             maxlength="100"
             placeholder="请输入搜索关键字"
+            style="width: 200px"
           >
             <template #prefix>
               <el-icon>
@@ -286,13 +292,14 @@ const tabClick = async (val) => {
             </template>
           </el-input>
         </div>
-        <div class="search-item biz-search ml-[50px]">
-          <span>业务类型：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">业务类型：</span>
           <el-select
             v-model="searchParams.bizType"
             clearable
             :disabled="loading"
             placeholder="请选择"
+            style="width: 150px"
           >
             <el-option
               v-for="item in bizTypeDict"
@@ -303,8 +310,8 @@ const tabClick = async (val) => {
             </el-option>
           </el-select>
         </div>
-        <div class="search-item category-search ml-[50px]">
-          <span>动物类目：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">动物类目：</span>
           <el-cascader
             :options="categoryTree"
             :props="{
@@ -319,13 +326,14 @@ const tabClick = async (val) => {
             :collapse-tags="true"
             v-model="searchParams.categoryIds"
             placeholder="请选择"
+            style="width: 190px"
           >
           </el-cascader>
         </div>
       </div>
-      <div class="mb-[20px] flex flex-row">
-        <div class="search-item">
-          <span>审核日期：</span>
+      <div class="mb-[20px] flex">
+        <div class="flex items-center">
+          <span class="text-[14px] min-w-[70px]">审核日期：</span>
           <el-date-picker
             v-model="searchParams.auditDate"
             type="daterange"
@@ -339,11 +347,12 @@ const tabClick = async (val) => {
             :default-time="defaultTime"
             :disabledDate="disabledDate"
             :disabled="loading"
+            style="width: 360px"
           >
           </el-date-picker>
         </div>
-        <div class="search-item ml-[50px]">
-          <span>创建日期：</span>
+        <div class="ml-[50px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">创建日期：</span>
           <el-date-picker
             class="w-[200px]"
             v-model="searchParams.createDate"
@@ -358,14 +367,11 @@ const tabClick = async (val) => {
             :default-time="defaultTime"
             :disabledDate="disabledDate"
             :disabled="loading"
+            style="width: 360px"
           >
           </el-date-picker>
         </div>
-        <el-button
-          class="search-button ml-[20px]"
-          type="primary"
-          :disabled="loading"
-          @click="searchButtonClick"
+        <el-button class="ml-[20px]" type="primary" :disabled="loading" @click="searchButtonClick"
           >搜索</el-button
         >
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
@@ -380,7 +386,7 @@ const tabClick = async (val) => {
       </el-tabs>
     </div>
 
-    <div class="px-[14px] pt-[14px] flex-1">
+    <div class="flex-1">
       <div>
         <el-table
           :data="platformPostList.dataList"
@@ -476,21 +482,20 @@ const tabClick = async (val) => {
             </template>
           </el-table-column>
         </el-table>
-      </div>
-
-      <div class="py-[5px] pr-[10px] flex justify-end">
-        <el-config-provider>
-          <el-pagination
-            :current-page="searchParams.pageNo"
-            :page-size="searchParams.pageSize"
-            :page-sizes="[10, 20, 50, 100]"
-            layout=" prev, pager, next, jumper,sizes, total"
-            :total="platformPostList.total"
-            :disabled="loading"
-            @current-change="handleCurrentPageChange"
-            @size-change="handlePageSizeChange"
-          />
-        </el-config-provider>
+        <div class="py-[5px] pr-[10px] flex justify-end">
+          <el-config-provider>
+            <el-pagination
+              :current-page="searchParams.pageNo"
+              :page-size="searchParams.pageSize"
+              :page-sizes="[10, 20, 50, 100]"
+              layout=" prev, pager, next, jumper,sizes, total"
+              :total="platformPostList.total"
+              :disabled="loading"
+              @current-change="handleCurrentPageChange"
+              @size-change="handlePageSizeChange"
+            />
+          </el-config-provider>
+        </div>
       </div>
 
       <PostAudit ref="postAuditRef" @audit="getPlatformPostList" />
@@ -500,36 +505,6 @@ const tabClick = async (val) => {
 </template>
 
 <style scoped>
-.search-item {
-  display: flex;
-  align-items: center;
-}
-
-.search-item > span {
-  font-size: 14px;
-  width: 70px;
-}
-
-:deep(.el-select__wrapper) {
-  min-width: 120px;
-}
-
-.keywords-search :deep(.el-select__wrapper) {
-  width: 120px;
-}
-.keywords-search :deep(.el-input__wrapper) {
-  width: 300px;
-}
-
-.biz-search :deep(.el-select),
-.category-search :deep(.el-input__wrapper) {
-  width: 180px;
-}
-
-:deep(.el-date-editor) {
-  width: 360px;
-}
-
 .el-tabs :deep(.el-tabs__header) {
   margin-bottom: 0px;
 }

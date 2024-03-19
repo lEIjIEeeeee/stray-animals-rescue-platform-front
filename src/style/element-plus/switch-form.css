@@ -6,12 +6,12 @@
 
 .el-switch :deep(.el-switch__label--left) {
   z-index: 9;
-  left: 6px;
+  left: 20px;
 }
 
 .el-switch :deep(.el-switch__label--right) {
   z-index: 9;
-  left: -14px;
+  left: -4px;
 }
 
 .el-switch :deep(.el-switch__label.is-active) {
@@ -20,5 +20,5 @@
 
 .el-switch :deep(.el-switch__core),
 .el-switch :deep(.el-switch__label) {
-  width: 50px !important;
+  width: 55px !important;
 }

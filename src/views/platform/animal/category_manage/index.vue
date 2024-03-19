@@ -265,7 +265,7 @@ const categoryDelete = async (item) => {
 </template>
 
 <style scoped>
-@import '@/style/element-plus/switch.css';
+@import '@/style/element-plus/switch-table.css';
 
 :deep(.el-tree-node__content) {
   min-width: 200px;

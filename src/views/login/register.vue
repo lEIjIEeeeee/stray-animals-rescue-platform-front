@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import useMainDisabled from '@/hooks/useMainDisabled'
 import router from '@/router'
 import { UserRegister } from './types'
-import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
+import { ElForm, FormRules } from 'element-plus'
 import { registerApi } from './register.api'
 import RegisterSuccess from './components/RegisterSuccess.vue'
 
