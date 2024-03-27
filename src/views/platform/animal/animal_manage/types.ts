@@ -46,19 +46,35 @@ export class AnimalDetail {
   animalNo
   categoryId
   categoryName
-  gender
   ownerId
   ownerName
+  gender
+  birthday
+  weight
   isAdopt
   isLost
   desc
 }
-
-export class EditAnimalInfo {
-  id
+export class AnimalAddInfo {
   name
-  gender
   categoryId
   ownerId
+  gender = 'M'
+  birthday
+  weight
+  isAdopt = 0
+  isLost = 0
+  imgUrl = ''
+  desc
+}
+
+export class AnimalEditInfo {
+  id
+  name
+  categoryId
+  ownerId
+  birthday
+  gender
+  weight
   desc
 }

@@ -257,7 +257,7 @@ const tabClick = async (val) => {
 </script>
 
 <template>
-  <div class="px-[14px] pt-[10px] flex flex-col bg-white">
+  <div class="w-full px-[14px] pt-[10px] flex flex-col bg-white">
     <div class="flex flex-col">
       <div class="mb-[20px] flex">
         <div class="flex">
@@ -397,7 +397,7 @@ const tabClick = async (val) => {
             backgroundColor: '#f2f2f2',
             color: '#666666'
           }"
-          style="height: calc(100vh - 299px)"
+          style="height: calc(100vh - 285px)"
         >
           <el-table-column
             type="index"
@@ -453,28 +453,25 @@ const tabClick = async (val) => {
             align="center"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" min-width="150" align="center" fixed="right">
+          <el-table-column label="操作" width="150" align="center" fixed="right">
             <template #default="{ row }">
               <div class="operation-column flex flex-row justify-around items-center">
                 <span @click="handleOpenDetail(row.id)">查看</span>
-                <span
-                  v-if="row.status === 1 && searchParams.status == 'AUDIT_WAIT'"
-                  @click="handlePostAudit(row.id)"
-                  >审核</span
-                >
+
                 <el-dropdown trigger="click">
                   <span>更多</span>
                   <template #dropdown>
                     <el-dropdown-menu :split-button="true">
+                      <el-dropdown-item v-if="row.status === 1" @click="handlePostAudit(row.id)"
+                        >审核</el-dropdown-item
+                      >
                       <el-dropdown-item v-if="row.status !== 4" @click="handlePostClose(row)"
                         >关闭</el-dropdown-item
                       >
                       <el-dropdown-item v-if="row.status === 4" @click="getPostCloseReson(row)"
                         >查看关闭原因</el-dropdown-item
                       >
-                      <el-dropdown-item divided @click="handlePostDelete(row.id)"
-                        >删除</el-dropdown-item
-                      >
+                      <el-dropdown-item @click="handlePostDelete(row.id)">删除</el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>

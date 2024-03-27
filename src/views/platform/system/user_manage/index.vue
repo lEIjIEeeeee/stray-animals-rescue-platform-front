@@ -174,7 +174,7 @@ const editUser = (id) => {
 </script>
 
 <template>
-  <div class="h-full px-[14px] pt-[10px] bg-white flex flex-col">
+  <div class="w-full h-full px-[14px] pt-[10px] bg-white flex flex-col">
     <div class="mb-[20px]">
       <div class="mb-[20px] flex">
         <el-button class="w-[70px]" type="primary" @click="addUser">
@@ -307,7 +307,7 @@ const editUser = (id) => {
           backgroundColor: '#f2f2f2',
           color: '#666666'
         }"
-        style="height: calc(100vh - 256px)"
+        style="height: calc(100vh - 246px)"
       >
         <el-table-column
           type="index"
@@ -393,7 +393,7 @@ const editUser = (id) => {
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column label="操作" width="120" align="center" fixed="right">
+        <el-table-column label="操作" width="150" align="center" fixed="right">
           <template #default="{ row }">
             <div class="flex justify-around items-center text-[#0152d9]">
               <span class="cursor-pointer" @click="editUser(row.id)">编辑</span>

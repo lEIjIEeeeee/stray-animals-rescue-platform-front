@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { getDetailApi } from './home.api'
 import { getUserType, removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
@@ -47,14 +46,9 @@ const avatar = computed(() => {
   }
 })
 
-const getDetail = async () => {
-  await getDetailApi()
-}
-
 const userType = ref()
 
 onMounted(() => {
-  getDetail()
   userType.value = getUserType()
 })
 
@@ -94,7 +88,7 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="w-full flex flex-col">
+  <div class="w-full h-full pt-[90px] flex flex-col">
     <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex items-center">
       <div class="w-[270px] px-[10px] items-baseline leading-[90px]">
         <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
@@ -150,8 +144,7 @@ const logout = async () => {
         </template>
       </el-dropdown>
     </div>
-    <div class="w-full h-[90px]"></div>
-    <div class="h-full bg-blue-50">
+    <div class="flex-1 bg-blue-50">
       <router-view />
     </div>
   </div>

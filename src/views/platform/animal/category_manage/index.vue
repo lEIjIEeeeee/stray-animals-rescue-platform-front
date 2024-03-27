@@ -140,7 +140,7 @@ const categoryDelete = async (item) => {
 </script>
 
 <template>
-  <div class="h-full bg-white overflow-hidden flex flex-row">
+  <div class="w-full h-full bg-white overflow-hidden flex flex-row">
     <div style="height: calc(100vh - 90px)">
       <el-scrollbar>
         <el-tree

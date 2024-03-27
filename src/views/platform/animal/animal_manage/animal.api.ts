@@ -16,7 +16,9 @@ export const getAnimalDetailApi = (id) =>
     }
   })
 
-export const editAnimalInfoApi = (data) => http.post('animalModule/platform/animal/edit', data)
+export const animalAddInfoApi = (data) => http.post('/animalModule/platform/animal/add', data)
+
+export const animalEditInfoApi = (data) => http.post('/animalModule/platform/animal/edit', data)
 
 export const changeAdoptStatusApi = (data) =>
   http.post('/animalModule/platform/animal/changeAdoptStatus', data)

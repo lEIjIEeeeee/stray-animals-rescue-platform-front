@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getDetailApi } from '@/views/user/home/home.api'
 import router from '@/router'
 import SideNavBar from '@/components/SideNavBar/index.vue'
 import { removeToken, removeUserType } from '@/utils/auth'
@@ -97,7 +96,6 @@ const handleSelect = (key, keyPath) => {
 }
 
 const getDetail = async () => {
-  await getDetailApi()
   avatar.value = '/src/assets/user/default_avatar.png'
 }
 
@@ -120,10 +118,10 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="main-wrapper">
+  <div class="w-full h-full pt-[90px] flex flex-col">
     <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex items-center">
       <div class="w-full flex flex-row items-center justify-center">
-        <div class="w-[270px] px-[10px] items-baseline leading-[90px]">
+        <div class="w-[270px] px-[10px]">
           <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
           <span class="font-medium text-[16px]">管理端</span>
         </div>
@@ -179,10 +177,8 @@ const logout = async () => {
       </div>
     </div>
 
-    <div class="h-[90px]"></div>
-
-    <div class="flex flex-row bg-blue-50" style="min-height: calc(100vh - 90px)">
-      <div class="bg-white">
+    <div class="w-full h-full flex flex-1 min-h-0 bg-blue-50">
+      <div class="h-full">
         <el-menu
           router
           class="el-menu-vertical-demo h-full"
@@ -196,7 +192,7 @@ const logout = async () => {
         </el-menu>
       </div>
 
-      <div class="overflow-hidden flex-1">
+      <div class="h-full flex flex-1 min-w-0">
         <router-view></router-view>
       </div>
     </div>

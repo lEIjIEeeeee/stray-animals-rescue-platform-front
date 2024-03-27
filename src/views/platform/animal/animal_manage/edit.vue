@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import AddEdit from './components/AddEdit.vue'
+import AnimalDetail from './components/AnimalDetail.vue'
 </script>
 
 <template>
-  <div></div>
-  <AddEdit type="edit" />
+  <AnimalDetail type="edit" />
 </template>

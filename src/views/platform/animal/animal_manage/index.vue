@@ -18,6 +18,7 @@ import {
 } from './animal.api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
+import AnimalAdd from './components/AnimalAdd.vue'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => mainLoading.value)
@@ -35,7 +36,7 @@ const searchTypeList = [
   },
   {
     code: 'OWNER_NAME',
-    name: '主人名称'
+    name: '宠物主人'
   }
 ]
 
@@ -249,13 +250,24 @@ const animalDelete = async (item) => {
     closeMainLoading()
   }
 }
+
+const animalAddRef = ref<InstanceType<typeof AnimalAdd>>()
+const addAnimal = () => {
+  animalAddRef.value?.open()
+}
 </script>
 
 <template>
-  <div class="px-[14px] pt-[10px] flex flex-col bg-white">
-    <div class="flex flex-col">
+  <div class="w-full px-[14px] pt-[10px] flex flex-col bg-white">
+    <div class="flex flex-col overflow-hidden">
       <div class="mb-[20px] flex">
-        <div class="flex">
+        <el-button class="w-[70px]" type="primary" @click="addAnimal">
+          <el-icon>
+            <Plus />
+          </el-icon>
+          <span class="6px">添加</span>
+        </el-button>
+        <div class="ml-[10px] flex">
           <el-select
             v-model="searchParams.searchType"
             :disabled="loading"
@@ -287,7 +299,7 @@ const animalDelete = async (item) => {
             </template>
           </el-input>
         </div>
-        <div class="ml-[50px] flex items-center">
+        <div class="ml-[30px] flex items-center">
           <span class="text-[14px] min-w-[70px]">宠物性别：</span>
           <el-select
             v-model="searchParams.gender"
@@ -305,7 +317,7 @@ const animalDelete = async (item) => {
             </el-option>
           </el-select>
         </div>
-        <div class="ml-[50px] flex items-center">
+        <div class="ml-[30px] flex items-center">
           <span class="text-[14px] min-w-[70px]">动物类目：</span>
           <el-cascader
             :options="categoryTree"
@@ -325,7 +337,7 @@ const animalDelete = async (item) => {
           >
           </el-cascader>
         </div>
-        <div class="ml-[50px] flex items-center">
+        <div class="ml-[30px] flex items-center">
           <span class="text-[14px] min-w-[70px]">是否领养：</span>
           <el-select
             v-model="searchParams.isAdopt"
@@ -363,7 +375,7 @@ const animalDelete = async (item) => {
             </el-option>
           </el-select>
         </div>
-        <div class="ml-[50px] flex items-center">
+        <div class="ml-[30px] flex items-center">
           <span class="text-[14px] min-w-[70px]">创建日期：</span>
           <el-date-picker
             v-model="searchParams.createDate"
@@ -382,7 +394,7 @@ const animalDelete = async (item) => {
           >
           </el-date-picker>
         </div>
-        <el-button class="ml-[20px]" type="primary" :disabled="loading" @click="searchButtonClick"
+        <el-button class="ml-[30px]" type="primary" :disabled="loading" @click="searchButtonClick"
           >搜索</el-button
         >
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
@@ -400,7 +412,7 @@ const animalDelete = async (item) => {
             backgroundColor: '#f2f2f2',
             color: '#666666'
           }"
-          style="height: calc(100vh - 260px)"
+          style="height: calc(100vh - 246px)"
         >
           <el-table-column type="index" label="序号" width="55" align="center" fixed="left">
           </el-table-column>
@@ -426,7 +438,7 @@ const animalDelete = async (item) => {
           ></el-table-column>
           <el-table-column
             prop="ownerName"
-            label="主人名称"
+            label="宠物主人"
             width="120"
             align="center"
             show-overflow-tooltip
@@ -485,7 +497,7 @@ const animalDelete = async (item) => {
             align="center"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" min-width="150" align="center" fixed="right">
+          <el-table-column label="操作" width="150" align="center" fixed="right">
             <template #default="{ row }">
               <div class="operation-column flex flex-row justify-around items-center">
                 <span @click="animalDetail(row.id)">查看</span>
@@ -512,6 +524,7 @@ const animalDelete = async (item) => {
         </el-config-provider>
       </div>
     </div>
+    <AnimalAdd ref="animalAddRef" @add="handleClearSearchParams" />
   </div>
 </template>
 
