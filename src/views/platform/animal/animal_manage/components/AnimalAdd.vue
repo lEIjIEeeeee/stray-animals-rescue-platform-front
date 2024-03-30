@@ -77,7 +77,7 @@ const formRules: FormRules = {
       trigger: 'blur'
     }
   ],
-  imgUrl: [
+  picUrl: [
     {
       required: true,
       message: '请上传宠物图片',
@@ -94,7 +94,7 @@ const categoryCascaderProps = reactive({
 
 const addAnimal = async () => {
   try {
-    formRef.value?.validate()
+    await formRef.value?.validate()
     openMainLoading()
     const requestData = new AnimalAddInfo()
     Object.assign(requestData, formData)
@@ -113,7 +113,7 @@ const addAnimal = async () => {
 </script>
 
 <template>
-  <el-dialog title="新增宠物" v-model="show" :close-on-click-modal="false" width="">
+  <el-dialog title="新增宠物" v-model="show" :close-on-click-modal="false">
     <el-form
       :model="formData"
       label-width="95"
@@ -196,8 +196,8 @@ const addAnimal = async () => {
           <el-radio-button :label="1">是</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="宠物图片：" prop="imgUrl">
-        <UploadImg type="item" v-model="formData.imgUrl" :upload-biz-type="'ANIMAL'" />
+      <el-form-item label="宠物图片：" prop="picUrl">
+        <UploadImg v-model="formData.picUrl" :upload-biz-type="'ANIMAL'" />
       </el-form-item>
       <el-form-item label="描述信息：" style="width: 80%">
         <el-input

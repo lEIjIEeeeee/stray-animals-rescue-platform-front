@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { getUserType, removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
+import MenuNavBar from '@/components/MenuNavBar/index.vue'
 
 // 1.首页
 // 5.宠物领养
@@ -15,26 +16,29 @@ const menuList = [
   {
     code: '/home',
     name: '网站首页',
-    module: 'home'
+    module: 'home',
+    children: []
   },
   {
     code: '/animal',
     name: '全部萌宠',
-    module: 'animal'
+    module: 'animal',
+    children: []
   },
   {
     code: '/post',
     name: '社区交流',
-    module: 'post'
-  },
-  {
-    code: '/notice',
-    name: '公告须知'
-  },
-  {
-    code: '/feedback',
-    name: '用户反馈'
+    module: 'post',
+    children: []
   }
+  // {
+  //   code: '/notice',
+  //   name: '公告须知'
+  // },
+  // {
+  //   code: '/feedback',
+  //   name: '用户反馈'
+  // }
 ]
 
 const avatar = computed(() => {
@@ -85,64 +89,85 @@ const logout = async () => {
   removeUserType()
   router.push('/login')
 }
+
+const handleSelect = (key, keyPath) => {
+  let toPath = ''
+  if (keyPath.length === 1) {
+    toPath += '/' + key
+  } else {
+    keyPath.forEach(function (item) {
+      toPath += '/' + item
+    })
+  }
+  router.push(toPath)
+}
 </script>
 
 <template>
-  <div class="w-full h-full pt-[90px] flex flex-col">
-    <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex items-center">
-      <div class="w-[270px] px-[10px] items-baseline leading-[90px]">
-        <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
-        <span class="font-medium text-[16px]">用户端</span>
-      </div>
-      <el-menu router mode="horizontal" :default-active="$route.meta.module">
+  <div class="h-full pt-[90px] flex flex-col">
+    <div class="w-full h-[90px] border-b fixed top-0 left-0 z-50 bg-white flex">
+      <div class="w-full h-full flex items-center">
+        <div class="min-w-[285px] px-[20px] items-baseline">
+          <span class="font-medium text-[24px] mr-[5px]">流浪动物救助平台</span>
+          <span class="font-medium text-[16px]">用户端</span>
+        </div>
+        <div class="h-full flex-1">
+          <el-menu
+            router
+            class="el-menu-demo"
+            mode="horizontal"
+            :default-active="$route.meta.module"
+            :unique-opened="true"
+            @select="handleSelect"
+          >
+            <MenuNavBar :menu="menuList" />
+          </el-menu>
+        </div>
         <div>
-          <el-menu-item v-for="item in menuList" :key="item.code" :index="item.module"
-            >{{ item.name }}
-          </el-menu-item>
-        </div>
-      </el-menu>
-      <el-dropdown>
-        <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
-          <el-image class="rounded-[50%] object-fill" :src="avatar" />
-        </div>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item @click="goPersonalAnimal">
-              <el-icon>
-                <Star />
-              </el-icon>
-              我的宠物
-            </el-dropdown-item>
-            <el-dropdown-item @click="goPersonalPost">
-              <el-icon>
-                <EditPen />
-              </el-icon>
-              我的帖子
-            </el-dropdown-item>
-            <el-dropdown-item @click="goPersonalApply">
-              <el-icon>
-                <Bell />
-              </el-icon>
-              我的申请
-            </el-dropdown-item>
-
-            <div v-if="userType === 'PLATFORM_ADMIN'">
-              <el-dropdown-item divided @click="goAdminHomePage">
-                <el-icon>
-                  <Setting />
-                </el-icon>
-                管理端
-              </el-dropdown-item>
+          <el-dropdown>
+            <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
+              <el-image class="rounded-[50%] object-fill" :src="avatar" />
             </div>
-            <el-dropdown-item divided @click="logout">
-              <el-icon>
-                <SwitchButton />
-              </el-icon>
-              退 出
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="goPersonalAnimal">
+                  <el-icon>
+                    <Star />
+                  </el-icon>
+                  我的宠物
+                </el-dropdown-item>
+                <el-dropdown-item @click="goPersonalPost">
+                  <el-icon>
+                    <EditPen />
+                  </el-icon>
+                  我的帖子
+                </el-dropdown-item>
+                <el-dropdown-item @click="goPersonalApply">
+                  <el-icon>
+                    <Bell />
+                  </el-icon>
+                  我的申请
+                </el-dropdown-item>
+
+                <div v-if="userType === 'PLATFORM_ADMIN'">
+                  <el-dropdown-item divided @click="goAdminHomePage">
+                    <el-icon>
+                      <Setting />
+                    </el-icon>
+                    管理端
+                  </el-dropdown-item>
+                </div>
+                <el-dropdown-item divided @click="logout">
+                  <el-icon>
+                    <SwitchButton />
+                  </el-icon>
+                  退 出
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </div>
     </div>
     <div class="flex-1 bg-blue-50">
       <router-view />
@@ -152,23 +177,13 @@ const logout = async () => {
 
 <style scoped>
 .el-menu {
-  border: none !important;
-  flex: 1;
-  min-width: 0;
-  overflow-y: hidden;
-  overflow-x: auto;
-  white-space: nowrap;
+  height: 100%;
+  border: none;
 }
 
-.el-menu > div {
-  display: inline-block;
-  vertical-align: text-top;
-  display: flex;
-  align-items: center;
-}
-
-.el-menu-item {
-  font-size: 16px;
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title) {
+  font-size: 18px;
 }
 
 :deep(.el-tooltip__trigger:focus-visible) {

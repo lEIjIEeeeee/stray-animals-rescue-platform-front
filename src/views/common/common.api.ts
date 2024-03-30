@@ -8,3 +8,5 @@ export const uploadFileApi = (data) =>
       'Content-Type': 'multipart/form-data'
     }
   })
+
+export const getSysTokenLoginApi = () => http.get('/authModule/login/sysTokenLogin')

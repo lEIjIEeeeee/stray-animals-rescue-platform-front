@@ -4,10 +4,11 @@ import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
 import { computed, onMounted, ref, reactive, unref } from 'vue'
 import { animalEditInfoApi, getAnimalDetailApi } from '../animal.api'
 import useMainLoading from '@/hooks/useMainLoading'
-import { AnimalDetail, AnimalEditInfo } from '../types'
+import { AdoptRecord, AnimalDetail, AnimalEditInfo } from '../types'
 import { getCategoryTreeApi } from '../../category_manage/category.api'
 import { getAnimalOwnerListApi } from '@/views/common/common.api'
 import { get } from 'lodash'
+import UploadImg from '@/components/Upload/UploadImg.vue'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
@@ -102,11 +103,16 @@ const getOwnerUserList = async () => {
 
 let id: any = ''
 const animalDetail = reactive(new AnimalDetail())
+const animalPicUrl = ref('')
+const adoptRecordList = ref<InstanceType<typeof Array<AdoptRecord>>>([])
 const getDetail = async () => {
   try {
     openMainLoading()
     const data = await getAnimalDetailApi(id)
     Object.assign(animalDetail, data.data)
+    animalPicUrl.value = data.data.picUrl
+    adoptRecordList.value = data.data.adoptRecordList
+    console.log(adoptRecordList)
     closeMainLoading()
   } catch (e) {
     closeMainLoading()
@@ -140,6 +146,9 @@ const saveBaseInfo = async () => {
     animalEditInfo.gender = animalDetail.gender
     animalEditInfo.weight = animalDetail.weight
     animalEditInfo.desc = animalDetail.desc
+    if (animalPicUrl.value !== '') {
+      animalEditInfo['picUrl'] = animalPicUrl.value
+    }
     const data = await animalEditInfoApi(animalEditInfo)
     if (get(data, 'code') === 0) {
       ElMessage.success('保存成功')
@@ -168,7 +177,7 @@ const categoryChange = (val) => {
   }
 }
 
-const adoptReacordList = ref([])
+const showViewer = ref(false)
 </script>
 
 <template>
@@ -423,11 +432,30 @@ const adoptReacordList = ref([])
           </el-row>
         </div>
         <div class="mb-[20px]">
+          <span class="font-semibold">图片信息</span>
+        </div>
+        <div class="mb-[20px]" v-loading="loading">
+          <div class="h-[140px] pl-[14px] bg-white flex items-center rounded-[4px]">
+            <UploadImg
+              v-if="props.type === 'edit'"
+              v-model="animalPicUrl"
+              :upload-biz-type="'ANIMAL'"
+            />
+            <div
+              class="w-[120px] h-[120px] cursor-pointer hover:opacity-50"
+              v-else-if="props.type === 'detail'"
+              @click="showViewer = true"
+            >
+              <el-image class="w-full h-full object-fill" :src="animalPicUrl" />
+            </div>
+          </div>
+        </div>
+        <div class="mb-[20px]">
           <span class="font-semibold">领养记录</span>
         </div>
         <div class="mb-[20px]">
           <el-table
-            :data="adoptReacordList"
+            :data="adoptRecordList"
             stripe
             :header-cell-style="{
               height: '50px',
@@ -435,10 +463,91 @@ const adoptReacordList = ref([])
               color: '#666666'
             }"
           >
-            <el-table-column label="序号" type="index" width="100"></el-table-column>
-            <el-table-column label="领养人" width="180"></el-table-column>
-            <el-table-column label="领养开始时间" min-width="180"></el-table-column>
-            <el-table-column label="领养结束时间" min-width="180"></el-table-column>
+            <el-table-column
+              type="index"
+              label="序号"
+              width="55"
+              align="center"
+              fixed="left"
+            ></el-table-column>
+            <el-table-column
+              prop="adoptUserName"
+              label="领养人"
+              min-width="120"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="adoptUserAccount"
+              label="登录账号"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="contactPhone"
+              label="联系电话"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="remark"
+              label="领养备注"
+              min-width="180"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditorName"
+              label="审核人"
+              min-width="120"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditorPhone"
+              label="联系电话"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditRemark"
+              label="审核备注"
+              min-width="180"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditTime"
+              label="审核时间"
+              min-width="180"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="startDate"
+              label="领养开始日期"
+              min-width="120"
+              align="center"
+              fixed="right"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="endDate"
+              label="领养结束日期"
+              min-width="120"
+              align="center"
+              fixed="right"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="申请时间"
+              width="180"
+              align="center"
+              fixed="right"
+              show-overflow-tooltip
+            ></el-table-column>
           </el-table>
         </div>
         <div class="mb-[20px]">
@@ -468,12 +577,18 @@ const adoptReacordList = ref([])
         v-if="disabled"
       >
         <div class="h-[50px] flex justify-start items-center">
-          <el-button type="primary" @click="saveBaseInfo"> 保存</el-button>
-          <el-button @click="goBack">返回</el-button>
+          <el-button type="primary" @click="saveBaseInfo">保存</el-button>
+          <el-button @click="goBack">返回列表</el-button>
         </div>
       </div>
     </div>
   </div>
+  <el-image-viewer
+    v-if="showViewer"
+    :initial-index="0"
+    :url-list="[animalPicUrl]"
+    @close="showViewer = false"
+  />
 </template>
 
 <style scoped>

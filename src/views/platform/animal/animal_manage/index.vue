@@ -524,7 +524,7 @@ const addAnimal = () => {
         </el-config-provider>
       </div>
     </div>
-    <AnimalAdd ref="animalAddRef" @add="handleClearSearchParams" />
+    <AnimalAdd ref="animalAddRef" @add="router.go(0)" />
   </div>
 </template>
 

@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, unref } from 'vue'
 import { getAnimalListApi } from '@/views/user/animal/animal.api'
-import { SearchParams } from '@/views/user/animal/types'
+import { AnimalCard, SearchParams } from '@/views/user/animal/types'
+import router from '@/router'
+import AnimalAdopt from '@/views/user/animal/components/AnimalAdopt.vue'
+import AnimalContribution from '../../animal/components/AnimalContribution.vue'
 
-const carouselImgList = [
-  'src/assets/login/bg_login.png',
-  'src/assets/login/bg_login.png',
-  'src/assets/login/bg_login.png',
-  'src/assets/login/bg_login.png',
-  'src/assets/login/bg_login.png',
-  'src/assets/login/bg_login.png'
-]
-
-const adoptAnimalList = ref([])
+const adoptAnimalList = ref<Array<AnimalCard>>([])
 const getAdoptAnimalList = async () => {
-  const queryData = new SearchParams()
-  queryData.isLost = 0
-  const data = await getAnimalListApi(queryData)
-  adoptAnimalList.value = data.data.dataList
+  try {
+    const queryData = new SearchParams()
+    queryData.pageSize = 5
+    queryData.isLost = 0
+    const data = await getAnimalListApi(queryData)
+    adoptAnimalList.value = data.data.dataList
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 const adoptItemIndex = ref(-1)
@@ -29,12 +28,17 @@ const adoptHandleMouseLeave = () => {
   adoptItemIndex.value = -1
 }
 
-const lostAnimalList = ref([])
+const lostAnimalList = ref<Array<AnimalCard>>([])
 const getLostAnimalList = async () => {
-  const queryData = new SearchParams()
-  queryData.isLost = 1
-  const data = await getAnimalListApi(queryData)
-  lostAnimalList.value = data.data.dataList
+  try {
+    const queryData = new SearchParams()
+    queryData.pageSize = 5
+    queryData.isLost = 1
+    const data = await getAnimalListApi(queryData)
+    lostAnimalList.value = data.data.dataList
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 const lostItemIndex = ref(-1)
@@ -54,16 +58,40 @@ const init = () => {
 onMounted(() => {
   init()
 })
+
+const getAnimalDetail = (animalId: string) => {
+  const target = router.resolve({
+    path: 'animal/detail',
+    query: {
+      id: animalId
+    }
+  })
+  window.open(target.href, '_blank')
+}
+
+const animalAdoptRef = ref<InstanceType<typeof AnimalAdopt>>()
+const handleAdoptApply = (animalId: string) => {
+  animalAdoptRef.value?.open(animalId)
+}
+
+const animalContributionRef = ref<InstanceType<typeof AnimalContribution>>()
+const handleContributionApply = (animalId: string) => {
+  animalContributionRef.value?.open(animalId)
+}
 </script>
 
 <template>
-  <div class="w-full min-w-[1300px] flex justify-center">
-    <div class="w-[1300px] py-[20px] flex flex-col">
+  <div class="w-full min-w-[1200px] flex justify-center">
+    <div class="w-[1200px] py-[20px] flex flex-col">
       <div class="flex flex-row mb-[20px]">
-        <div class="w-[600px] mr-[20px]">
-          <el-carousel trigger="click" height="320px">
-            <el-carousel-item v-for="item in carouselImgList" :key="item">
-              <img :src="item" />
+        <div class="w-[700px] mr-[20px]">
+          <el-carousel trigger="click" height="420px">
+            <el-carousel-item v-for="item in adoptAnimalList" :key="item.id">
+              <el-image
+                class="w-full h-full"
+                :src="item.picUrl == '' || item.picUrl == null ? '' : item.picUrl"
+                fit="cover"
+              ></el-image>
             </el-carousel-item>
           </el-carousel>
         </div>
@@ -92,39 +120,53 @@ onMounted(() => {
               :key="item.id"
               @mouseenter="adoptHandleMouseEnter(index)"
               @mouseleave="adoptHandleMouseLeave"
+              @click="getAnimalDetail(item.id)"
             >
               <el-image
                 class="w-full h-[212px] mb-[10px] rounded-[10px]"
-                :src="item.picUrl"
+                :src="item.picUrl === null || item.picUrl === undefined ? '' : item.picUrl"
+                :title="item.name"
                 fit="cover"
               ></el-image>
-              <div v-if="adoptItemIndex !== index" class="w-full h-[25px] flex text-[14px]">
+              <div class="mb-[10px] flex justify-between">
                 <div>
                   <el-tag class="mr-[5px]">{{ item.categoryName }}</el-tag>
-                  <el-tag>
-                    {{ item.gender === 'M' ? '雄性' : item.gender === 'F' ? '雌性' : '未知' }}
+                </div>
+                <div>
+                  <el-tag type="success">
+                    <span>{{ item.isAdopt === 1 ? '已领养' : '待领养' }}</span>
+                  </el-tag>
+                  <el-tag class="ml-[5px]" type="warning" v-if="item.isLost === 1">
+                    <span>已遗失</span>
                   </el-tag>
                 </div>
-                <div class="flex-1 flex justify-end">
-                  <span>{{ item.name }}</span>
-                </div>
               </div>
-              <div v-else class="h-[25px] flex justify-between items-center text-[12px]">
+              <div
+                class="h-[30px] flex justify-start items-center text-[16px]"
+                v-if="adoptItemIndex !== index"
+              >
+                <span class="overflow-hidden text-ellipsis whitespace-nowrap">{{ item.name }}</span>
+              </div>
+              <div class="h-[30px] flex justify-between items-center text-[12px]" v-else>
                 <div
-                  class="w-[80px] h-full rounded-[10px] border border-[#979797] hover:border-[#409eff]"
+                  class="w-[100px] h-[26px] rounded-[16px] border border-[#979797] hover:border-[#409eff]"
+                  @click.stop="handleAdoptApply(item.id)"
                 >
                   <span
                     class="h-full flex justify-center items-center text-[#979797] hover:text-[#409eff]"
-                    >我要领养</span
                   >
+                    我要领养
+                  </span>
                 </div>
                 <div
-                  class="w-[80px] h-full rounded-[10px] border border-[#979797] hover:border-[#409eff]"
+                  class="w-[100px] h-[26px] rounded-[16px] border border-[#979797] hover:border-[#409eff]"
+                  @click.stop="handleContributionApply(item.id)"
                 >
                   <span
                     class="h-full flex justify-center items-center text-[#979797] hover:text-[#409eff]"
-                    >我要捐助</span
                   >
+                    我要捐助
+                  </span>
                 </div>
               </div>
             </li>
@@ -149,31 +191,51 @@ onMounted(() => {
               :key="item.id"
               @mouseenter="lostHandleMouseEnter(index)"
               @mouseleave="lostHandleMouseLeave"
+              @click="getAnimalDetail(item.id)"
             >
               <el-image
                 class="w-full h-[212px] mb-[10px] rounded-[10px]"
-                :src="item.picUrl"
+                :src="item.picUrl === null || item.picUrl === undefined ? '' : item.picUrl"
+                :title="item.name"
                 fit="cover"
               ></el-image>
-              <div v-if="lostItemIndex !== index" class="w-full h-[25px] flex text-[14px]">
+              <div class="mb-[10px] flex justify-between">
                 <div>
                   <el-tag class="mr-[5px]">{{ item.categoryName }}</el-tag>
-                  <el-tag>
-                    {{ item.gender === 'M' ? '雄性' : item.gender === 'F' ? '雌性' : '未知' }}
+                </div>
+                <div>
+                  <el-tag type="success">
+                    <span>{{ item.isAdopt === 1 ? '已领养' : '待领养' }}</span>
+                  </el-tag>
+                  <el-tag class="ml-[5px]" type="warning" v-if="item.isLost === 1">
+                    <span>已遗失</span>
                   </el-tag>
                 </div>
-                <div class="flex-1 flex justify-end">
-                  <span>{{ item.name }}</span>
-                </div>
               </div>
-              <div v-else class="h-[25px] flex justify-start items-center text-[12px]">
+              <div
+                class="h-[30px] flex justify-start items-center text-[16px]"
+                v-if="lostItemIndex !== index"
+              >
+                <span class="overflow-hidden text-ellipsis whitespace-nowrap">{{ item.name }}</span>
+              </div>
+              <div class="h-[30px] flex justify-between items-center text-[12px]" v-else>
                 <div
-                  class="w-[80px] h-full rounded-[10px] border border-[#979797] hover:border-[#409eff]"
+                  class="w-[100px] h-[26px] rounded-[16px] border border-[#979797] hover:border-[#409eff]"
                 >
                   <span
                     class="h-full flex justify-center items-center text-[#979797] hover:text-[#409eff]"
-                    >联系本人</span
                   >
+                    我有线索
+                  </span>
+                </div>
+                <div
+                  class="w-[100px] h-[26px] rounded-[16px] border border-[#979797] hover:border-[#409eff]"
+                >
+                  <span
+                    class="h-full flex justify-center items-center text-[#979797] hover:text-[#409eff]"
+                  >
+                    联系本人
+                  </span>
                 </div>
               </div>
             </li>
@@ -182,6 +244,8 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <AnimalAdopt @submit="router.go(0)" ref="animalAdoptRef" />
+  <AnimalContribution @submit="router.go(0)" ref="animalContributionRef" />
 </template>
 
 <style scoped>

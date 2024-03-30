@@ -1,5 +1,6 @@
 import { getToken, getUserType } from '@/utils/auth'
 import { ElMessage } from 'element-plus'
+import path from 'path'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -12,6 +13,7 @@ const router = createRouter({
         {
           path: '',
           component: () => import('@/views/user/home/index.vue'),
+          redirect: '/home',
           children: [
             {
               path: 'home',
@@ -26,6 +28,13 @@ const router = createRouter({
                 module: 'animal'
               },
               component: () => import('@/views/user/animal/index.vue')
+            },
+            {
+              path: 'animal/detail',
+              meta: {
+                module: 'animal'
+              },
+              component: () => import('@/views/user/animal/components/AnimalDetail.vue')
             },
             {
               path: 'post',
@@ -131,6 +140,38 @@ const router = createRouter({
                     module: 'categoryManage'
                   },
                   component: () => import('@/views/platform/animal/category_manage/index.vue')
+                },
+                {
+                  path: 'adoptManage',
+                  meta: {
+                    module: 'adoptManage'
+                  },
+                  component: () => import('@/views/platform/animal/adopt_manage/index.vue')
+                },
+                {
+                  path: 'adoptManage/detail',
+                  meta: {
+                    module: 'adoptManage'
+                  },
+                  component: () =>
+                    import('@/views/platform/animal/adopt_manage/components/AdoptDetail.vue')
+                },
+                {
+                  path: 'contributionManage',
+                  meta: {
+                    module: 'contributionManage'
+                  },
+                  component: () => import('@/views/platform/animal/contribution_manage/index.vue')
+                },
+                {
+                  path: 'contributionManage/detail',
+                  meta: {
+                    module: 'contributionManage'
+                  },
+                  component: () =>
+                    import(
+                      '@/views/platform/animal/contribution_manage/components/ContributionDetail.vue'
+                    )
                 }
               ]
             },

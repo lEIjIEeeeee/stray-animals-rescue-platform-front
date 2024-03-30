@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SideNavBar from '@/components/SideNavBar/index.vue'
+import MenuNavBar from '@/components/MenuNavBar/index.vue'
 
 const props = defineProps<{
   menu
@@ -9,7 +9,7 @@ const props = defineProps<{
 <template>
   <template v-for="item in props.menu" :key="item.code">
     <el-menu-item v-if="item.children.length === 0" :index="item.module">
-      <el-icon>
+      <el-icon v-if="item.icon">
         <component :is="item.icon" />
       </el-icon>
       <template #title>
@@ -18,12 +18,12 @@ const props = defineProps<{
     </el-menu-item>
     <el-sub-menu v-if="item.children.length > 0" :index="item.module">
       <template #title>
-        <el-icon>
+        <el-icon v-if="item.icon">
           <component :is="item.icon" />
         </el-icon>
         <span>{{ item.name }}</span>
       </template>
-      <SideNavBar :menu="item.children" />
+      <MenuNavBar :menu="item.children" />
     </el-sub-menu>
   </template>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import router from '@/router'
-import SideNavBar from '@/components/SideNavBar/index.vue'
+import MenuNavBar from '@/components/MenuNavBar/index.vue'
 import { removeToken, removeUserType } from '@/utils/auth'
 import { ElMessageBox } from 'element-plus'
 
@@ -30,6 +30,13 @@ const menuList = [
     icon: 'Menu',
     children: [
       {
+        code: '/platform/animal/categoryManage',
+        name: '动物类目管理',
+        module: 'categoryManage',
+        icon: 'Files',
+        children: []
+      },
+      {
         code: '/platform/animal/animalManage',
         name: '宠物信息管理',
         module: 'animalManage',
@@ -37,10 +44,17 @@ const menuList = [
         children: []
       },
       {
-        code: '/platform/animal/categoryManage',
-        name: '动物类目管理',
-        module: 'categoryManage',
-        icon: 'Files',
+        code: '/platform/animal/adoptManage',
+        name: '宠物领养管理',
+        module: 'adoptManage',
+        icon: 'Position',
+        children: []
+      },
+      {
+        code: '/platform/animal/contributionManage',
+        name: '宠物捐助管理',
+        module: 'contributionManage',
+        icon: 'Present',
         children: []
       }
     ]
@@ -91,7 +105,14 @@ const handleCollapse = async () => {
 }
 
 const handleSelect = (key, keyPath) => {
-  const toPath = '/platform/' + keyPath[0] + '/' + key
+  let toPath = '/platform'
+  if (keyPath.length === 1) {
+    toPath += '/' + key
+  } else {
+    keyPath.forEach(function (item) {
+      toPath += '/' + item
+    })
+  }
   router.push(toPath)
 }
 
@@ -177,8 +198,8 @@ const logout = async () => {
       </div>
     </div>
 
-    <div class="w-full h-full flex flex-1 min-h-0 bg-blue-50">
-      <div class="h-full">
+    <div class="w-full flex flex-1 min-h-0">
+      <div class="side-nav-bar__scrollbar h-full overflow-y-scroll border-r-[1px]">
         <el-menu
           router
           class="el-menu-vertical-demo h-full"
@@ -187,8 +208,9 @@ const logout = async () => {
           :unique-opened="true"
           :collapse="isCollapse"
           @select="handleSelect"
+          style="border: none"
         >
-          <SideNavBar :menu="menuList" />
+          <MenuNavBar :menu="menuList" />
         </el-menu>
       </div>
 
@@ -214,5 +236,9 @@ const logout = async () => {
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
+}
+
+.side-nav-bar__scrollbar::-webkit-scrollbar {
+  display: none;
 }
 </style>

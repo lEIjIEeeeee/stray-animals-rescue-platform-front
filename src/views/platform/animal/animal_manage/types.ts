@@ -55,6 +55,21 @@ export class AnimalDetail {
   isLost
   desc
 }
+
+export class AdoptRecord {
+  id = ''
+  adoptUserName = ''
+  adoptUserAccount = ''
+  contactPhone = ''
+  startDate = ''
+  endDate = ''
+  auditorName = ''
+  auditorPhone = ''
+  auditRemark = ''
+  auditTime = ''
+  createTime = ''
+}
+
 export class AnimalAddInfo {
   name
   categoryId
@@ -64,7 +79,7 @@ export class AnimalAddInfo {
   weight
   isAdopt = 0
   isLost = 0
-  imgUrl = ''
+  picUrl = ''
   desc
 }
 

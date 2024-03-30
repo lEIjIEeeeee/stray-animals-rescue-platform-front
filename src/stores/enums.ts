@@ -39,6 +39,24 @@ export const postStatusDict = [
   }
 ]
 
+export const auditStatusDict = [
+  {
+    label: '待审核',
+    code: 'AUDIT_WAIT',
+    value: 1
+  },
+  {
+    label: '审核通过',
+    code: 'AUDIT_PASS',
+    value: 2
+  },
+  {
+    label: '审核拒绝',
+    code: 'AUDIT_REJECT',
+    value: 3
+  }
+]
+
 export const enableDict = [
   {
     label: '启用',
@@ -114,6 +132,29 @@ export const userStatusDict = [
   //   code: 'DELETE',
   //   value: 99
   // }
+]
+
+export const contributionTypeDict = [
+  {
+    code: 'FOOD',
+    label: '食物',
+    value: 1
+  },
+  {
+    code: 'CLOTHES',
+    label: '衣服',
+    value: 2
+  },
+  {
+    code: 'TOY',
+    label: '玩具',
+    value: 3
+  },
+  {
+    code: 'OTHERS',
+    label: '其他',
+    value: 99
+  }
 ]
 
 export const getEnumNameByCode = (enumType, code: string) => {
