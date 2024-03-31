@@ -4,7 +4,7 @@ import usePopup from '@/hooks/usePopup'
 import { computed, reactive, ref, unref } from 'vue'
 import { getAuditDetailApi, auditApi } from '../contribution.api'
 import { AuditDetailInfo, AuditInfo } from '../types'
-import { contributionTypeDict, getEnumNameByValue } from '@/stores/enums'
+import { auditStatusDict, contributionTypeDict, getEnumNameByValue } from '@/stores/enums'
 import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
 import { get } from 'lodash'
 
@@ -16,6 +16,7 @@ const { show, openPopup, closePopup } = usePopup()
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
 const loading = computed(() => unref(mainLoading))
+const auditResult = computed(() => auditDetailInfo.status !== 1 && auditDetailInfo.status !== 2)
 const showViewer = ref(false)
 
 const props = defineProps<{
@@ -224,14 +225,8 @@ const handleAudit = async () => {
             <span>审核结果：</span>
           </div>
           <div class="flex-1 min-w-0">
-            <span :class="[{ 'text-[#ff0000]': auditDetailInfo.status === 3 }]">
-              {{
-                auditDetailInfo.status === 2
-                  ? '审核通过'
-                  : auditDetailInfo.status === 3
-                    ? '审核拒绝'
-                    : ''
-              }}
+            <span :class="[{ 'text-[#ff0000]': auditResult }]">
+              {{ getEnumNameByValue(auditStatusDict, auditDetailInfo.status) }}
             </span>
           </div>
         </div>

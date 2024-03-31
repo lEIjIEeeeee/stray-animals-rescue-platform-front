@@ -4,7 +4,7 @@ import { SearchParams, PostListRequest, PlatformPostList } from './types'
 import { getPlatformPostListApi, postDeleteApi } from './post.api'
 import PostAudit from './components/PostAudit.vue'
 import PostClose from './components/PostClose.vue'
-import { bizTypeDict, postStatusDict } from '@/stores/enums'
+import { bizTypeDict, getEnumNameByValue, postStatusDict } from '@/stores/enums'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import useMainLoading from '@/hooks/useMainLoading'
 import router from '@/router'
@@ -21,10 +21,6 @@ const searchTypeList = [
   {
     code: 'CREATE_USER',
     name: '作者'
-  },
-  {
-    code: 'ANIMAL_NAME',
-    name: '宠物名称'
   }
 ]
 
@@ -292,25 +288,7 @@ const tabClick = async (val) => {
             </template>
           </el-input>
         </div>
-        <div class="ml-[50px] flex items-center">
-          <span class="text-[14px] min-w-[70px]">业务类型：</span>
-          <el-select
-            v-model="searchParams.bizType"
-            clearable
-            :disabled="loading"
-            placeholder="请选择"
-            style="width: 150px"
-          >
-            <el-option
-              v-for="item in bizTypeDict"
-              :key="item.code"
-              :label="item.label"
-              :value="item.code"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="ml-[50px] flex items-center">
+        <div class="ml-[30px] flex items-center">
           <span class="text-[14px] min-w-[70px]">动物类目：</span>
           <el-cascader
             :options="categoryTree"
@@ -330,8 +308,44 @@ const tabClick = async (val) => {
           >
           </el-cascader>
         </div>
+        <div class="ml-[30px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">业务类型：</span>
+          <el-select
+            v-model="searchParams.bizType"
+            clearable
+            :disabled="loading"
+            placeholder="请选择"
+            style="width: 150px"
+          >
+            <el-option
+              v-for="item in bizTypeDict"
+              :key="item.code"
+              :label="item.label"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="ml-[30px] flex items-center">
+          <span class="text-[14px] min-w-[70px]">审核状态：</span>
+          <el-select
+            v-model="searchParams.status"
+            clearable
+            :disabled="loading"
+            placeholder="请选择"
+            style="width: 150px"
+          >
+            <el-option
+              v-for="item in postStatusDict"
+              :key="item.code"
+              :label="item.label"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
+        </div>
       </div>
-      <div class="mb-[20px] flex">
+      <div class="mb-[10px] flex">
         <div class="flex items-center">
           <span class="text-[14px] min-w-[70px]">审核日期：</span>
           <el-date-picker
@@ -377,13 +391,15 @@ const tabClick = async (val) => {
         <el-button :disabled="loading" @click="handleClearSearchParams">重置</el-button>
       </div>
 
-      <el-tabs v-model="searchParams.status" @tab-click="tabClick">
-        <el-tab-pane label="全部" name="" />
-        <el-tab-pane label="待审核" name="AUDIT_WAIT" />
-        <el-tab-pane label="审核通过" name="AUDIT_PASS" />
-        <el-tab-pane label="审核拒绝" name="AUDIT_REJECT" />
-        <el-tab-pane label="已关闭" name="CLOSED" />
-      </el-tabs>
+      <div class="mb-[10px]">
+        <el-tabs v-model="searchParams.status" @tab-click="tabClick">
+          <el-tab-pane label="全部" name="" />
+          <el-tab-pane label="待审核" name="AUDIT_WAIT" />
+          <el-tab-pane label="审核通过" name="AUDIT_PASS" />
+          <el-tab-pane label="审核拒绝" name="AUDIT_REJECT" />
+          <el-tab-pane label="已关闭" name="CLOSED" />
+        </el-tabs>
+      </div>
     </div>
 
     <div class="flex-1">
@@ -414,8 +430,6 @@ const tabClick = async (val) => {
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column prop="animalName" label="宠物名称" width="120" show-overflow-tooltip>
-          </el-table-column>
           <el-table-column
             prop="categoryName"
             label="动物类目"
@@ -425,14 +439,28 @@ const tabClick = async (val) => {
           ></el-table-column>
           <el-table-column prop="bizType" label="业务类型" width="120" align="center">
             <template #default="scope">
-              {{ bizTypeDict[scope.row.bizType - 1].label }}
+              {{ getEnumNameByValue(bizTypeDict, scope.row.bizType) }}
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" width="120" align="center">
+          <el-table-column prop="status" label="审核状态" width="120" align="center">
             <template #default="scope">
-              {{ postStatusDict[scope.row.status - 1].label }}
+              {{ getEnumNameByValue(postStatusDict, scope.row.status) }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="auditorName"
+            label="审核人"
+            min-width="120"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="auditTime"
+            label="审核时间"
+            min-width="180"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column
             prop="auditRemark"
             label="审核备注"
@@ -440,12 +468,6 @@ const tabClick = async (val) => {
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column
-            prop="postAbstract"
-            label="帖子摘要"
-            width="200"
-            show-overflow-tooltip
-          ></el-table-column>
           <el-table-column
             prop="createTime"
             label="发帖时间"

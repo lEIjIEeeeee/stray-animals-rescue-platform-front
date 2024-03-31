@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, unref } from 'vue'
 import { AddPostForm } from '../types'
 import { FormRules, ElForm, ElMessage, ElMessageBox, ElCascader } from 'element-plus'
 import router from '@/router/index'
@@ -7,20 +7,14 @@ import { submitPostApi } from '../post.api'
 import WangEditor from '@/components/WangEditor/index.vue'
 import { getCategoryTreeApi } from '@/views/platform/animal/category_manage/category.api'
 import { getAnimalListByCategoryIdApi } from '../../animal/animal.api'
+import UploadImg from '@/components/Upload/UploadImg.vue'
+import useMainLoading from '@/hooks/useMainLoading'
+import { get } from 'lodash'
 
-const show = ref(false)
-const loading = computed(() => show.value)
-
-const openElFromLoading = () => {
-  show.value = true
-}
-
-const closeElFromLoading = () => {
-  show.value = false
-}
+const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
+const loading = computed(() => unref(mainLoading))
 
 const formData = reactive(new AddPostForm())
-
 const formRef = ref<InstanceType<typeof ElForm>>()
 const formRules: FormRules = {
   title: [
@@ -30,23 +24,22 @@ const formRules: FormRules = {
       trigger: 'blur'
     }
   ],
+  bizType: [
+    {
+      required: true,
+      message: '请选择帖子类型'
+    }
+  ],
   categoryId: [
     {
       required: true,
-      message: '请选择动物类目',
-      trigger: 'blur'
+      message: '请选择动物类目'
     }
   ],
-  animalName: [
+  picUrl: [
     {
       required: true,
-      message: '请输入宠物名称',
-      trigger: 'blur'
-    }
-  ],
-  bizType: [
-    {
-      required: true
+      message: '请上传帖子图片'
     }
   ],
   postAbstract: [
@@ -59,27 +52,26 @@ const formRules: FormRules = {
   content: [
     {
       required: true,
-      message: '请输入内容',
-      trigger: 'blur'
+      message: '请输入正文内容'
     }
   ]
 }
 
-const submitPost = async (data) => {
+const submitPost = async () => {
   try {
     await formRef.value?.validate()
-    if (animalInfoTemp.animalId === '') {
-      await ElMessageBox.confirm('检测到新宠物信息，帖子审核通过后系统将会自动录入该信息。')
-    } else {
-      formData.animalId = animalInfoTemp.animalId
+    await ElMessageBox.confirm('是否确认发帖？请保证帖子内容的正确性，平台会对帖子内容进行审核。', {
+      type: 'warning'
+    })
+    openMainLoading()
+    const data = await submitPostApi(formData)
+    if (get(data, 'code') === 0) {
+      ElMessage.success('发帖成功')
     }
-    openElFromLoading()
-    await submitPostApi(data)
-    closeElFromLoading()
-    ElMessage.success('发帖成功')
+    closeMainLoading()
     router.go(-1)
   } catch (e) {
-    closeElFromLoading()
+    closeMainLoading()
   }
 }
 
@@ -128,7 +120,6 @@ const handleBlur = async (val: boolean) => {
 }
 
 const handleCascaderChange = async () => {
-  formData.animalName = null
   if (!formData.categoryId) {
     const animalAllList = await getAnimalListByCategoryIdApi()
     animalList.value = animalAllList.data
@@ -137,143 +128,78 @@ const handleCascaderChange = async () => {
     animalList.value = animalListById.data
   }
 }
-
-const handleFetchSuggestions = (resolve, cb) => {
-  var result = resolve ? animalList.value.filter(createFilter(resolve)) : animalList.value
-  cb(result)
-}
-
-const createFilter = (resolve) => {
-  const queryStr = resolve === '' || resolve === 'null' ? '' : resolve
-  return (animal) => {
-    return animal.name.indexOf(queryStr) !== -1 || animal.animalNo.indexOf(queryStr) !== -1
-  }
-}
-
-const animalInfoTemp = reactive({
-  animalId: '',
-  animalNo: '',
-  animalName: ''
-})
-
-const handleSelect = async (item) => {
-  animalInfoTemp.animalId = item.id
-  animalInfoTemp.animalNo = item.animalNo
-  animalInfoTemp.animalName = item.name
-  formData.categoryId = item.categoryId
-  const animalListByName = await getAnimalListByCategoryIdApi({ categoryId: item.categoryId })
-  animalList.value = animalListByName.data
-}
-
-const handleChange = (val: string) => {
-  if (val !== animalInfoTemp.animalName) {
-    animalInfoTemp.animalId = ''
-    animalInfoTemp.animalNo = ''
-    animalInfoTemp.animalName = val
-  }
-}
 </script>
 
 <template>
-  <div class="w-full">
-    <div class="w-full bg-white flex justify-center">
-      <el-form
-        class="w-[80%] mt-[20px] mb-[50px]"
-        label-width="100px"
-        ref="formRef"
-        :rules="formRules"
-        :model="formData"
-        v-loading="loading"
-        @submit.prevent
-      >
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="标题：" prop="title">
-              <el-input
-                type="text"
-                v-model="formData.title"
-                maxlength="100"
-                show-word-limit="true"
-                placeholder="请输入标题"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="动物类目：" prop="categoryId">
-              <el-cascader
-                class="w-[100%]"
-                v-model="formData.categoryId"
-                :options="categoryTreeData"
-                :props="categoryCascaderProps"
-                clearable
-                :disabled="loading"
-                placeholder="请选择父级类目"
-                @visible-change="handleBlur"
-                @change="handleCascaderChange"
-                ref="categoryTreeRef"
-              ></el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="宠物名称：" prop="animalName">
-              <el-autocomplete
-                value-key="name"
-                v-model="formData.animalName"
-                :fetch-suggestions="handleFetchSuggestions"
-                @select="handleSelect"
-                @change="handleChange"
-                clearable
-                highlight-first-item
-                placeholder="请输入/选择宠物名称"
-              >
-                <template #default="{ item }">
-                  <div>{{ item.name + '(' + item.animalNo + ')' }}</div>
-                </template>
-              </el-autocomplete>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="发帖类型：" prop="bizType">
-              <el-radio-group v-model="formData.bizType">
-                <el-radio :label="'ADOPT_BIZ'">领养</el-radio>
-                <el-radio :label="'LOST_BIZ'">遗失</el-radio>
-                <el-radio :label="'OTHER'">其他</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="摘要" prop="postAbstract">
-              <el-input
-                type="textarea"
-                :rows="3"
-                v-model="formData.postAbstract"
-                placeholder="请输入摘要"
-                maxlength="300"
-                show-word-limit="true"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="内容：" prop="content">
-              <div>
-                <WangEditor v-model="formData.content" />
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item>
-          <el-button type="primary" @click="submitPost(formData)">确认发帖</el-button>
-          <el-button @click="submitCancel">取消</el-button>
-        </el-form-item>
-      </el-form>
+  <div class="w-full min-w-[1200px] flex justify-center">
+    <div class="w-[1200px] my-[20px] pt-[20px] rounded-[4px] bg-white flex flex-col">
+      <div class="mx-[30px] text-[20px] font-bold">
+        <span>发布新帖</span>
+      </div>
+      <div class="mx-[50px] mt-[20px] flex justify-center">
+        <el-form
+          class=""
+          label-width="100px"
+          ref="formRef"
+          :rules="formRules"
+          :model="formData"
+          v-loading="loading"
+          @submit.prevent
+        >
+          <el-form-item label="标题：" prop="title">
+            <el-input
+              type="text"
+              v-model="formData.title"
+              maxlength="80"
+              show-word-limit="true"
+              placeholder="请输入标题"
+            />
+          </el-form-item>
+          <el-form-item label="帖子类型：" prop="bizType">
+            <el-radio-group v-model="formData.bizType">
+              <el-radio :label="'ADOPT_BIZ'">领养</el-radio>
+              <el-radio :label="'LOST_BIZ'">遗失</el-radio>
+              <el-radio :label="'OTHER'">其他</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="动物类目：" prop="categoryId">
+            <el-cascader
+              class="w-[50%]"
+              v-model="formData.categoryId"
+              :options="categoryTreeData"
+              :props="categoryCascaderProps"
+              clearable
+              :disabled="loading"
+              placeholder="请选择父级类目"
+              @visible-change="handleBlur"
+              @change="handleCascaderChange"
+              ref="categoryTreeRef"
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="帖子图片：" prop="picUrl">
+            <UploadImg v-model="formData.picUrl" :upload-biz-type="'POST'" />
+          </el-form-item>
+          <el-form-item label="摘要：" prop="postAbstract">
+            <el-input
+              type="textarea"
+              :rows="3"
+              v-model="formData.postAbstract"
+              placeholder="请输入帖子摘要"
+              maxlength="300"
+              show-word-limit="true"
+            />
+          </el-form-item>
+          <el-form-item label="正文内容：" prop="content">
+            <div>
+              <WangEditor v-model="formData.content" />
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitPost">确认发帖</el-button>
+            <el-button @click="submitCancel">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>

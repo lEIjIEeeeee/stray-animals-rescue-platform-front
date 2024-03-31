@@ -47,7 +47,9 @@ const closedFormRules: FormRules = {
 const handleSubmit = async (data) => {
   try {
     await closedFormRef.value?.validate()
-    await ElMessageBox.confirm('确定关闭该帖子并提交关闭原因吗？提交之后无法撤销此操作。')
+    await ElMessageBox.confirm('是否确定关闭帖子？关闭之后无法撤销关闭状态。', {
+      type: 'warning'
+    })
     openMainLoading()
     await postClosedApi(data)
     closeMainLoading()
@@ -85,7 +87,7 @@ const getPostCloseReson = async () => {
   >
     <div>
       <el-form :model="postCloseParamsFormData" label="100" v-loading="loading" @submit.prevent>
-        <el-form-item label="拒绝原因：" prop="closeReason">
+        <el-form-item label="关闭原因：" prop="closeReason">
           <el-input
             type="textarea"
             v-model="postCloseParamsFormData.closeReason"
@@ -104,7 +106,7 @@ const getPostCloseReson = async () => {
       label-width="100"
       v-loading="loading"
     >
-      <el-form-item label="拒绝原因：" prop="closeReason">
+      <el-form-item label="关闭原因：" prop="closeReason">
         <el-input
           type="textarea"
           v-model="closedInfoFormData.closeReason"

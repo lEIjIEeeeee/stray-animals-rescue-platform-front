@@ -19,7 +19,7 @@ const mode = ref('default')
 onMounted(() => {})
 
 const toolbarConfig = {}
-const editorConfig = { placeholder: '请输入内容...' }
+const editorConfig = { placeholder: '请输入正文内容...' }
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {

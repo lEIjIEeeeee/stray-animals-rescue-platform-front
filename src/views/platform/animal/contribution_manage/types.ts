@@ -46,3 +46,24 @@ export class AuditInfo {
   auditResult = 'PASS'
   auditRemark = ''
 }
+
+export class ContributionRecordDetail {
+  animalName = ''
+  animalNo = ''
+  categoryName = ''
+  ownerName = ''
+  ownerPhone = ''
+  picUrl = ''
+  applyUserName = ''
+  applyUserAccount = ''
+  contactPhone = ''
+  itemType = 0
+  itemName = ''
+  itemPic = ''
+  applyTime = ''
+  remark = ''
+  status = 0
+  auditUserName = ''
+  auditTime = ''
+  auditRemark = ''
+}

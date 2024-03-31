@@ -5,6 +5,13 @@ export const getPlatformContributionListApi = (params) =>
     params
   })
 
+export const getRecordDetailApi = (id) =>
+  http.get('/contributionModule/platform/contribution/getRecordDetail', {
+    params: {
+      id
+    }
+  })
+
 export const getAuditDetailApi = (id) =>
   http.get('/contributionModule/platform/contribution/getAuditDetail', {
     params: {

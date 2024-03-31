@@ -70,6 +70,22 @@ export class AdoptRecord {
   createTime = ''
 }
 
+export class ContributionRecord {
+  id = ''
+  applyUserName = ''
+  applyUserAccount = ''
+  contactPhone = ''
+  itemType = 0
+  itemName = ''
+  itemPic = ''
+  remark = ''
+  auditorName = ''
+  auditorPhone = ''
+  auditTime = ''
+  auditRemark = ''
+  createTime = ''
+}
+
 export class AnimalAddInfo {
   name
   categoryId

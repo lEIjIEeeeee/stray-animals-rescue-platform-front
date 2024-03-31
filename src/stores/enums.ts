@@ -12,7 +12,7 @@ export const bizTypeDict = [
   {
     label: '其他',
     code: 'OTHER',
-    value: 3
+    value: 99
   }
 ]
 

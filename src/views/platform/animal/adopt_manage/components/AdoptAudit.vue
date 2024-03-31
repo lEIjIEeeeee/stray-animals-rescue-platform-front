@@ -251,13 +251,13 @@ const handleAudit = async () => {
             <span>审核结果：</span>
           </div>
           <div class="flex-1 min-w-0">
-            <span :class="[{ 'text-[#ff0000]': auditDetailInfo.auditResult === 'REJECT' }]">
+            <span :class="[{ 'text-[#ff0000]': auditDetailInfo.auditResult !== 'PASS' }]">
               {{
                 auditDetailInfo.auditResult === 'PASS'
                   ? '审核通过'
                   : auditDetailInfo.auditResult === 'REJECT'
                     ? '审核拒绝'
-                    : ''
+                    : '状态异常'
               }}
             </span>
           </div>

@@ -1,35 +1,28 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, unref } from 'vue'
 import { getPostListApi } from './post.api'
 import { SearchParams, PostList } from './types'
 import router from '@/router/index'
+import useMainLoading from '@/hooks/useMainLoading'
+import { bizTypeDict, getEnumNameByValue } from '@/stores/enums'
+
+const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
+const loading = computed(() => unref(mainLoading))
+
+const refreshDivDisable = ref(false)
+const postDivDisable = ref(false)
 
 const searchParams = new SearchParams()
 const postList = reactive(new PostList())
-
 const getPostList = async () => {
   try {
-    openElPageFormLoading()
-    const result = await getPostListApi(searchParams)
-    postList.pageNo = result.data.pageNo
-    postList.pageSize = result.data.pageSize
-    postList.total = result.data.total
-    postList.dataList = result.data.dataList
-    closeElPageFormLoading()
+    openMainLoading()
+    const data = await getPostListApi(searchParams)
+    Object.assign(postList, data.data)
+    closeMainLoading()
   } catch (e) {
-    closeElPageFormLoading()
+    closeMainLoading()
   }
-}
-
-const disabled = ref(false)
-const loading = computed(() => disabled.value)
-
-const openElPageFormLoading = () => {
-  disabled.value = true
-}
-
-const closeElPageFormLoading = () => {
-  disabled.value = false
 }
 
 const handleCurrentPageChange = (val: number) => {
@@ -50,31 +43,12 @@ onMounted(() => {
   init()
 })
 
-const refreshDivDisable = ref(false)
-const postDivDisable = ref(false)
-
-const handlePostDivMouseEnter = () => {
-  postDivDisable.value = true
-}
-
-const handlePostDivMouseLeave = () => {
-  postDivDisable.value = false
-}
-
-const handleRefreshDivMouseEnter = () => {
-  refreshDivDisable.value = true
-}
-
-const handleRefreshDivMouseLeave = () => {
-  refreshDivDisable.value = false
-}
-
 const refreshPage = () => {
   location.reload()
 }
 
 const addPost = () => {
-  router.push('/post/addPost')
+  router.push('post/addPost')
 }
 
 const getDetail = (id) => {
@@ -90,37 +64,72 @@ const getDetail = (id) => {
 
 <template>
   <div class="w-full h-full flex flex-col items-center">
-    <div class="h-full w-[800px] bg-white">
-      <ul class="mx-[24px] my-[20px]" v-loading="loading">
-        <li
-          class="mb-[30px] border-b-[1px] pb-[16px]"
-          v-for="item in postList.dataList"
-          :key="item.id"
-        >
-          <a @click="getDetail(item.id)">
-            <div class="mb-[12px] hover:text-[#409eff] cursor-pointer">
-              <h4 class="font-medium text-[20px]">
-                {{ item.title }}
-              </h4>
-            </div>
-          </a>
-          <div class="post-abstract text-[16px] font-medium overflow-hidden text-ellipsis">
-            {{ item.postAbstract }}
-          </div>
-          <div class="flex items-center mt-[16px] text-[14px]">
-            <div class="mr-[20px] text-black text-opacity-25 flex items-center">
-              <span class="mr-[5px]">作者：</span>
+    <div class="w-[800px] h-full bg-white flex flex-col">
+      <div class="flex-1 min-h-0">
+        <ul class="px-[24px]" v-loading="loading">
+          <li
+            class="h-[175px] py-[24px] border-t-[1px]"
+            :class="[{ 'border-t-0': index === 0 }]"
+            v-for="(item, index) in postList.dataList"
+            :key="item.id"
+          >
+            <div class="h-full flex items-center">
               <el-image
-                class="w-[25px] h-[25px] rounded-[50%] mr-[5px]"
-                src="src/assets/user/default_avatar.png"
-              />
-              <span>{{ item.createUser }}wlj</span>
+                class="w-[216px] h-full mr-[10px]"
+                :src="item.picUrl == null ? '' : item.picUrl"
+                fit="cover"
+              ></el-image>
+              <div class="h-full flex flex-col flex-1 min-w-0">
+                <div>
+                  <a @click="getDetail(item.id)">
+                    <span
+                      class="font-medium text-[18px] hover:text-[#409eff] cursor-pointer"
+                      title="标题"
+                    >
+                      {{ item.title }}
+                    </span>
+                  </a>
+                </div>
+                <div class="mt-[12px] flex-1">
+                  <span class="post-abstract text-[14px] text-[#555666] font-medium" title="摘要">
+                    {{ item.postAbstract }}</span
+                  >
+                </div>
+                <div class="flex items-center mt-[16px] text-[14px]">
+                  <div class="mr-[20px] text-black text-opacity-25 flex items-center flex-1">
+                    <div>
+                      <el-tag>{{ item.categoryName }}</el-tag>
+                      <el-tag class="ml-[5px]" type="warning">
+                        {{ getEnumNameByValue(bizTypeDict, item.bizType) }}
+                      </el-tag>
+                    </div>
+                    <div class="ml-[10px]">
+                      <span>作者：</span>
+                    </div>
+                    <div>
+                      <el-image
+                        class="w-[25px] h-[25px] rounded-[50%]"
+                        src="src/assets/user/default_avatar.png"
+                      />
+                    </div>
+                    <div class="ml-[5px]">
+                      <span>{{ item.createUser }}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-black text-opacity-25">{{ item.createTime }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span class="text-black text-opacity-25">发布时间：{{ item.createTime }}</span>
-          </div>
-        </li>
-      </ul>
-      <div class="w-full flex justify-end pr-[24px] pb-[20px]">
+          </li>
+        </ul>
+      </div>
+
+      <div
+        class="w-full h-[50px] pr-[24px] flex justify-end items-center sticky bottom-0 bg-white"
+        style="box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05)"
+      >
         <el-config-provider>
           <el-pagination
             :current-page="searchParams.pageNo"
@@ -140,8 +149,8 @@ const getDetail = (id) => {
   <div
     class="w-[50px] h-[50px] fixed right-[50px] bottom-[220px] bg-gray-400 rounded-[5px] flex justify-center items-center cursor-pointer"
     style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.12)"
-    @mouseenter="handleRefreshDivMouseEnter"
-    @mouseleave="handleRefreshDivMouseLeave"
+    @mouseenter="refreshDivDisable = true"
+    @mouseleave="refreshDivDisable = false"
     @click="refreshPage"
   >
     <el-icon v-if="!refreshDivDisable" :size="40" color="#ffffff">
@@ -158,8 +167,8 @@ const getDetail = (id) => {
     router
     class="w-[50px] h-[50px] fixed right-[50px] bottom-[160px] bg-blue-400 rounded-[5px] flex justify-center items-center cursor-pointer"
     style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.12)"
-    @mouseenter="handlePostDivMouseEnter"
-    @mouseleave="handlePostDivMouseLeave"
+    @mouseenter="postDivDisable = true"
+    @mouseleave="postDivDisable = false"
     @click="addPost"
   >
     <el-icon v-if="!postDivDisable" :size="45" color="#ffffff">
@@ -187,7 +196,7 @@ const getDetail = (id) => {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-all;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical !important;
 }
 </style>

@@ -5,9 +5,11 @@ import { computed, onMounted, reactive, ref, unref } from 'vue'
 import { AdoptRecordDetail } from '../types'
 import { getRecordDetailApi } from '../adopt.api'
 import AdoptAudit from './AdoptAudit.vue'
+import { auditStatusDict, getEnumNameByValue } from '@/stores/enums'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => unref(mainLoading))
+const auditResult = computed(() => adoptRecordDetail.status !== 1 && adoptRecordDetail.status !== 2)
 
 const showViewer = ref(false)
 
@@ -175,14 +177,8 @@ const goBack = () => {
               <span>审核结果：</span>
             </div>
             <div class="flex-1 min-w-0">
-              <span :class="[{ 'text-[#ff0000]': !(adoptRecordDetail.auditResult === 'PASS') }]">
-                {{
-                  adoptRecordDetail.auditResult === 'PASS'
-                    ? '审核通过'
-                    : adoptRecordDetail.auditResult === 'REJECT'
-                      ? '审核拒绝'
-                      : '状态异常'
-                }}
+              <span :class="[{ 'text-[#ff0000]': auditResult }]">
+                {{ getEnumNameByValue(auditStatusDict, adoptRecordDetail.status) }}
               </span>
             </div>
           </div>
@@ -218,8 +214,8 @@ const goBack = () => {
       v-if="adoptRecordDetail.status === 1"
     >
       <div class="h-[50px] flex justify-start items-center">
-        <el-button type="primary" @click="handleAudit">审核</el-button>
-        <el-button @click="goBack">返回列表</el-button>
+        <el-button type="primary" :disabled="loading" @click="handleAudit">审核</el-button>
+        <el-button :disabled="loading" @click="goBack">返回列表</el-button>
       </div>
     </div>
   </div>

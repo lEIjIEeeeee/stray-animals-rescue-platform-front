@@ -5,6 +5,7 @@ import useMainLoading from '@/hooks/useMainLoading'
 import { PostAuditInfo } from '../types'
 import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
 import { postAuditApi } from '../post.api'
+import { get } from 'lodash'
 
 const { show, openPopup, closePopup } = usePopup()
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
@@ -46,14 +47,18 @@ const formRules: FormRules = {
   ]
 }
 
-const handleSubmit = async (data) => {
+const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-    await ElMessageBox.confirm('确定提交审核吗？提交之后无法撤销此操作。')
+    await ElMessageBox.confirm('确定提交审核吗？提交之后无法撤销此操作。', {
+      type: 'warning'
+    })
     openMainLoading()
-    await postAuditApi(data)
+    const data = await postAuditApi(formData)
+    if (get(data, 'code') === 0) {
+      ElMessage.success('审核完成')
+    }
     closeMainLoading()
-    ElMessage.success('提交成功')
     emit('audit')
     closePopup()
   } catch (e) {
@@ -87,7 +92,7 @@ const handleSubmit = async (data) => {
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSubmit(formData)">确认</el-button>
+        <el-button type="primary" @click="handleSubmit">确认</el-button>
         <el-button @click="closePopup"> 取消</el-button>
       </el-form-item>
     </el-form>

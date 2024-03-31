@@ -44,6 +44,13 @@ const router = createRouter({
               component: () => import('@/views/user/post/index.vue')
             },
             {
+              path: 'post/addPost',
+              meta: {
+                module: 'post'
+              },
+              component: () => import('@/views/user/post/components/PostAdd.vue')
+            },
+            {
               path: 'post/detail',
               meta: {
                 module: 'post'

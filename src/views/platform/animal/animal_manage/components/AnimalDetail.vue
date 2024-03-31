@@ -4,9 +4,10 @@ import { ElForm, ElMessage, ElMessageBox, FormRules } from 'element-plus'
 import { computed, onMounted, ref, reactive, unref } from 'vue'
 import { animalEditInfoApi, getAnimalDetailApi } from '../animal.api'
 import useMainLoading from '@/hooks/useMainLoading'
-import { AdoptRecord, AnimalDetail, AnimalEditInfo } from '../types'
+import { AdoptRecord, AnimalDetail, AnimalEditInfo, ContributionRecord } from '../types'
 import { getCategoryTreeApi } from '../../category_manage/category.api'
 import { getAnimalOwnerListApi } from '@/views/common/common.api'
+import { getEnumNameByValue, contributionTypeDict } from '@/stores/enums'
 import { get } from 'lodash'
 import UploadImg from '@/components/Upload/UploadImg.vue'
 
@@ -105,6 +106,7 @@ let id: any = ''
 const animalDetail = reactive(new AnimalDetail())
 const animalPicUrl = ref('')
 const adoptRecordList = ref<InstanceType<typeof Array<AdoptRecord>>>([])
+const contributionRecordList = ref<InstanceType<typeof Array<ContributionRecord>>>([])
 const getDetail = async () => {
   try {
     openMainLoading()
@@ -112,7 +114,7 @@ const getDetail = async () => {
     Object.assign(animalDetail, data.data)
     animalPicUrl.value = data.data.picUrl
     adoptRecordList.value = data.data.adoptRecordList
-    console.log(adoptRecordList)
+    contributionRecordList.value = data.data.contributionRecordList
     closeMainLoading()
   } catch (e) {
     closeMainLoading()
@@ -512,16 +514,16 @@ const showViewer = ref(false)
               show-overflow-tooltip
             ></el-table-column>
             <el-table-column
-              prop="auditRemark"
-              label="审核备注"
-              min-width="180"
-              show-overflow-tooltip
-            ></el-table-column>
-            <el-table-column
               prop="auditTime"
               label="审核时间"
               min-width="180"
               align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditRemark"
+              label="审核备注"
+              min-width="180"
               show-overflow-tooltip
             ></el-table-column>
             <el-table-column
@@ -555,7 +557,7 @@ const showViewer = ref(false)
         </div>
         <div class="mb-[20px]">
           <el-table
-            :data="adoptReacordList"
+            :data="contributionRecordList"
             stripe
             :header-cell-style="{
               height: '50px',
@@ -563,12 +565,110 @@ const showViewer = ref(false)
               color: '#666666'
             }"
           >
-            <el-table-column label="序号" type="index" width="100"></el-table-column>
-            <el-table-column label="捐助人" width="180"></el-table-column>
-            <el-table-column label="捐助名称" min-width="180"></el-table-column>
-            <el-table-column label="捐助类型" min-width="180"></el-table-column>
-            <el-table-column label="捐助图片" min-width="180"></el-table-column>
-            <el-table-column label="捐助时间" min-width="180"></el-table-column>
+            <el-table-column
+              type="index"
+              label="序号"
+              width="55"
+              align="center"
+              fixed="left"
+            ></el-table-column>
+            <el-table-column
+              prop="applyUserName"
+              label="捐助人"
+              min-width="120"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="applyUserAccount"
+              label="捐助人账号"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="contactPhone"
+              label="联系电话"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="itemType"
+              label="捐助类型"
+              min-width="120"
+              align="center"
+              show-overflow-tooltip
+            >
+              <template #default="scope">
+                {{ getEnumNameByValue(contributionTypeDict, scope.row.itemType) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="itemName"
+              label="捐助物名称"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="itemPic"
+              label="捐助物图片"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            >
+              <template #default="scope">
+                <el-image
+                  class="w-full h-full cursor-pointer"
+                  :src="scope.row.itemPic"
+                  fit="cover"
+                  :preview-src-list="[scope.row.itemPic]"
+                  preview-teleported="true"
+                ></el-image>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              label="捐助备注"
+              min-width="180"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditorName"
+              label="审核人"
+              min-width="120"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditorPhone"
+              label="联系电话"
+              min-width="150"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditTime"
+              label="审核时间"
+              min-width="180"
+              align="center"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="auditRemark"
+              label="审核备注"
+              min-width="180"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="申请时间"
+              min-width="180"
+              align="center"
+              fixed="right"
+              show-overflow-tooltip
+            ></el-table-column>
           </el-table>
         </div>
       </div>

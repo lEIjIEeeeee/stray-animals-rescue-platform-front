@@ -105,7 +105,10 @@ const handleContributionApply = (animalId: string) => {
       <div class="w-full mb-[20px]">
         <div class="mb-[10px] flex justify-start">
           <span class="flex-1 text-[22px]">领养宠物</span>
-          <div class="flex justify-end items-center cursor-pointer hover:text-[#409eff]">
+          <div
+            class="flex justify-end items-center cursor-pointer hover:text-[#409eff]"
+            @click="router.push('/animal')"
+          >
             <span>查看更多</span>
             <el-icon>
               <arrow-right />
@@ -176,7 +179,10 @@ const handleContributionApply = (animalId: string) => {
       <div class="w-full">
         <div class="mb-[10px] flex justify-start">
           <span class="flex-1 text-[22px]">遗失宠物</span>
-          <div class="flex justify-end items-center cursor-pointer hover:text-[#409eff]">
+          <div
+            class="flex justify-end items-center cursor-pointer hover:text-[#409eff]"
+            @click="router.push('/animal')"
+          >
             <span>查看更多</span>
             <el-icon>
               <arrow-right />

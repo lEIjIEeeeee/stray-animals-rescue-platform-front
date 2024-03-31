@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>后台管理首页</div>
+  <div class="w-full h-full bg-blue-50"></div>
 </template>

@@ -17,11 +17,11 @@ export class SearchParams {
   pageSize = 20
   searchType = 'POST_TITLE'
   searchContent = ''
-  bizType = ''
   categoryIds = []
+  bizType = ''
+  status = ''
   auditDate = []
   createDate = []
-  status = ''
 }
 
 export class PlatformPostList {
