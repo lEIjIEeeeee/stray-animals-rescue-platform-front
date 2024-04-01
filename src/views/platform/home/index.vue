@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import router from '@/router'
 import MenuNavBar from '@/components/MenuNavBar/index.vue'
 import { removeToken, removeUserType } from '@/utils/auth'
 import { ElMessageBox } from 'element-plus'
+import { SysTokenLogin } from '@/views/common/types'
+import { getSysTokenLoginApi } from '@/views/common/common.api'
 
-const avatar = ref()
+const avatar = computed(() =>
+  sysTokenLogin.avatar == null ? '/src/assets/user/default_avatar.png' : sysTokenLogin.avatar
+)
 
 const menuList = [
   {
@@ -116,12 +120,18 @@ const handleSelect = (key, keyPath) => {
   router.push(toPath)
 }
 
-const getDetail = async () => {
-  avatar.value = '/src/assets/user/default_avatar.png'
+const init = () => {
+  getSysTokenLogin()
+}
+
+const sysTokenLogin = reactive(new SysTokenLogin())
+const getSysTokenLogin = async () => {
+  const data = await getSysTokenLoginApi()
+  Object.assign(sysTokenLogin, data.data)
 }
 
 onMounted(() => {
-  getDetail()
+  init()
 })
 
 const goUserHomePage = () => {
@@ -156,8 +166,8 @@ const logout = async () => {
 
         <div class="ml-auto">
           <el-dropdown>
-            <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
-              <el-image class="rounded-[50%] object-fill" :src="avatar" />
+            <div class="w-[50px] h-[50px] mr-[30px]">
+              <el-image class="w-full h-full rounded-[50%]" :src="avatar" fit="cover" />
             </div>
             <template #dropdown>
               <el-dropdown-menu>

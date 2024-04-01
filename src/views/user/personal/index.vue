@@ -7,10 +7,16 @@ import router from '@/router'
 import PersonalAnimal from './components/PersonalAnimal.vue'
 import PersonalPost from './components/PersonalPost.vue'
 import PersonalApply from './components/PersonalApply.vue'
+import PersonalInfoEdit from './components/PersonalInfoEdit.vue'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
 const loading = computed(() => mainLoading.value)
+const avatar = computed(() =>
+  personalInfo.avatar == '' || personalInfo.avatar == null
+    ? '/src/assets/user/default_avatar.png'
+    : personalInfo.avatar
+)
 
 const personalInfo = reactive(new PersonalInfo())
 const getPersonalInfo = async () => {
@@ -82,6 +88,11 @@ const inputSearch = () => {
     personalApplyRef.value?.search(searchContent)
   }
 }
+
+const editPersonalRef = ref<InstanceType<typeof PersonalInfoEdit>>()
+const editPersonalInfo = () => {
+  editPersonalRef.value?.open()
+}
 </script>
 
 <template>
@@ -92,7 +103,7 @@ const inputSearch = () => {
           <div
             class="w-[102px] h-[102px] absolute top-[-12px] left-[24px] border-[4px] border-solid rounded-[50%] border-[#f0f0f2]"
           >
-            <el-image style="width: 100%; height: 100%; border-radius: 50%"> </el-image>
+            <el-image class="w-full h-full rounded-[50%]" :src="avatar"> </el-image>
           </div>
         </div>
         <div class="w-full pl-[150px] pr-[20px] pt-[20px] flex flex-col">
@@ -112,7 +123,7 @@ const inputSearch = () => {
               }}
             </el-tag>
             <div class="ml-[auto]">
-              <el-button style="border-radius: 20px">编辑资料</el-button>
+              <el-button style="border-radius: 20px" @click="editPersonalInfo">编辑资料</el-button>
             </div>
           </div>
           <div class="mb-[10px] flex flex-row justify-start items-center">
@@ -161,7 +172,7 @@ const inputSearch = () => {
             </ul>
           </div>
           <div class="text-[14px] font-normal inline">
-            <span>加入时间：</span>
+            <span>注册时间：</span>
             <span>{{ personalInfo.createTime }}</span>
           </div>
         </div>
@@ -182,7 +193,7 @@ const inputSearch = () => {
               >我的宠物</el-menu-item
             >
             <el-menu-item index="personalPost">我的帖子</el-menu-item>
-            <el-menu-item index="personalApply">我的申请</el-menu-item>
+            <!-- <el-menu-item index="personalApply">我的申请</el-menu-item> -->
           </el-menu>
           <div class="mr-[20px]">
             <el-input
@@ -208,15 +219,16 @@ const inputSearch = () => {
             :searchContent="searchContent"
             ref="personalPostRef"
           />
-          <PersonalApply
+          <!-- <PersonalApply
             v-if="router.currentRoute.value.meta.module == 'personalApply'"
             :searchContent="searchContent"
             ref="personalApplyRef"
-          />
+          /> -->
         </div>
       </div>
     </div>
   </div>
+  <PersonalInfoEdit @edit="router.go(0)" ref="editPersonalRef" />
 </template>
 
 <style scoped>

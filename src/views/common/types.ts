@@ -9,6 +9,7 @@ export class SysTokenLogin {
   id = ''
   avatar = ''
   account = ''
+  phone = ''
   userType = ''
   nickName = ''
 }

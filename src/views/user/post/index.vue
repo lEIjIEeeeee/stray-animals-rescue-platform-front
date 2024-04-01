@@ -63,8 +63,8 @@ const getDetail = (id) => {
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col items-center">
-    <div class="w-[800px] h-full bg-white flex flex-col">
+  <div class="w-full h-full min-w-[1200px] flex justify-center">
+    <div class="w-[1200px] h-full bg-white flex flex-col">
       <div class="flex-1 min-h-0">
         <ul class="px-[24px]" v-loading="loading">
           <li
@@ -100,7 +100,7 @@ const getDetail = (id) => {
                     <div>
                       <el-tag>{{ item.categoryName }}</el-tag>
                       <el-tag class="ml-[5px]" type="warning">
-                        {{ getEnumNameByValue(bizTypeDict, item.bizType) }}
+                        {{ getEnumNameByValue(bizTypeDict, item.bizType) }}帖
                       </el-tag>
                     </div>
                     <div class="ml-[10px]">
@@ -109,7 +109,12 @@ const getDetail = (id) => {
                     <div>
                       <el-image
                         class="w-[25px] h-[25px] rounded-[50%]"
-                        src="src/assets/user/default_avatar.png"
+                        :src="
+                          item.avatar == null || item.avatar == ''
+                            ? '/src/assets/user/default_avatar.png'
+                            : item.avatar
+                        "
+                        fit="cover"
                       />
                     </div>
                     <div class="ml-[5px]">

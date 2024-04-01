@@ -24,3 +24,16 @@ export class AddPostForm {
   postAbstract = ''
   content = ''
 }
+
+export class PostDetailInfo {
+  status = 0
+  title = ''
+  avatar = ''
+  nickName = ''
+  createId = ''
+  createTime = ''
+  categoryName = ''
+  bizType = 0
+  content = ''
+  picUrl = ''
+}

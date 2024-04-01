@@ -82,9 +82,9 @@ const handleContributionApply = (animalId: string) => {
 
 <template>
   <div class="w-full min-w-[1200px] flex justify-center">
-    <div class="w-[1200px] py-[20px] flex flex-col">
-      <div class="flex flex-row mb-[20px]">
-        <div class="w-[700px] mr-[20px]">
+    <div class="w-[1200px] py-[14px] flex flex-col">
+      <div class="flex flex-row mb-[50px]">
+        <div class="w-[700px] mr-[10px]">
           <el-carousel trigger="click" height="420px">
             <el-carousel-item v-for="item in adoptAnimalList" :key="item.id">
               <el-image
@@ -95,7 +95,7 @@ const handleContributionApply = (animalId: string) => {
             </el-carousel-item>
           </el-carousel>
         </div>
-        <div class="flex flex-col items-start" style="width: calc(100% - 600px)">
+        <div class="p-[10px] flex flex-col items-start bg-white" style="width: calc(100% - 600px)">
           <div class="border-b-[5px] px-[10px] py-[5px] mb-[20px] border-blue-300">领养须知</div>
           <div class="overflow-clip">公告内容</div>
           <div class="border-b-[5px] px-[10px] py-[5px] mb-[20px] border-blue-300">小常识</div>

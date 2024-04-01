@@ -108,7 +108,7 @@ const handleContributionApply = (animalId: string) => {
 <template>
   <div class="w-full min-w-[1200px] flex justify-center">
     <div class="w-[1200px]">
-      <div class="my-[20px] flex justify-between items-center">
+      <div class="my-[14px] flex justify-between items-center">
         <div class="flex items-center">
           <el-breadcrumb separator=">">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -219,7 +219,7 @@ const handleContributionApply = (animalId: string) => {
           </div>
         </div>
       </div>
-      <div class="h-[100px] flex justify-end">
+      <div class="h-[60px] flex justify-end">
         <el-config-provider>
           <el-pagination
             background

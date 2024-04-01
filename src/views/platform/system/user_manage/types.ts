@@ -22,13 +22,13 @@ export class ChangeUserStatus {
 }
 
 export class UserDetailFormData {
-  avatar
-  nickName
-  password
-  confirmPassword
-  account
-  phone
-  realName
+  avatar = ''
+  nickName = ''
+  password = ''
+  confirmPassword = ''
+  account = ''
+  phone = ''
+  realName = ''
   gender = 'M'
   userType = 'NORMAL_USER'
   status = 1

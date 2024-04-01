@@ -13,3 +13,6 @@ export const getPersonalPostListApi = (params) =>
   http.get('/commonModule/personal/listPagePost', {
     params
   })
+
+export const editPersonalInfoApi = (data) =>
+  http.post('/commonModule/personal/editPersonalInfo', data)

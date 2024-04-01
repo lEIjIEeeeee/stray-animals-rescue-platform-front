@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue'
-import { SearchParams } from '../types'
+import { SearchParams, BaseListResponse } from '../types'
 import useMainLoading from '@/hooks/useMainLoading'
 import { getPersonalAnimalListApi } from '../personal.api'
 import dayjs from 'dayjs'
-import { BaseListResponse } from '../types'
+import router from '@/router'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => mainLoading.value)
@@ -48,6 +48,15 @@ const handlePageSizeChange = (val) => {
   searchParams.pageSize = val
   getAnimalList()
 }
+
+const goAnimalDetail = (animalId: string) => {
+  router.push({
+    path: '/animal/detail',
+    query: {
+      id: animalId
+    }
+  })
+}
 </script>
 
 <template>
@@ -58,15 +67,20 @@ const handlePageSizeChange = (val) => {
           class="h-[180px] py-[24px] border-t-[1px]"
           v-for="item in animalListResponse.dataList"
           :key="item.id"
+          @click="goAnimalDetail(item.id)"
         >
           <div class="list-div h-full flex flex-row cursor-pointer">
             <div>
-              <el-image class="w-[240px] h-full mr-[20px]"></el-image>
+              <el-image
+                class="w-[240px] h-full mr-[20px]"
+                :src="item.picUrl == '' || item.picUrl == null ? '' : item.picUrl"
+                fit="cover"
+              ></el-image>
             </div>
             <div class="w-full flex flex-col justify-between">
               <div class="flex flex-col">
                 <div class="inline-flex">
-                  <span class="text-[18px] font-medium hover:text-[#ff0000]">{{ item.name }}</span>
+                  <span class="text-[18px] font-medium hover:text-[#409eff]">{{ item.name }}</span>
                   <span
                     class="ml-auto font-sans"
                     style="
@@ -86,10 +100,13 @@ const handlePageSizeChange = (val) => {
                 <div class="mr-[10px]">
                   <el-tag>{{ item.categoryName }}</el-tag>
                 </div>
+                <div class="mr-[10px]" v-if="item.isLost === 1">
+                  <el-tag type="info"><span>已遗失</span></el-tag>
+                </div>
                 <div>
                   <span>录入时间：{{ dayjs(item.createTime).format('YYYY-MM-DD') }}</span>
                 </div>
-                <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
+                <!-- <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.postAmount ? item.postAmount : 0 }} 帖子</span>
                 </div>
@@ -100,10 +117,10 @@ const handlePageSizeChange = (val) => {
                 <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
-                </div>
-                <div class="edit-button hidden hover:text-[#0152d9]">
+                </div> -->
+                <!-- <div class="edit-button hidden hover:text-[#0152d9]">
                   <span>编辑</span>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

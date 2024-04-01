@@ -6,6 +6,7 @@ import { AnimalDetail } from '../types'
 import AnimalAdopt from './AnimalAdopt.vue'
 import useMainLoading from '@/hooks/useMainLoading'
 import AnimalContribution from './AnimalContribution.vue'
+import { getSysTokenLoginApi } from '@/views/common/common.api'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
@@ -19,8 +20,6 @@ const getDetail = async () => {
     openMainLoading()
     const id = router.currentRoute.value.query.id
     const data = await getDetailApi(id)
-    delete data.data.categoryId
-    delete data.data.ownerId
     Object.assign(animalDetail, data.data)
     closeMainLoading()
   } catch (e) {
@@ -28,8 +27,17 @@ const getDetail = async () => {
   }
 }
 
-const init = () => {
-  getDetail()
+const isOwner = ref(false)
+const checkAnimalOwner = async () => {
+  const data = await getSysTokenLoginApi()
+  if (animalDetail.ownerId === data.data.id) {
+    isOwner.value = true
+  }
+}
+
+const init = async () => {
+  await getDetail()
+  await checkAnimalOwner()
 }
 
 onMounted(() => {
@@ -59,9 +67,10 @@ const handleContributionAnimal = () => {
         </div>
         <div class="pl-[20px] flex flex-col flex-1 min-w-0 text-[14px]">
           <div class="h-[30px] flex items-center">
-            <span class="overflow-hidden text-ellipsis whitespace-nowrap font-medium text-[20px]">{{
-              animalDetail.name
-            }}</span>
+            <span class="overflow-hidden text-ellipsis whitespace-nowrap font-medium text-[20px]">
+              {{ animalDetail.name }}
+            </span>
+            <el-tag v-if="isOwner" type="info" class="ml-[10px]">我的宠物</el-tag>
           </div>
           <div class="h-[60px] mt-[20px] px-[20px] bg-[#f5f5f5] flex items-center">
             <span>领养状态：</span>
@@ -162,7 +171,7 @@ const handleContributionAnimal = () => {
           </div>
           <div class="px-[20px] pt-[20px] flex items-center">
             <div
-              v-if="animalDetail.isLost === 0"
+              v-if="animalDetail.isLost === 0 && !isOwner"
               class="w-[165px] h-[40px] rounded-[4px] bg-[#409eff] flex justify-center items-center cursor-pointer hover:opacity-70 active:opacity-100"
               @click="handleAdoptAnimal"
             >
@@ -172,7 +181,7 @@ const handleContributionAnimal = () => {
               <span class="ml-[8px] text-[18px] text-[#fff]">我要领养</span>
             </div>
             <div
-              v-if="animalDetail.isLost === 0"
+              v-if="animalDetail.isLost === 0 && !isOwner"
               class="w-[165px] h-[40px] ml-[20px] rounded-[4px] border border-[#409eff] flex justify-center items-center cursor-pointer"
               @click="handleContributionAnimal"
             >
@@ -182,7 +191,7 @@ const handleContributionAnimal = () => {
               <span class="ml-[8px] text-[18px] text-[#409eff]">我要捐助</span>
             </div>
             <div
-              v-else
+              v-if="animalDetail.isLost === 1 && !isOwner"
               class="w-[165px] h-[40px] rounded-[4px] bg-[#409eff] flex justify-center items-center cursor-pointer hover:opacity-70 active:opacity-100"
             >
               <el-icon size="20" color="#fff">

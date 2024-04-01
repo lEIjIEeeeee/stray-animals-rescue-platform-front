@@ -4,6 +4,8 @@ import useMainLoading from '@/hooks/useMainLoading'
 import { BaseListResponse, SearchParams } from '../types'
 import { getPersonalPostListApi } from '../personal.api'
 import dayjs from 'dayjs'
+import { bizTypeDict, getEnumNameByValue } from '@/stores/enums'
+import router from '@/router'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => mainLoading.value)
@@ -38,6 +40,15 @@ const init = () => {
 onMounted(() => {
   init()
 })
+
+const goPostDetail = (postId: string) => {
+  router.push({
+    path: '/post/detail',
+    query: {
+      id: postId
+    }
+  })
+}
 </script>
 
 <template>
@@ -49,37 +60,34 @@ onMounted(() => {
           v-for="item in postListResponse.dataList"
           :key="item.id"
         >
-          <div class="list-div h-full flex flex-row cursor-pointer">
+          <div class="list-div h-full flex flex-row cursor-pointer" @click="goPostDetail(item.id)">
             <div>
-              <el-image class="w-[240px] h-full mr-[20px]"></el-image>
+              <el-image
+                class="w-[240px] h-full mr-[20px]"
+                :src="item.picUrl == '' || item.picUrl == null ? '' : item.picUrl"
+                fit="cover"
+              ></el-image>
             </div>
             <div class="w-full flex flex-col justify-between">
               <div class="flex flex-col">
                 <div class="inline-flex">
-                  <span class="text-[18px] font-medium hover:text-[#ff0000]">{{ item.title }}</span>
-                  <!-- <span
-                    class="ml-auto font-sans"
-                    style="
-                      background: linear-gradient(to right top, #00ff00, #0000ff);
-                      -webkit-background-clip: text;
-                      background-clip: text;
-                      color: transparent;
-                    "
-                    >NO.{{ item.animalNo }}</span
-                  > -->
+                  <span class="text-[18px] font-medium hover:text-[#409eff]">{{ item.title }}</span>
                 </div>
                 <div class="line-clamp-3 text-ellipsis">
                   <span class="text-[14px]">{{ item.postAbstract }}</span>
                 </div>
               </div>
               <div class="inline-flex items-center text-[14px]">
-                <div class="mr-[10px]">
-                  <el-tag>{{ item.categoryName }}</el-tag>
-                </div>
                 <div>
-                  <span>录入时间：{{ dayjs(item.createTime).format('YYYY-MM-DD') }}</span>
+                  <el-tag>{{ item.categoryName }}</el-tag>
+                  <el-tag class="ml-[5px]" type="warning">{{
+                    getEnumNameByValue(bizTypeDict, item.bizType)
+                  }}</el-tag>
                 </div>
-                <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
+                <div class="ml-[10px] text-black text-opacity-25">
+                  <span>发布时间：{{ item.createTime }}</span>
+                </div>
+                <!-- <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.postAmount ? item.postAmount : 0 }} 帖子</span>
                 </div>
@@ -90,7 +98,7 @@ onMounted(() => {
                 <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
-                </div>
+                </div> -->
                 <div class="edit-button hidden hover:text-[#0152d9]">
                   <span>编辑</span>
                 </div>

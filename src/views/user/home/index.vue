@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { getUserType, removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
 import MenuNavBar from '@/components/MenuNavBar/index.vue'
+import { SysTokenLogin } from '@/views/common/types'
+import { getSysTokenLoginApi } from '@/views/common/common.api'
 
 // 1.首页
 // 5.宠物领养
@@ -41,20 +43,23 @@ const menuList = [
   // }
 ]
 
-const avatar = computed(() => {
-  const data = null
-  if (data) {
-    return data.avatar
-  } else {
-    return '/src/assets/user/default_avatar.png'
-  }
-})
-
-const userType = ref()
+const avatar = computed(() =>
+  sysTokenLogin.avatar == null ? '/src/assets/user/default_avatar.png' : sysTokenLogin.avatar
+)
 
 onMounted(() => {
-  userType.value = getUserType()
+  init()
 })
+
+const init = () => {
+  getSysTokenLogin()
+}
+
+const sysTokenLogin = reactive(new SysTokenLogin())
+const getSysTokenLogin = async () => {
+  const data = await getSysTokenLoginApi()
+  Object.assign(sysTokenLogin, data.data)
+}
 
 const goAdminHomePage = () => {
   router.replace('/platform')
@@ -62,21 +67,21 @@ const goAdminHomePage = () => {
 
 const goPersonalAnimal = () => {
   const target = router.resolve({
-    path: 'personal/personalAnimal'
+    path: '/personal/personalAnimal'
   })
   window.open(target.href, '_blank')
 }
 
 const goPersonalPost = () => {
   const target = router.resolve({
-    path: 'personal/personalPost'
+    path: '/personal/personalPost'
   })
   window.open(target.href, '_blank')
 }
 
 const goPersonalApply = () => {
   const target = router.resolve({
-    path: 'personal/personalApply'
+    path: '/personal/personalApply'
   })
   window.open(target.href, '_blank')
 }
@@ -125,8 +130,8 @@ const handleSelect = (key, keyPath) => {
         </div>
         <div>
           <el-dropdown>
-            <div class="w-[50px] h-[50px] rounded-[50%] mr-[30px] flex items-center">
-              <el-image class="rounded-[50%] object-fill" :src="avatar" />
+            <div class="w-[50px] h-[50px] mr-[30px]">
+              <el-image class="w-full h-full rounded-[50%]" :src="avatar" fit="cover" />
             </div>
             <template #dropdown>
               <el-dropdown-menu>
@@ -148,8 +153,7 @@ const handleSelect = (key, keyPath) => {
                   </el-icon>
                   我的申请
                 </el-dropdown-item>
-
-                <div v-if="userType === 'PLATFORM_ADMIN'">
+                <div v-if="sysTokenLogin.userType === 'PLATFORM_ADMIN'">
                   <el-dropdown-item divided @click="goAdminHomePage">
                     <el-icon>
                       <Setting />

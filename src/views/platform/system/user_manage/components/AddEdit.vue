@@ -7,6 +7,7 @@ import { UserAddRequest, UserDetailFormData, UserEditRequest } from '../types'
 import { ElForm, ElMessage, FormRules } from 'element-plus'
 import { addUserApi, editUserApi, getDetailApi } from '../user.api'
 import { get } from 'lodash'
+import UploadImg from '@/components/Upload/UploadImg.vue'
 
 const { show, openPopup, closePopup } = usePopup()
 const { mainDisabled, openMainDisabled, closeMainDisabled } = useMainDisabled()
@@ -47,7 +48,9 @@ const getDetail = async () => {
     openMainLoading()
     const data = await getDetailApi(id.value)
     Object.assign(formData, data.data)
-    console.log(formData)
+    if (formData.avatar == null) {
+      formData.avatar = '/src/assets/user/default_avatar.png'
+    }
     closeMainLoading()
   } catch (e) {
     closeMainLoading()
@@ -180,6 +183,9 @@ const editUser = async () => {
       @submit.prevent
       v-loading="loading"
     >
+      <el-form-item label="头像：">
+        <UploadImg v-model="formData.avatar" upload-biz-type="AVATAR" />
+      </el-form-item>
       <el-form-item label="用户昵称：" prop="nickName">
         <el-input
           type="text"

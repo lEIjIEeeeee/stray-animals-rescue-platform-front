@@ -5,4 +5,11 @@ export const getPostListApi = (params) =>
     params
   })
 
+export const getDetailApi = (id) =>
+  http.get('/postModule/post/get', {
+    params: {
+      id
+    }
+  })
+
 export const submitPostApi = (data) => http.post('/postModule/post/submitPost', data)

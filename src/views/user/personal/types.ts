@@ -1,9 +1,22 @@
 export class PersonalInfo {
   id
   avatar
-  nickName
+  account
   userType
+  phone
+  nickName
+  gender
+  realName
   createTime
+}
+
+export class PersonalFormData {
+  id
+  avatar
+  phone
+  nickName
+  gender
+  realName
 }
 
 export class UserBizCounts {
