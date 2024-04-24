@@ -69,7 +69,7 @@ const goLogin = () => {
     style="background-image: url('src/assets/login/bg_register.png')"
   >
     <div
-      class="w-[400px] p-[20px] bg-white rounded-[10px] flex flex-col"
+      class="w-[400px] p-[20px] bg-white rounded-[4px] flex flex-col"
       style="background-color: rgba(255, 255, 255, 60%)"
     >
       <div class="mb-[20px] flex flex-col">

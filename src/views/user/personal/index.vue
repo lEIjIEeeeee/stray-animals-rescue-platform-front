@@ -97,8 +97,8 @@ const editPersonalInfo = () => {
 
 <template>
   <div class="h-full px-[5%] flex flex-col items-center bg-blue-50 overflow-auto">
-    <div class="w-full rounded-[5px]" v-loading="loading">
-      <div class="my-[20px] h-[150px] rounded-[5px] bg-white shadow">
+    <div class="w-full" v-loading="loading">
+      <div class="my-[20px] h-[150px] rounded-[4px] bg-white shadow">
         <div class="relative">
           <div
             class="w-[102px] h-[102px] absolute top-[-12px] left-[24px] border-[4px] border-solid rounded-[50%] border-[#f0f0f2]"
@@ -128,7 +128,7 @@ const editPersonalInfo = () => {
           </div>
           <div class="mb-[10px] flex flex-row justify-start items-center">
             <ul class="flex flex-row items-center">
-              <li class="flex flex-row items-center">
+              <!-- <li class="flex flex-row items-center">
                 <span class="hover:text-[#ff0000]">
                   <span class="text-[20px] font-semibold mr-[5px]">
                     {{ userBizCounts.accessAmount }}</span
@@ -136,7 +136,7 @@ const editPersonalInfo = () => {
                   <span class="text-[14px]">总访问量</span>
                 </span>
                 <div class="w-[1px] h-[16px] mx-[16px] bg-[#e8e8ed]"></div>
-              </li>
+              </li> -->
               <li class="flex flex-row items-center">
                 <a class="cursor-pointer" @click="goPersonalAnimal">
                   <span class="hover:text-[#ff0000]">
@@ -157,9 +157,9 @@ const editPersonalInfo = () => {
                     <span>帖子数</span>
                   </span>
                 </a>
-                <div class="w-[1px] h-[16px] mx-[16px] bg-[#e8e8ed]"></div>
+                <!-- <div class="w-[1px] h-[16px] mx-[16px] bg-[#e8e8ed]"></div> -->
               </li>
-              <li class="flex flex-row items-center">
+              <!-- <li class="flex flex-row items-center">
                 <a class="cursor-pointer" @click="goPersonalApply">
                   <span class="hover:text-[#ff0000]">
                     <span class="text-[20px] font-semibold mr-[5px]">
@@ -168,7 +168,7 @@ const editPersonalInfo = () => {
                     <span>申请数</span>
                   </span>
                 </a>
-              </li>
+              </li> -->
             </ul>
           </div>
           <div class="text-[14px] font-normal inline">
@@ -179,8 +179,8 @@ const editPersonalInfo = () => {
       </div>
     </div>
     <div class="w-full mb-[30px] border-none flex flex-row items-start">
-      <div class="w-[350px] h-[400px] mr-[10px] rounded-[5px] shadow bg-white"></div>
-      <div class="w-full bg-white rounded-[5px] shadow">
+      <div class="w-[350px] h-[400px] mr-[10px] rounded-[4px] shadow bg-white"></div>
+      <div class="w-full bg-white rounded-[4px] shadow">
         <div class="w-full flex flex-row items-center">
           <el-menu
             router

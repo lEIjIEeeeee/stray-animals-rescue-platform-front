@@ -57,7 +57,7 @@ const handleContributionAnimal = () => {
 
 <template>
   <div class="w-full min-w-[1300px] flex justify-center">
-    <div class="w-[1300px] p-[20px] mt-[20px] bg-white rounded-[16px]">
+    <div class="w-[1300px] p-[20px] mt-[20px] bg-white rounded-[4px]">
       <div class="flex" v-loading="loading">
         <div class="w-[400px] flex flex-col">
           <div class="w-full h-[400px]">

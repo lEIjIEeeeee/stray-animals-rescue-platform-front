@@ -183,7 +183,7 @@ const showViewer = ref(false)
 </script>
 
 <template>
-  <div class="w-full flex overflow-auto bg-gray-50">
+  <div class="w-full overflow-auto bg-gray-50">
     <div class="w-full">
       <div class="w-full px-[24px] pt-[20px] flex flex-col">
         <div class="mb-[20px]">
@@ -437,7 +437,7 @@ const showViewer = ref(false)
           <span class="font-semibold">图片信息</span>
         </div>
         <div class="mb-[20px]" v-loading="loading">
-          <div class="h-[140px] pl-[14px] bg-white flex items-center rounded-[4px]">
+          <div class="h-[140px] p-[10px] flex items-center rounded-[4px] border">
             <UploadImg
               v-if="props.type === 'edit'"
               v-model="animalPicUrl"

@@ -68,7 +68,7 @@ const goRegister = () => {
     style="background-image: url(/src/assets/login/bg_login.png)"
   >
     <div
-      class="w-[400px] p-[20px] flex flex-col rounded-[5px]"
+      class="w-[400px] p-[20px] flex flex-col rounded-[4px]"
       style="background-color: rgba(255, 255, 255, 60%)"
     >
       <div class="mb-[20px] text-[24px] font-blob text-center">流浪动物救助平台</div>

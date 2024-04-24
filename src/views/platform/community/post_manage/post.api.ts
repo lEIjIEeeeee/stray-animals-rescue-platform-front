@@ -9,6 +9,13 @@ export const getPlatformPostListApi = (params) =>
     }
   })
 
+export const getDetailApi = (id) =>
+  http.get('/postModule/platform/post/get', {
+    params: {
+      id
+    }
+  })
+
 export const getCloseReasonApi = (id) =>
   http.get('/postModule/platform/post/getCloseReason', {
     params: {

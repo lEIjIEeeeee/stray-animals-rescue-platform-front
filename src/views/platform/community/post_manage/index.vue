@@ -507,7 +507,7 @@ const tabClick = async (val) => {
               :current-page="searchParams.pageNo"
               :page-size="searchParams.pageSize"
               :page-sizes="[10, 20, 50, 100]"
-              layout=" prev, pager, next, jumper,sizes, total"
+              layout="prev, pager, next, jumper, sizes, total"
               :total="platformPostList.total"
               :disabled="loading"
               @current-change="handleCurrentPageChange"

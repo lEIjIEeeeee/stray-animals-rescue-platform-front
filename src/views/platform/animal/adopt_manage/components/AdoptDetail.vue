@@ -100,9 +100,9 @@ const goBack = () => {
         <div class="text-[18px] font-bold">
           <span>宠物图片</span>
         </div>
-        <div class="h-[140px] mt-[20px] px-[20px] bg-white rounded-[4px] flex items-center">
+        <div class="h-[140px] mt-[20px] p-[10px] border rounded-[4px] flex items-center">
           <el-image
-            class="w-[120px] h-[120px] cursor-pointer"
+            class="w-[120px] h-[120px] cursor-pointer hover:opacity-50"
             :src="adoptRecordDetail.picUrl"
             fit="cover"
             @click="showViewer = true"

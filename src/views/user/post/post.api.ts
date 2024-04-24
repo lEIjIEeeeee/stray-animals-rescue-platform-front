@@ -13,3 +13,7 @@ export const getDetailApi = (id) =>
   })
 
 export const submitPostApi = (data) => http.post('/postModule/post/submitPost', data)
+
+export const resubmitPostApi = (data) => http.post('/postModule/post/resubmitPost', data)
+
+export const deletePostApi = (data) => http.post('/postModule/post/delete', data)

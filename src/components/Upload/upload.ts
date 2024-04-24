@@ -1,6 +1,6 @@
 import { uploadFileApi } from '@/views/common/common.api'
 
-export type UploadBizType = 'AVATAR' | 'ANIMAL' | 'POST' | 'CONTRIBUTION' | 'COMMON'
+export type UploadBizType = 'AVATAR' | 'ANIMAL' | 'POST' | 'CONTRIBUTION' | 'NOTICE' | 'COMMON'
 
 export async function uploadFile(
   file: File,

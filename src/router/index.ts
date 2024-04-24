@@ -1,6 +1,5 @@
 import { getToken, getUserType } from '@/utils/auth'
 import { ElMessage } from 'element-plus'
-import path from 'path'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -48,7 +47,14 @@ const router = createRouter({
               meta: {
                 module: 'post'
               },
-              component: () => import('@/views/user/post/components/PostAdd.vue')
+              component: () => import('@/views/user/post/add.vue')
+            },
+            {
+              path: 'post/editPost',
+              meta: {
+                module: 'post'
+              },
+              component: () => import('@/views/user/post/edit.vue')
             },
             {
               path: 'post/detail',
@@ -56,6 +62,20 @@ const router = createRouter({
                 module: 'post'
               },
               component: () => import('@/views/user/post/components/PostDetail.vue')
+            },
+            {
+              path: 'notice',
+              meta: {
+                module: 'notice'
+              },
+              component: () => import('@/views/user/notice/index.vue')
+            },
+            {
+              path: 'notice/detail',
+              meta: {
+                module: 'notice'
+              },
+              component: () => import('@/views/user/notice/components/NoticeDetail.vue')
             }
           ]
         }
@@ -200,7 +220,8 @@ const router = createRouter({
                   meta: {
                     module: 'postManage'
                   },
-                  component: () => import('@/views/platform/community/post_manage/detail.vue')
+                  component: () =>
+                    import('@/views/platform/community/post_manage/components/PostDetail.vue')
                 },
                 {
                   path: 'commentManage',
@@ -208,6 +229,42 @@ const router = createRouter({
                     module: 'commentManage'
                   },
                   component: () => import('@/views/platform/community/comment_manage/index.vue')
+                }
+              ]
+            },
+            {
+              path: 'notice',
+              meta: {
+                module: 'notice'
+              },
+              children: [
+                {
+                  path: 'noticeTypeManage',
+                  meta: {
+                    module: 'noticeTypeManage'
+                  },
+                  component: () => import('@/views/platform/notice/notice_type_manage/index.vue')
+                },
+                {
+                  path: 'noticeArticleManage',
+                  meta: {
+                    module: 'noticeArticleManage'
+                  },
+                  component: () => import('@/views/platform/notice/notice_article_manage/index.vue')
+                },
+                {
+                  path: 'noticeArticleManage/add',
+                  meta: {
+                    module: 'noticeArticleManage'
+                  },
+                  component: () => import('@/views/platform/notice/notice_article_manage/add.vue')
+                },
+                {
+                  path: 'noticeArticleManage/edit',
+                  meta: {
+                    module: 'noticeArticleManage'
+                  },
+                  component: () => import('@/views/platform/notice/notice_article_manage/edit.vue')
                 }
               ]
             },
@@ -239,16 +296,6 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('@/views/login/register.vue')
-    },
-    {
-      path: '/post',
-      name: 'post',
-      children: [
-        {
-          path: 'addPost',
-          component: () => import('@/views/user/post/components/PostAdd.vue')
-        }
-      ]
     }
   ]
 })

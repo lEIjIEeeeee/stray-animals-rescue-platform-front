@@ -3,16 +3,28 @@ import { computed, onMounted, reactive, ref, unref } from 'vue'
 import { AddPostForm } from '../types'
 import { FormRules, ElForm, ElMessage, ElMessageBox, ElCascader } from 'element-plus'
 import router from '@/router/index'
-import { submitPostApi } from '../post.api'
+import { getDetailApi, submitPostApi, resubmitPostApi } from '../post.api'
 import WangEditor from '@/components/WangEditor/index.vue'
 import { getCategoryTreeApi } from '@/views/platform/animal/category_manage/category.api'
 import { getAnimalListByCategoryIdApi } from '../../animal/animal.api'
 import UploadImg from '@/components/Upload/UploadImg.vue'
 import useMainLoading from '@/hooks/useMainLoading'
+import { bizTypeDict } from '@/stores/enums'
 import { get } from 'lodash'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => unref(mainLoading))
+
+const props = defineProps<{
+  type: 'add' | 'edit'
+}>()
+
+const emit = defineEmits<{
+  (e: 'add'): void
+  (e: 'edit'): void
+}>()
+
+const title = computed(() => (props.type === 'add' ? '发布新帖' : '编辑帖子'))
 
 const formData = reactive(new AddPostForm())
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -57,19 +69,59 @@ const formRules: FormRules = {
   ]
 }
 
-const submitPost = async () => {
+const save = async () => {
   try {
     await formRef.value?.validate()
-    await ElMessageBox.confirm('是否确认发帖？请保证帖子内容的正确性，平台会对帖子内容进行审核。', {
-      type: 'warning'
-    })
     openMainLoading()
-    const data = await submitPostApi(formData)
-    if (get(data, 'code') === 0) {
-      ElMessage.success('发帖成功')
+    // const data = await submitPostApi(formData)
+    // if (get(data, 'code') === 0) {
+    //   ElMessage.success('发帖成功')
+    // }
+    if (props.type === 'add') {
+      addPost()
+    }
+    if (props.type === 'edit') {
+      editPost()
     }
     closeMainLoading()
-    router.go(-1)
+  } catch (e) {
+    closeMainLoading()
+  }
+}
+
+const addPost = async () => {
+  try {
+    openMainLoading()
+    await ElMessageBox.confirm('确认发布帖子？请保证帖子内容的正确性，平台会对帖子内容进行审核。', {
+      type: 'warning'
+    })
+    const data = await submitPostApi(formData)
+    if (get(data, 'code') === 0) {
+      ElMessage.success('发布成功')
+    }
+    closeMainLoading()
+    emit('add')
+  } catch (e) {
+    closeMainLoading()
+  }
+}
+
+const editPost = async () => {
+  try {
+    openMainLoading()
+    await ElMessageBox.confirm(
+      '确认修改帖子并发布？请保证帖子内容的正确性，平台会对帖子内容进行审核。',
+      {
+        type: 'warning'
+      }
+    )
+    formData['id'] = id
+    const data = await resubmitPostApi(formData)
+    if (get(data, 'code') === 0) {
+      ElMessage.success('修改成功')
+    }
+    closeMainLoading()
+    emit('edit')
   } catch (e) {
     closeMainLoading()
   }
@@ -86,14 +138,32 @@ const getCategoryTree = async () => {
 }
 
 const animalList = ref([])
-const getAnimalList = async () => {
-  const data = await getAnimalListByCategoryIdApi()
-  animalList.value = data.data
+
+const getDetail = async () => {
+  try {
+    openMainLoading()
+    const data = await getDetailApi(id)
+    formData.title = data.data.title
+    formData.categoryId = data.data.categoryId
+    formData.bizType = bizTypeDict.find((item) => {
+      return item.value === data.data.bizType
+    }).code
+    formData.picUrl = data.data.picUrl
+    formData.postAbstract = data.data.postAbstract
+    formData.content = data.data.content
+    closeMainLoading()
+  } catch (e) {
+    closeMainLoading()
+  }
 }
 
+let id: any = ''
 const init = () => {
   getCategoryTree()
-  getAnimalList()
+  if (props.type === 'edit') {
+    id = unref(router.currentRoute).query?.id
+    getDetail()
+  }
 }
 
 onMounted(() => {
@@ -132,9 +202,9 @@ const handleCascaderChange = async () => {
 
 <template>
   <div class="w-full min-w-[1200px] flex justify-center">
-    <div class="w-[1200px] my-[20px] pt-[20px] rounded-[4px] bg-white flex flex-col">
+    <div class="w-[1200px] my-[14px] pt-[20px] rounded-[4px] bg-white flex flex-col shadow">
       <div class="mx-[30px] text-[20px] font-bold">
-        <span>发布新帖</span>
+        <span>{{ title }}</span>
       </div>
       <div class="mx-[50px] mt-[20px] flex justify-center">
         <el-form
@@ -195,8 +265,8 @@ const handleCascaderChange = async () => {
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitPost">确认发帖</el-button>
-            <el-button @click="submitCancel">取消</el-button>
+            <el-button type="primary" @click="save">确认发布</el-button>
+            <el-button @click="submitCancel">返回</el-button>
           </el-form-item>
         </el-form>
       </div>

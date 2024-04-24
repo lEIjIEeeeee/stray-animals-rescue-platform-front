@@ -3,9 +3,11 @@ import { computed, onMounted, reactive } from 'vue'
 import useMainLoading from '@/hooks/useMainLoading'
 import { BaseListResponse, SearchParams } from '../types'
 import { getPersonalPostListApi } from '../personal.api'
-import dayjs from 'dayjs'
-import { bizTypeDict, getEnumNameByValue } from '@/stores/enums'
+import { bizTypeDict, getEnumNameByValue, postStatusDict } from '@/stores/enums'
 import router from '@/router'
+import { deletePostApi } from '@/views/user/post/post.api'
+import { get } from 'lodash'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => mainLoading.value)
@@ -49,6 +51,42 @@ const goPostDetail = (postId: string) => {
     }
   })
 }
+
+const editPost = (postId: string) => {
+  router.push({
+    path: '/post/editPost',
+    query: {
+      id: postId
+    }
+  })
+}
+
+const deletePost = async (postId: number) => {
+  try {
+    openMainLoading()
+    await ElMessageBox.confirm('确认删除帖子？删除后无法撤销此操作。', {
+      type: 'warning'
+    })
+    const data = await deletePostApi({ id: postId })
+    if (get(data, 'code') === 0) {
+      ElMessage.success('删除成功')
+    }
+    closeMainLoading()
+    getPostList()
+  } catch (e) {
+    closeMainLoading()
+  }
+}
+
+const handleCurrentPageChange = (val: number) => {
+  searchParams.pageNo = val
+  getPostList()
+}
+
+const handlePageSizeChange = (val: number) => {
+  searchParams.pageSize = val
+  getPostList()
+}
 </script>
 
 <template>
@@ -70,23 +108,29 @@ const goPostDetail = (postId: string) => {
             </div>
             <div class="w-full flex flex-col justify-between">
               <div class="flex flex-col">
-                <div class="inline-flex">
-                  <span class="text-[18px] font-medium hover:text-[#409eff]">{{ item.title }}</span>
+                <div class="flex-1 line-clamp-1 text-ellipsis flex items-end">
+                  <span class="flex-1 text-[18px] font-medium hover:text-[#409eff]">
+                    {{ item.title }}
+                  </span>
+                  <span>{{ getEnumNameByValue(postStatusDict, item.status) }}</span>
                 </div>
-                <div class="line-clamp-3 text-ellipsis">
+                <div class="mt-[10px] line-clamp-2 text-ellipsis">
                   <span class="text-[14px]">{{ item.postAbstract }}</span>
                 </div>
               </div>
-              <div class="inline-flex items-center text-[14px]">
-                <div>
-                  <el-tag>{{ item.categoryName }}</el-tag>
-                  <el-tag class="ml-[5px]" type="warning">{{
-                    getEnumNameByValue(bizTypeDict, item.bizType)
-                  }}</el-tag>
+              <div class="flex items-center">
+                <div class="flex-1 flex items-center text-[14px]">
+                  <div>
+                    <el-tag>{{ item.categoryName }}</el-tag>
+                    <el-tag class="ml-[5px]" type="warning">
+                      {{ getEnumNameByValue(bizTypeDict, item.bizType) }}
+                    </el-tag>
+                  </div>
+                  <div class="ml-[10px] text-black text-opacity-25">
+                    <span>发布时间：{{ item.createTime }}</span>
+                  </div>
                 </div>
-                <div class="ml-[10px] text-black text-opacity-25">
-                  <span>发布时间：{{ item.createTime }}</span>
-                </div>
+
                 <!-- <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.postAmount ? item.postAmount : 0 }} 帖子</span>
@@ -99,8 +143,11 @@ const goPostDetail = (postId: string) => {
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
                 </div> -->
-                <div class="edit-button hidden hover:text-[#0152d9]">
-                  <span>编辑</span>
+                <div class="edit-button hidden hover:text-[#409eff]">
+                  <span @click.stop="editPost(item.id)">编辑</span>
+                </div>
+                <div class="ml-[10px] delete-button hidden hover:text-[#409eff]">
+                  <span @click.stop="deletePost(item.id)">删除</span>
                 </div>
               </div>
             </div>
@@ -117,7 +164,7 @@ const goPostDetail = (postId: string) => {
           <el-pagination
             :current-page="searchParams.pageNo"
             :page-size="searchParams.pageSize"
-            :page-sizes="[1, 10, 20, 50, 100]"
+            :page-sizes="[10, 20, 50, 100]"
             layout=" prev, pager, next, jumper,sizes, total"
             :total="postListResponse.total"
             :disabled="loading"
@@ -131,8 +178,8 @@ const goPostDetail = (postId: string) => {
 </template>
 
 <style scoped>
-.list-div:hover .edit-button {
+.list-div:hover .edit-button,
+.list-div:hover .delete-button {
   display: inline;
-  margin-left: auto;
 }
 </style>

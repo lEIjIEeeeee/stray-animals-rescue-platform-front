@@ -11,7 +11,7 @@ const emit = defineEmits(['update:modelValue'])
 const editorRef = shallowRef()
 
 // 内容 HTML
-const valueHtml = ref()
+const valueHtml = ref('')
 
 const mode = ref('default')
 
@@ -30,7 +30,9 @@ onBeforeUnmount(() => {
 
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
-  valueHtml.value = props.modelValue
+  setTimeout(() => {
+    valueHtml.value = props.modelValue
+  }, 500)
 }
 
 const handleChange = () => {
@@ -39,7 +41,7 @@ const handleChange = () => {
 </script>
 
 <template>
-  <div style="border: 1px solid #ccc;width=100%">
+  <div style="border: 1px solid #ccc">
     <Toolbar
       style="border-bottom: 1px solid #ccc"
       :editor="editorRef"

@@ -140,7 +140,7 @@ const handleContributionApply = (animalId: string) => {
       </div>
       <div class="grid grid-cols-5 gap-x-[10px] gap-y-[20px]" v-loading="loading">
         <div
-          class="p-[10px] flex flex-col bg-white cursor-pointer"
+          class="p-[10px] flex flex-col bg-white cursor-pointer hover:shadow"
           v-for="(item, index) in animalListResponse.dataList"
           :key="item.id"
           @mouseenter="handleMouseEnter(index)"
@@ -148,7 +148,7 @@ const handleContributionApply = (animalId: string) => {
           @click="getAnimalDetail(item.id)"
         >
           <el-image
-            class="w-full h-[212px] mb-[10px] rounded-[10px]"
+            class="w-full h-[212px] mb-[10px] rounded-[4px]"
             :src="item.picUrl == '' || item.picUrl == null ? '' : item.picUrl"
             fit="cover"
             :title="item.name"
@@ -225,7 +225,7 @@ const handleContributionApply = (animalId: string) => {
             background
             :current-page="searchParams.pageNo"
             :page-size="searchParams.pageSize"
-            layout=" prev, pager, next, jumper, total"
+            layout="prev, pager, next, jumper, total"
             :total="animalListResponse.total"
             :disabled="loading"
             @current-change="currentPageChange"

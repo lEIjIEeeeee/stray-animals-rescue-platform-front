@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { getUserType, removeToken, removeUserType } from '@/utils/auth'
+import { computed, onMounted, reactive } from 'vue'
+import { removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
 import MenuNavBar from '@/components/MenuNavBar/index.vue'
@@ -32,11 +32,13 @@ const menuList = [
     name: '社区交流',
     module: 'post',
     children: []
+  },
+  {
+    code: '/notice',
+    name: '公告须知',
+    module: 'notice',
+    children: []
   }
-  // {
-  //   code: '/notice',
-  //   name: '公告须知'
-  // },
   // {
   //   code: '/feedback',
   //   name: '用户反馈'
@@ -147,12 +149,12 @@ const handleSelect = (key, keyPath) => {
                   </el-icon>
                   我的帖子
                 </el-dropdown-item>
-                <el-dropdown-item @click="goPersonalApply">
+                <!-- <el-dropdown-item @click="goPersonalApply">
                   <el-icon>
                     <Bell />
                   </el-icon>
                   我的申请
-                </el-dropdown-item>
+                </el-dropdown-item> -->
                 <div v-if="sysTokenLogin.userType === 'PLATFORM_ADMIN'">
                   <el-dropdown-item divided @click="goAdminHomePage">
                     <el-icon>
@@ -173,7 +175,7 @@ const handleSelect = (key, keyPath) => {
         </div>
       </div>
     </div>
-    <div class="flex-1 bg-blue-50">
+    <div class="flex-1 bg-gray-50 overflow-auto">
       <router-view />
     </div>
   </div>

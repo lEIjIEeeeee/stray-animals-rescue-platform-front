@@ -12,21 +12,21 @@ const avatar = computed(() =>
 )
 
 const menuList = [
-  {
-    code: '/platform/home',
-    name: '概况',
-    module: 'home',
-    icon: 'MostlyCloudy',
-    children: [
-      {
-        code: '/platform/home/workbench',
-        name: '工作台',
-        module: 'workbench',
-        icon: 'Notification',
-        children: []
-      }
-    ]
-  },
+  // {
+  //   code: '/platform/home',
+  //   name: '概况',
+  //   module: 'home',
+  //   icon: 'MostlyCloudy',
+  //   children: [
+  //     {
+  //       code: '/platform/home/workbench',
+  //       name: '工作台',
+  //       module: 'workbench',
+  //       icon: 'Notification',
+  //       children: []
+  //     }
+  //   ]
+  // },
   {
     code: '/platform/animal',
     name: '宠物管理',
@@ -81,6 +81,28 @@ const menuList = [
         name: '评论管理',
         module: 'commentManage',
         icon: 'ChatDotSquare',
+        children: []
+      }
+    ]
+  },
+  {
+    code: '/platform/notice',
+    name: '公告管理',
+    module: 'notice',
+    icon: 'BellFilled',
+    children: [
+      {
+        code: '/platform/notice/noticeTypeManage',
+        name: '公告类型管理',
+        module: 'noticeTypeManage',
+        icon: 'Notification',
+        children: []
+      },
+      {
+        code: '/platform/notice/noticeArticleManage',
+        name: '公告文章管理',
+        module: 'noticeArticleManage',
+        icon: 'Document',
         children: []
       }
     ]

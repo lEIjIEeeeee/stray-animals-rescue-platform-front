@@ -63,13 +63,18 @@ const getDetail = (id) => {
 </script>
 
 <template>
-  <div class="w-full h-full min-w-[1200px] flex justify-center">
-    <div class="w-[1200px] h-full bg-white flex flex-col">
-      <div class="flex-1 min-h-0">
+  <div class="w-full min-w-[1200px] flex justify-center">
+    <div class="w-[1200px] bg-white flex flex-col">
+      <div class="flex-1 min-h-0 shadow">
         <ul class="px-[24px]" v-loading="loading">
           <li
-            class="h-[175px] py-[24px] border-t-[1px]"
-            :class="[{ 'border-t-0': index === 0 }]"
+            class="h-[175px] py-[24px]"
+            :class="[
+              {
+                'border-t-0': index === 0,
+                'border-t-[1px]': index !== 0
+              }
+            ]"
             v-for="(item, index) in postList.dataList"
             :key="item.id"
           >
@@ -130,7 +135,6 @@ const getDetail = (id) => {
           </li>
         </ul>
       </div>
-
       <div
         class="w-full h-[50px] pr-[24px] flex justify-end items-center sticky bottom-0 bg-white"
         style="box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05)"
@@ -140,7 +144,7 @@ const getDetail = (id) => {
             :current-page="searchParams.pageNo"
             :page-size="searchParams.pageSize"
             :page-sizes="[10, 20, 50, 100]"
-            layout=" prev, pager, next, jumper,sizes, total"
+            layout="prev, pager, next, jumper, sizes, total"
             :total="postList.total"
             :disabled="loading"
             @current-change="handleCurrentPageChange"
@@ -152,7 +156,7 @@ const getDetail = (id) => {
   </div>
 
   <div
-    class="w-[50px] h-[50px] fixed right-[50px] bottom-[220px] bg-gray-400 rounded-[5px] flex justify-center items-center cursor-pointer"
+    class="w-[50px] h-[50px] fixed right-[50px] bottom-[220px] bg-gray-400 rounded-[4px] flex justify-center items-center cursor-pointer"
     style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.12)"
     @mouseenter="refreshDivDisable = true"
     @mouseleave="refreshDivDisable = false"
@@ -161,16 +165,10 @@ const getDetail = (id) => {
     <el-icon v-if="!refreshDivDisable" :size="40" color="#ffffff">
       <refresh />
     </el-icon>
-    <div
-      v-if="refreshDivDisable"
-      class="w-full h-full text-white font-medium text-[15px] bg-gray-500 rounded-[5px] flex justify-center items-center"
-    >
-      刷新
-    </div>
+    <div v-if="refreshDivDisable" class="text-white font-medium text-[15px]">刷新</div>
   </div>
   <div
-    router
-    class="w-[50px] h-[50px] fixed right-[50px] bottom-[160px] bg-blue-400 rounded-[5px] flex justify-center items-center cursor-pointer"
+    class="w-[50px] h-[50px] fixed right-[50px] bottom-[160px] bg-blue-400 rounded-[4px] flex justify-center items-center cursor-pointer"
     style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.12)"
     @mouseenter="postDivDisable = true"
     @mouseleave="postDivDisable = false"

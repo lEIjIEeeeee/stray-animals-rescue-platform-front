@@ -157,6 +157,17 @@ export const contributionTypeDict = [
   }
 ]
 
+export const commentTypeDict = [
+  {
+    code: 'ROOT',
+    label: '评论'
+  },
+  {
+    code: 'REPLAY',
+    label: '回复'
+  }
+]
+
 export const getEnumNameByCode = (enumType, code: string) => {
   let enumName = ''
   enumType.forEach(function (item, inex) {

@@ -56,7 +56,7 @@ const setDefault = () => {
         :disabled="disabled"
       >
         <UploadSlot
-          class="w-[120px] h-[120px] border border-dashed border-[#dcdfe6] rounded-[10px] hover:border-[#409eff]"
+          class="w-[120px] h-[120px] border border-dashed border-[#dcdfe6] rounded-[4px] hover:border-[#409eff]"
           :showAdd="showAdd"
           :showDefault="showDefault"
           :showProgress="showProgress"
@@ -73,7 +73,7 @@ const setDefault = () => {
           <template #default>
             <div class="container-wrapper relative">
               <el-image
-                class="container-wrapper object-fill rounded-[10px]"
+                class="container-wrapper object-fill rounded-[4px]"
                 :src="props.modelValue"
               ></el-image>
               <div

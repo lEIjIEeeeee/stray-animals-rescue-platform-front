@@ -31,6 +31,22 @@ export class PlatformPostList {
   dataList
 }
 
+export class PostDetail {
+  title = ''
+  createId = ''
+  nickName = ''
+  createTime = ''
+  categoryName = ''
+  bizType = 0
+  postAbstract = ''
+  content = ''
+  picUrl = ''
+  status = 0
+  auditorName = ''
+  auditTime = ''
+  auditRemark = ''
+}
+
 export class PostAuditInfo {
   id
   auditResult = 'PASS'

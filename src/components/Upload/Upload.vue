@@ -91,37 +91,39 @@ const uploadAddFile = (res: UploadRequestOptions) => {
 </script>
 
 <template>
-  <el-upload
-    v-if="props.type === 'item'"
-    action="#"
-    :show-file-list="false"
-    :disabled="props.disabled"
-    :http-request="httpRequest"
-  >
-    <slot
-      :showAdd="isAdd"
-      :showDefault="props.url != '' && !uploading && !uploadError"
-      :showProgress="uploading && !uploadError"
-      :showError="uploadError"
-      :uploadPercent="uploadPercent"
+  <div class="bg-white">
+    <el-upload
+      v-if="props.type === 'item'"
+      action="#"
+      :show-file-list="false"
       :disabled="props.disabled"
-    ></slot>
-  </el-upload>
-  <el-upload
-    v-else-if="props.type === 'add'"
-    action="#"
-    :multiple="props.multiple"
-    :show-file-list="false"
-    :limit="props.limit"
-    :http-request="uploadAddFile"
-  >
-    <slot
-      :showAdd="false"
-      :showDefault="false"
-      :showProgress="false"
-      :showError="false"
-      :uploadPercent="0"
-      :disabled="props.disabled"
-    />
-  </el-upload>
+      :http-request="httpRequest"
+    >
+      <slot
+        :showAdd="isAdd"
+        :showDefault="props.url != '' && !uploading && !uploadError"
+        :showProgress="uploading && !uploadError"
+        :showError="uploadError"
+        :uploadPercent="uploadPercent"
+        :disabled="props.disabled"
+      ></slot>
+    </el-upload>
+    <el-upload
+      v-else-if="props.type === 'add'"
+      action="#"
+      :multiple="props.multiple"
+      :show-file-list="false"
+      :limit="props.limit"
+      :http-request="uploadAddFile"
+    >
+      <slot
+        :showAdd="false"
+        :showDefault="false"
+        :showProgress="false"
+        :showError="false"
+        :uploadPercent="0"
+        :disabled="props.disabled"
+      />
+    </el-upload>
+  </div>
 </template>
