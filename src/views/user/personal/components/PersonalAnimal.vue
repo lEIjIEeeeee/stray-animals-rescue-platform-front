@@ -89,23 +89,27 @@ const goAnimalDetail = (animalId: string) => {
                       background-clip: text;
                       color: transparent;
                     "
-                    >NO.{{ item.animalNo }}</span
                   >
+                    NO.{{ item.animalNo }}
+                  </span>
                 </div>
                 <div class="line-clamp-3 text-ellipsis">
                   <span class="text-[14px]">{{ item.desc }}</span>
                 </div>
               </div>
               <div class="inline-flex items-center text-[14px]">
-                <div class="mr-[10px]">
-                  <el-tag>{{ item.categoryName }}</el-tag>
+                <div class="flex-1 flex items-center text-[14px]">
+                  <div>
+                    <el-tag>{{ item.categoryName }}</el-tag>
+                    <el-tag v-if="item.isLost === 1" class="ml-[5px]" type="info"
+                      ><span>已遗失</span></el-tag
+                    >
+                  </div>
+                  <div class="ml-[10px] text-black text-opacity-25">
+                    <span>录入时间：{{ dayjs(item.createTime).format('YYYY-MM-DD') }}</span>
+                  </div>
                 </div>
-                <div class="mr-[10px]" v-if="item.isLost === 1">
-                  <el-tag type="info"><span>已遗失</span></el-tag>
-                </div>
-                <div>
-                  <span>录入时间：{{ dayjs(item.createTime).format('YYYY-MM-DD') }}</span>
-                </div>
+
                 <!-- <div class="w-[1px] h-[10px] mx-[10px] bg-gray-300"></div>
                 <div>
                   <span>{{ item.postAmount ? item.postAmount : 0 }} 帖子</span>
@@ -118,7 +122,7 @@ const goAnimalDetail = (animalId: string) => {
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
                 </div> -->
-                <!-- <div class="edit-button hidden hover:text-[#0152d9]">
+                <!-- <div class="hover:text-[#409eff]">
                   <span>编辑</span>
                 </div> -->
               </div>
@@ -148,10 +152,3 @@ const goAnimalDetail = (animalId: string) => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.list-div:hover .edit-button {
-  display: inline;
-  margin-left: auto;
-}
-</style>

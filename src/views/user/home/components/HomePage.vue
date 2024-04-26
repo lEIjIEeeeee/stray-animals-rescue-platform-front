@@ -148,8 +148,9 @@ const goNoticeDetail = (noticeId: string) => {
                     path: 'notice'
                   })
                 "
-                >更多</span
               >
+                更多
+              </span>
               <el-icon>
                 <arrow-right />
               </el-icon>
@@ -194,7 +195,7 @@ const goNoticeDetail = (noticeId: string) => {
         <div class="mb-[10px] flex justify-start">
           <span class="flex-1 text-[22px]">领养宠物</span>
           <div
-            class="px-[20px] flex justify-end items-center cursor-pointer hover:text-[#409eff]"
+            class="px-[20px] flex justify-end items-center cursor-pointer text-[#999] hover:text-[#409eff]"
             @click="router.push('/animal')"
           >
             <span>更多</span>
@@ -268,7 +269,7 @@ const goNoticeDetail = (noticeId: string) => {
         <div class="mb-[10px] flex justify-start">
           <span class="flex-1 text-[22px]">遗失宠物</span>
           <div
-            class="px-[20px] flex justify-end items-center cursor-pointer hover:text-[#409eff]"
+            class="px-[20px] flex justify-end items-center cursor-pointer text-[#999] hover:text-[#409eff]"
             @click="router.push('/animal')"
           >
             <span>更多</span>
@@ -306,13 +307,10 @@ const goNoticeDetail = (noticeId: string) => {
                   </el-tag>
                 </div>
               </div>
-              <div
-                class="h-[30px] flex justify-start items-center text-[16px]"
-                v-if="lostItemIndex !== index"
-              >
+              <div class="h-[30px] flex justify-start items-center text-[16px]">
                 <span class="overflow-hidden text-ellipsis whitespace-nowrap">{{ item.name }}</span>
               </div>
-              <div class="h-[30px] flex justify-between items-center text-[12px]" v-else>
+              <!-- <div class="h-[30px] flex justify-between items-center text-[12px]" v-else>
                 <div
                   class="w-[100px] h-[26px] rounded-[16px] border border-[#979797] hover:border-[#409eff]"
                 >
@@ -331,7 +329,7 @@ const goNoticeDetail = (noticeId: string) => {
                     联系本人
                   </span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ul>
         </div>

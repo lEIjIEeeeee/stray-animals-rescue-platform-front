@@ -84,8 +84,8 @@ const handleContributionAnimal = () => {
                   : animalDetail.isAdopt === 1
                     ? '已领养'
                     : '未知'
-              }}</span
-            >
+              }}
+            </span>
             <span class="ml-[50px]">遗失状态：</span>
             <span
               class="ml-[5px] font-bold text-[18px]"
@@ -190,7 +190,7 @@ const handleContributionAnimal = () => {
               </el-icon>
               <span class="ml-[8px] text-[18px] text-[#409eff]">我要捐助</span>
             </div>
-            <div
+            <!-- <div
               v-if="animalDetail.isLost === 1 && !isOwner"
               class="w-[165px] h-[40px] rounded-[4px] bg-[#409eff] flex justify-center items-center cursor-pointer hover:opacity-70 active:opacity-100"
             >
@@ -198,7 +198,7 @@ const handleContributionAnimal = () => {
                 <chat-dot-square />
               </el-icon>
               <span class="ml-[8px] text-[18px] text-[#fff]">我有线索</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

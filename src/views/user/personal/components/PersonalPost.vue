@@ -143,10 +143,10 @@ const handlePageSizeChange = (val: number) => {
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
                 </div> -->
-                <div class="edit-button hidden hover:text-[#409eff]">
+                <div class="text-[14px] hover:text-[#409eff]">
                   <span @click.stop="editPost(item.id)">编辑</span>
                 </div>
-                <div class="ml-[10px] delete-button hidden hover:text-[#409eff]">
+                <div class="ml-[10px] text-[14px] hover:text-[#409eff]">
                   <span @click.stop="deletePost(item.id)">删除</span>
                 </div>
               </div>
@@ -176,10 +176,3 @@ const handlePageSizeChange = (val: number) => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.list-div:hover .edit-button,
-.list-div:hover .delete-button {
-  display: inline;
-}
-</style>

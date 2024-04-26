@@ -166,7 +166,10 @@ const handleContributionApply = (animalId: string) => {
               </el-tag>
             </div>
           </div>
-          <div class="h-[30px] flex items-center text-[16px]" v-if="itemIndex !== index">
+          <div
+            class="h-[30px] flex items-center text-[16px]"
+            v-if="itemIndex !== index || item.isLost === 1"
+          >
             <span class="overflow-hidden text-ellipsis whitespace-nowrap">{{ item.name }}</span>
           </div>
           <div
@@ -194,7 +197,7 @@ const handleContributionApply = (animalId: string) => {
               </span>
             </div>
           </div>
-          <div
+          <!-- <div
             class="h-[30px] flex justify-between items-center text-[12px]"
             v-if="itemIndex === index && item.isLost === 1"
           >
@@ -216,7 +219,7 @@ const handleContributionApply = (animalId: string) => {
                 联系本人
               </span>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="h-[60px] flex justify-end">
