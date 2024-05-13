@@ -102,7 +102,13 @@ const handleSave = async () => {
     openPopup()
     await formRef.value?.validate()
     const length = categoryDetail.pid.length
-    const pid = categoryDetail.pid[length - 1]
+    let pid: any = ''
+    if (props.type === 'add') {
+      pid = categoryDetail.pid[length - 1]
+    }
+    if (props.type === 'edit') {
+      pid = categoryDetail.pid
+    }
     categorySubmitDetail.pid = pid
     categorySubmitDetail.name = categoryDetail.name
     categorySubmitDetail.status = enableDict[categoryDetail.status - 1].code

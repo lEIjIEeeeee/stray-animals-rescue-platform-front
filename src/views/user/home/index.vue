@@ -4,16 +4,9 @@ import { removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
 import MenuNavBar from '@/components/MenuNavBar/index.vue'
-import { SysTokenLogin } from '@/views/common/types'
-import { getSysTokenLoginApi } from '@/views/common/common.api'
+import { getPersonalInfoApi } from '@/views/user/personal/personal.api'
+import { PersonalInfo } from '@/views/user/personal/types'
 
-// 1.首页
-// 5.宠物领养
-// 6.宠物认领
-// 4.宠物捐助
-// 7.帖子专区
-// 3.救助案例
-// 2.领养须知等公告
 const menuList = [
   {
     code: '/home',
@@ -46,7 +39,9 @@ const menuList = [
 ]
 
 const avatar = computed(() =>
-  sysTokenLogin.avatar == null ? '/src/assets/user/default_avatar.png' : sysTokenLogin.avatar
+  currentUserInfo.avatar == null || currentUserInfo.avatar == ''
+    ? '/src/assets/user/default_avatar.png'
+    : currentUserInfo.avatar
 )
 
 onMounted(() => {
@@ -57,10 +52,10 @@ const init = () => {
   getSysTokenLogin()
 }
 
-const sysTokenLogin = reactive(new SysTokenLogin())
+const currentUserInfo = reactive(new PersonalInfo())
 const getSysTokenLogin = async () => {
-  const data = await getSysTokenLoginApi()
-  Object.assign(sysTokenLogin, data.data)
+  const data = await getPersonalInfoApi()
+  Object.assign(currentUserInfo, data.data)
 }
 
 const goAdminHomePage = () => {
@@ -68,25 +63,23 @@ const goAdminHomePage = () => {
 }
 
 const goPersonalAnimal = () => {
-  const target = router.resolve({
+  router.push({
     path: '/personal/personalAnimal'
   })
-  window.open(target.href, '_blank')
 }
 
 const goPersonalPost = () => {
-  const target = router.resolve({
+  router.push({
     path: '/personal/personalPost'
   })
-  window.open(target.href, '_blank')
 }
 
-const goPersonalApply = () => {
-  const target = router.resolve({
-    path: '/personal/personalApply'
-  })
-  window.open(target.href, '_blank')
-}
+// const goPersonalApply = () => {
+//   const target = router.resolve({
+//     path: '/personal/personalApply'
+//   })
+//   window.open(target.href, '_blank')
+// }
 
 const logout = async () => {
   await ElMessageBox.confirm('是否确认退出登录？', {
@@ -155,7 +148,7 @@ const handleSelect = (key, keyPath) => {
                   </el-icon>
                   我的申请
                 </el-dropdown-item> -->
-                <div v-if="sysTokenLogin.userType === 'PLATFORM_ADMIN'">
+                <div v-if="currentUserInfo.userType === 'PLATFORM_ADMIN'">
                   <el-dropdown-item divided @click="goAdminHomePage">
                     <el-icon>
                       <Setting />

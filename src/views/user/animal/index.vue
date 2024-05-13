@@ -7,6 +7,7 @@ import { DataListResponse } from '@/views/common/types'
 import router from '@/router'
 import AnimalAdopt from './components/AnimalAdopt.vue'
 import AnimalContribution from './components/AnimalContribution.vue'
+import { getCategoryTreeApi } from '@/views/platform/animal/category_manage/category.api'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
@@ -55,7 +56,14 @@ const handleMouseLeave = () => {
   itemIndex.value = -1
 }
 
+const categoryTree = ref([])
+const getCategoryTree = async () => {
+  const data = await getCategoryTreeApi()
+  categoryTree.value = data.data.children
+}
+
 const init = () => {
+  getCategoryTree()
   getAnimalList()
 }
 
@@ -103,17 +111,87 @@ const animalContributionRef = ref<InstanceType<typeof AnimalContribution>>()
 const handleContributionApply = (animalId: string) => {
   animalContributionRef.value?.open(animalId)
 }
+
+const allAnimalWrapper = ref(true)
+const handleReset = () => {
+  searchParams.pageNo = 1
+  searchParams.pageSize = 20
+  categoryCascaderPanelRef.value?.clearCheckedNodes()
+  // getAnimalList()
+}
+
+const categoryCascaderPanelRef = ref(null)
+const categoryWrapper = ref(false)
+const handleCategoryChange = (categoryList) => {
+  let idList = ''
+  categoryList.forEach(function (item, index) {
+    if (categoryList.length === index + 1) {
+      idList += item
+    } else {
+      idList += item + ','
+    }
+  })
+  searchParams.categoryIds = idList
+  getAnimalList()
+  if (idList === '') {
+    allAnimalWrapper.value = true
+    categoryWrapper.value = false
+  } else {
+    allAnimalWrapper.value = false
+    categoryWrapper.value = true
+  }
+  console.log(searchParams.categoryIds)
+}
 </script>
 
 <template>
   <div class="w-full min-w-[1200px] flex justify-center">
     <div class="w-[1200px]">
-      <div class="my-[14px] flex justify-between items-center">
+      <div class="my-[14px] flex items-center">
         <div class="flex items-center">
           <el-breadcrumb separator=">">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>全部萌宠</el-breadcrumb-item>
           </el-breadcrumb>
+        </div>
+      </div>
+      <div class="py-[20px] flex justify-between items-center">
+        <div class="flex items-center text-[14px]">
+          <div
+            class="px-[20px] flex justify-center items-center cursor-pointer"
+            :class="[{ 'text-[#409eff]': allAnimalWrapper }]"
+            @click="handleReset"
+          >
+            <span>全部</span>
+          </div>
+          <div class="w-[1px] h-[14px] bg-[#d3d3d3]"></div>
+          <div class="px-[20px] flex justify-center items-center">
+            <el-dropdown>
+              <span
+                class="text-[#000] flex justify-center items-center"
+                :class="[{ 'text-[#409eff]': categoryWrapper }]"
+              >
+                动物类目
+                <el-icon>
+                  <ArrowDown />
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <el-cascader-panel
+                  :options="categoryTree"
+                  :props="{
+                    multiple: 'true',
+                    checkStrictly: 'true',
+                    emitPath: false,
+                    value: 'id',
+                    label: 'name'
+                  }"
+                  @change="handleCategoryChange"
+                  ref="categoryCascaderPanelRef"
+                ></el-cascader-panel>
+              </template>
+            </el-dropdown>
+          </div>
         </div>
         <div class="flex items-center text-[14px] text-[#666666]">
           <span>共有{{ animalListResponse.total }}个宠物</span>

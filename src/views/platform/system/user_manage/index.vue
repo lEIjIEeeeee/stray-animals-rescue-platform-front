@@ -154,7 +154,9 @@ const resetPassword = async (id) => {
     openMainLoading()
     const data = await resetPasswordApi({ id: id })
     if (get(data, 'code') === 0) {
-      ElMessage.success('修改成功')
+      ElMessageBox.confirm('密码重置成功！默认重置密码为123456。', {
+        type: 'success'
+      })
     }
     closeMainLoading()
   } catch (e) {

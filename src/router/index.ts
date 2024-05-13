@@ -76,36 +76,36 @@ const router = createRouter({
                 module: 'notice'
               },
               component: () => import('@/views/user/notice/components/NoticeDetail.vue')
+            },
+            {
+              path: 'personal',
+              name: 'personal',
+              component: () => import('@/views/user/personal/index.vue'),
+              children: [
+                {
+                  path: 'personalAnimal',
+                  meta: {
+                    module: 'personalAnimal'
+                  },
+                  component: () => import('@/views/user/personal/components/PersonalAnimal.vue')
+                },
+                {
+                  path: 'personalPost',
+                  meta: {
+                    module: 'personalPost'
+                  },
+                  component: () => import('@/views/user/personal/components/PersonalPost.vue')
+                },
+                {
+                  path: 'personalApply',
+                  meta: {
+                    module: 'personalApply'
+                  },
+                  component: () => import('@/views/user/personal/components/PersonalApply.vue')
+                }
+              ]
             }
           ]
-        }
-      ]
-    },
-    {
-      path: '/personal',
-      name: 'personal',
-      component: () => import('@/views/user/personal/index.vue'),
-      children: [
-        {
-          path: 'personalAnimal',
-          meta: {
-            module: 'personalAnimal'
-          },
-          component: () => import('@/views/user/personal/components/PersonalAnimal.vue')
-        },
-        {
-          path: 'personalPost',
-          meta: {
-            module: 'personalPost'
-          },
-          component: () => import('@/views/user/personal/components/PersonalPost.vue')
-        },
-        {
-          path: 'personalApply',
-          meta: {
-            module: 'personalApply'
-          },
-          component: () => import('@/views/user/personal/components/PersonalApply.vue')
         }
       ]
     },

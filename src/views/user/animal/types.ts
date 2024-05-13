@@ -4,6 +4,7 @@ export class SearchParams {
   searchContent
   isAdopt
   isLost
+  categoryIds
 }
 
 export class AnimalCard {
