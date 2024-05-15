@@ -64,12 +64,12 @@ const goAnimalDetail = (animalId: string) => {
     <div class="mx-[20px]">
       <ul v-loading="loading">
         <li
-          class="h-[180px] py-[24px] border-t-[1px]"
+          class="h-[200px] py-[20px] border-t-[1px]"
           v-for="item in animalListResponse.dataList"
           :key="item.id"
           @click="goAnimalDetail(item.id)"
         >
-          <div class="list-div h-full flex flex-row cursor-pointer">
+          <div class="h-full flex flex-row cursor-pointer">
             <div>
               <el-image
                 class="w-[240px] h-full mr-[20px]"
@@ -80,7 +80,9 @@ const goAnimalDetail = (animalId: string) => {
             <div class="w-full flex flex-col justify-between">
               <div class="flex flex-col">
                 <div class="inline-flex">
-                  <span class="text-[18px] font-medium hover:text-[#409eff]">{{ item.name }}</span>
+                  <span class="text-[18px] font-semibold hover:text-[#409eff]">
+                    {{ item.name }}
+                  </span>
                   <span
                     class="ml-auto font-sans"
                     style="
@@ -132,7 +134,7 @@ const goAnimalDetail = (animalId: string) => {
       </ul>
     </div>
     <div
-      class="w-full h-[70px] sticky bottom-0 bg-white"
+      class="w-full h-[50px] sticky bottom-0 bg-white"
       style="box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1)"
     >
       <div class="h-full py-[10px] pr-[10px] flex flex-row justify-end items-center">

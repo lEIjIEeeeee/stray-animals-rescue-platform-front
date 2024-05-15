@@ -315,7 +315,7 @@ const handleCategoryChange = (categoryList) => {
       </div>
     </div>
   </div>
-  <AnimalAdopt @submit="router.go(0)" ref="animalAdoptRef" />
+  <AnimalAdopt type="apply" @apply="router.go(0)" ref="animalAdoptRef" />
   <AnimalContribution @submit="router.go(0)" ref="animalContributionRef" />
 </template>
 

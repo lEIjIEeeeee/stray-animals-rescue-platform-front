@@ -11,7 +11,7 @@ export class SearchParams {
   searchType = ''
   searchContent = ''
   bizType = ''
-  categoryIds = []
+  categoryIds = ''
   createStartTime = ''
   createEndTime = ''
 }

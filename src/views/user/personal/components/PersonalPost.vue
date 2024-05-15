@@ -94,11 +94,11 @@ const handlePageSizeChange = (val: number) => {
     <div class="mx-[20px]">
       <ul v-loading="loading">
         <li
-          class="h-[180px] py-[24px] border-t-[1px]"
+          class="h-[200px] py-[20px] border-t-[1px]"
           v-for="item in postListResponse.dataList"
           :key="item.id"
         >
-          <div class="list-div h-full flex flex-row cursor-pointer" @click="goPostDetail(item.id)">
+          <div class="h-full flex flex-row cursor-pointer" @click="goPostDetail(item.id)">
             <div>
               <el-image
                 class="w-[240px] h-full mr-[20px]"
@@ -109,10 +109,22 @@ const handlePageSizeChange = (val: number) => {
             <div class="w-full flex flex-col justify-between">
               <div class="flex flex-col">
                 <div class="flex-1 line-clamp-1 text-ellipsis flex items-end">
-                  <span class="flex-1 text-[18px] font-medium hover:text-[#409eff]">
+                  <span class="flex-1 text-[18px] font-semibold hover:text-[#409eff]">
                     {{ item.title }}
                   </span>
-                  <span>{{ getEnumNameByValue(postStatusDict, item.status) }}</span>
+                  <span
+                    class="pr-[10px]"
+                    :class="[
+                      {
+                        'text-[#fa8c35]': item.status === 1,
+                        'text-[#00bc12]': item.status === 2,
+                        'text-[#c83c23]': item.status === 3,
+                        'text-[#b2b6b6]': item.status === 4
+                      }
+                    ]"
+                  >
+                    {{ getEnumNameByValue(postStatusDict, item.status) }}
+                  </span>
                 </div>
                 <div class="mt-[10px] line-clamp-2 text-ellipsis">
                   <span class="text-[14px]">{{ item.postAbstract }}</span>
@@ -143,10 +155,10 @@ const handlePageSizeChange = (val: number) => {
                 <div>
                   <span>{{ item.applyAmount ? item.applyAmount : 0 }} 申请</span>
                 </div> -->
-                <div class="text-[14px] hover:text-[#409eff]">
+                <div class="px-[10px] text-[14px] hover:text-[#409eff]">
                   <span @click.stop="editPost(item.id)">编辑</span>
                 </div>
-                <div class="ml-[10px] text-[14px] hover:text-[#409eff]">
+                <div class="px-[10px] text-[14px] hover:text-[#409eff]">
                   <span @click.stop="deletePost(item.id)">删除</span>
                 </div>
               </div>
@@ -156,7 +168,7 @@ const handlePageSizeChange = (val: number) => {
       </ul>
     </div>
     <div
-      class="w-full h-[70px] sticky bottom-0 bg-white"
+      class="w-full h-[50px] sticky bottom-0 bg-white"
       style="box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1)"
     >
       <div class="h-full py-[10px] pr-[10px] flex flex-row justify-end items-center">
@@ -165,7 +177,7 @@ const handlePageSizeChange = (val: number) => {
             :current-page="searchParams.pageNo"
             :page-size="searchParams.pageSize"
             :page-sizes="[10, 20, 50, 100]"
-            layout=" prev, pager, next, jumper,sizes, total"
+            layout="prev, pager, next, jumper,sizes, total"
             :total="postListResponse.total"
             :disabled="loading"
             @current-change="handleCurrentPageChange"

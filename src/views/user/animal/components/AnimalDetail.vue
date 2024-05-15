@@ -204,6 +204,6 @@ const handleContributionAnimal = () => {
       </div>
     </div>
   </div>
-  <AnimalAdopt @submit="getDetail" ref="animalAdoptRef" />
+  <AnimalAdopt type="apply" @apply="getDetail" ref="animalAdoptRef" />
   <AnimalContribution @submit="router.go(0)" ref="animalContributionRef" />
 </template>

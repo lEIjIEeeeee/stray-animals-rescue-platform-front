@@ -8,6 +8,7 @@ import PersonalAnimal from './components/PersonalAnimal.vue'
 import PersonalPost from './components/PersonalPost.vue'
 import PersonalApply from './components/PersonalApply.vue'
 import PersonalInfoEdit from './components/PersonalInfoEdit.vue'
+import AdoptRecord from './components/AdoptRecord.vue'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
@@ -59,14 +60,15 @@ const goPersonalPost = () => {
   router.push('/personal/personalPost')
 }
 
-const goPersonalApply = () => {
-  router.push('/personal/personalApply')
+const goAdoptApply = () => {
+  router.push('/personal/adoptRecord')
 }
 
 const searchContent = ref('')
 const personalAnimalRef = ref<InstanceType<typeof PersonalAnimal>>()
 const personalPostRef = ref<InstanceType<typeof PersonalPost>>()
 const personalApplyRef = ref<InstanceType<typeof PersonalApply>>()
+const adoptRecordRef = ref<InstanceType<typeof AdoptRecord>>()
 
 const handleEnter = () => {
   inputSearch()
@@ -86,6 +88,9 @@ const inputSearch = () => {
   }
   if (module === 'personalApply') {
     personalApplyRef.value?.search(searchContent)
+  }
+  if (module === 'adoptRecord') {
+    adoptRecordRef.value?.search(searchContent)
   }
 }
 
@@ -157,18 +162,18 @@ const editPersonalInfo = () => {
                     <span>帖子数</span>
                   </span>
                 </a>
-                <!-- <div class="w-[1px] h-[16px] mx-[16px] bg-[#e8e8ed]"></div> -->
+                <div class="w-[1px] h-[16px] mx-[16px] bg-[#e8e8ed]"></div>
               </li>
-              <!-- <li class="flex flex-row items-center">
-                <a class="cursor-pointer" @click="goPersonalApply">
+              <li class="flex flex-row items-center">
+                <a class="cursor-pointer" @click="goAdoptApply">
                   <span class="hover:text-[#ff0000]">
                     <span class="text-[20px] font-semibold mr-[5px]">
                       {{ userBizCounts.applyAmount }}
                     </span>
-                    <span>申请数</span>
+                    <span>申请领养数</span>
                   </span>
                 </a>
-              </li> -->
+              </li>
             </ul>
           </div>
           <div class="text-[14px] font-normal inline">
@@ -193,7 +198,7 @@ const editPersonalInfo = () => {
               >我的宠物</el-menu-item
             >
             <el-menu-item index="personalPost">我的帖子</el-menu-item>
-            <!-- <el-menu-item index="personalApply">我的申请</el-menu-item> -->
+            <el-menu-item index="adoptRecord">申领记录</el-menu-item>
           </el-menu>
           <div class="mr-[20px]">
             <el-input
@@ -219,11 +224,11 @@ const editPersonalInfo = () => {
             :searchContent="searchContent"
             ref="personalPostRef"
           />
-          <!-- <PersonalApply
-            v-if="router.currentRoute.value.meta.module == 'personalApply'"
+          <AdoptRecord
+            v-if="router.currentRoute.value.meta.module == 'adoptRecord'"
             :searchContent="searchContent"
-            ref="personalApplyRef"
-          /> -->
+            ref="adoptRecordRef"
+          />
         </div>
       </div>
     </div>

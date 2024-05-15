@@ -102,6 +102,13 @@ const router = createRouter({
                     module: 'personalApply'
                   },
                   component: () => import('@/views/user/personal/components/PersonalApply.vue')
+                },
+                {
+                  path: 'adoptRecord',
+                  meta: {
+                    module: 'adoptRecord'
+                  },
+                  component: () => import('@/views/user/personal/components/AdoptRecord.vue')
                 }
               ]
             }

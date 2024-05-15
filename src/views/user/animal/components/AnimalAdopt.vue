@@ -6,23 +6,33 @@ import { computed, reactive, ref, unref } from 'vue'
 import { AdoptApplyInfo } from '../types'
 import { ElForm, ElMessage, FormRules } from 'element-plus'
 import { get } from 'lodash'
-import { applyAdoptApi } from '../animal.api'
+import { applyAdoptApi, reapplyAdoptApi } from '../animal.api'
 
 const { show, openPopup, closePopup } = usePopup()
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
 const loading = computed(() => unref(mainLoading))
 
+const props = defineProps<{
+  type: 'apply' | 'reapply'
+}>()
+
 const emit = defineEmits<{
-  (e: 'submit'): void
+  (e: 'apply'): void
+  (e: 'reapply'): void
 }>()
 
 defineExpose({
   open
 })
 
-function open(animalId) {
+let id: any = ''
+function open(animalId, recordId?) {
   formData.animalId = animalId
+  if (props.type === 'reapply') {
+    id = recordId
+    console.log(id)
+  }
   init()
   openPopup()
 }
@@ -67,12 +77,22 @@ const handleApplyAdopt = async () => {
   try {
     await formRef.value?.validate()
     openMainLoading()
-    const data = await applyAdoptApi(formData)
+    let data
+    if (props.type === 'apply') {
+      data = await applyAdoptApi(formData)
+    } else {
+      formData['id'] = id
+      data = await reapplyAdoptApi(formData)
+    }
     if (get(data, 'code') === 0) {
       ElMessage.success('提交成功')
     }
     closeMainLoading()
-    emit('submit')
+    if (props.type === 'apply') {
+      emit('apply')
+    } else {
+      emit('reapply')
+    }
     closePopup()
   } catch (e) {
     closeMainLoading()

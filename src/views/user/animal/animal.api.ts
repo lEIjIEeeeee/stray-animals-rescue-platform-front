@@ -19,5 +19,7 @@ export const getAnimalListByCategoryIdApi = (params?) =>
 
 export const applyAdoptApi = (data) => http.post('/animalModule/animal/applyAdopt', data)
 
+export const reapplyAdoptApi = (data) => http.post('/animalModule/animal/reapplyAdopt', data)
+
 export const applyContributionApi = (data) =>
   http.post('/animalModule/animal/applyContribution', data)

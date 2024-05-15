@@ -5,12 +5,19 @@ import { SearchParams, PostList } from './types'
 import router from '@/router/index'
 import useMainLoading from '@/hooks/useMainLoading'
 import { bizTypeDict, getEnumNameByValue } from '@/stores/enums'
+import { getCategoryTreeApi } from '@/views/platform/animal/category_manage/category.api'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => unref(mainLoading))
 
 const refreshDivDisable = ref(false)
 const postDivDisable = ref(false)
+
+const categoryTree = ref([])
+const getCategoryTree = async () => {
+  const data = await getCategoryTreeApi()
+  categoryTree.value = data.data.children
+}
 
 const searchParams = new SearchParams()
 const postList = reactive(new PostList())
@@ -36,6 +43,7 @@ const handlePageSizeChange = (val: number) => {
 }
 
 const init = async () => {
+  getCategoryTree()
   getPostList()
 }
 
@@ -60,12 +68,132 @@ const getDetail = (id) => {
   })
   window.open(target.href, '_blank')
 }
+
+const allAnimalWrapper = ref(true)
+const handleReset = () => {
+  searchParams.pageNo = 1
+  searchParams.pageSize = 20
+  searchParams.bizType = ''
+  categoryCascaderPanelRef.value?.clearCheckedNodes()
+  postTypeWrapper.value = false
+}
+
+const categoryCascaderPanelRef = ref(null)
+const categoryWrapper = ref(false)
+const handleCategoryChange = (categoryList) => {
+  let idList = ''
+  categoryList.forEach(function (item, index) {
+    if (categoryList.length === index + 1) {
+      idList += item
+    } else {
+      idList += item + ','
+    }
+  })
+  searchParams.categoryIds = idList
+  getPostList()
+  if (idList === '') {
+    allAnimalWrapper.value = true
+    categoryWrapper.value = false
+  } else {
+    allAnimalWrapper.value = false
+    categoryWrapper.value = true
+  }
+}
+
+const postTypeWrapper = ref(false)
+const handlePostTypeCommand = (command) => {
+  if (unref(allAnimalWrapper) === true) {
+    allAnimalWrapper.value = false
+  }
+  postTypeWrapper.value = true
+  searchParams.bizType = command
+  getPostList()
+}
 </script>
 
 <template>
   <div class="w-full min-w-[1200px] flex justify-center">
-    <div class="w-[1200px] bg-white flex flex-col">
-      <div class="flex-1 min-h-0 shadow">
+    <div class="w-[1200px]">
+      <div class="my-[14px] flex items-center">
+        <div class="flex items-center">
+          <el-breadcrumb separator=">">
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>社区交流</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+      </div>
+
+      <div class="py-[20px] flex items-center">
+        <div class="flex items-center text-[14px]">
+          <div
+            class="px-[20px] flex justify-center items-center cursor-pointer"
+            :class="[{ 'text-[#409eff]': allAnimalWrapper }]"
+            @click="handleReset"
+          >
+            <span>全部</span>
+          </div>
+          <div class="w-[1px] h-[14px] bg-[#d3d3d3]"></div>
+          <div class="px-[20px] flex justify-center items-center">
+            <el-dropdown>
+              <span
+                class="text-[#000] flex justify-center items-center"
+                :class="[{ 'text-[#409eff]': categoryWrapper }]"
+              >
+                动物类目
+                <el-icon>
+                  <ArrowDown />
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <el-cascader-panel
+                  :options="categoryTree"
+                  :props="{
+                    multiple: 'true',
+                    checkStrictly: 'true',
+                    emitPath: false,
+                    value: 'id',
+                    label: 'name'
+                  }"
+                  @change="handleCategoryChange"
+                  ref="categoryCascaderPanelRef"
+                ></el-cascader-panel>
+              </template>
+            </el-dropdown>
+          </div>
+          <div class="w-[1px] h-[14px] bg-[#d3d3d3]"></div>
+          <div class="px-[20px] flex justify-center items-center">
+            <el-dropdown @command="handlePostTypeCommand">
+              <span
+                class="text-[#000] flex justify-center items-center"
+                :class="[{ 'text-[#409eff]': postTypeWrapper }]"
+              >
+                帖子类型
+                <el-icon>
+                  <ArrowDown />
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="item in bizTypeDict"
+                    :key="item.code"
+                    :command="item.code"
+                  >
+                    <!-- <el-icon v-if="searchParams.bizType === item.code">
+                      <check />
+                    </el-icon>
+                    <div class="w-[80px] flex justify-center items-center"> -->
+                    {{ item.label }}
+                    <!-- </div> -->
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 min-h-0 shadow bg-white">
         <ul class="px-[24px]" v-loading="loading">
           <li
             class="h-[175px] py-[24px]"
