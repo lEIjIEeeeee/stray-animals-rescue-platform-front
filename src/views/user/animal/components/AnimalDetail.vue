@@ -7,6 +7,7 @@ import AnimalAdopt from './AnimalAdopt.vue'
 import useMainLoading from '@/hooks/useMainLoading'
 import AnimalContribution from './AnimalContribution.vue'
 import { getSysTokenLoginApi } from '@/views/common/common.api'
+import { getToken } from '@/utils/auth'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 
@@ -37,7 +38,10 @@ const checkAnimalOwner = async () => {
 
 const init = async () => {
   await getDetail()
-  await checkAnimalOwner()
+  const token = getToken()
+  if (token) {
+    await checkAnimalOwner()
+  }
 }
 
 onMounted(() => {

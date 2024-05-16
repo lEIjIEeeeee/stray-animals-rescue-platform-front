@@ -188,7 +188,7 @@ const logout = async () => {
 
         <div class="ml-auto">
           <el-dropdown>
-            <div class="w-[50px] h-[50px] mr-[30px]">
+            <div class="w-[50px] h-[50px] mr-[50px]">
               <el-image class="w-full h-full rounded-[50%]" :src="avatar" fit="cover" />
             </div>
             <template #dropdown>

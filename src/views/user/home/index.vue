@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
-import { removeToken, removeUserType } from '@/utils/auth'
+import { computed, onMounted, reactive, ref, unref } from 'vue'
+import { getToken, removeToken, removeUserType } from '@/utils/auth'
 import router from '@/router'
 import { ElMessageBox } from 'element-plus'
 import MenuNavBar from '@/components/MenuNavBar/index.vue'
@@ -48,8 +48,13 @@ onMounted(() => {
   init()
 })
 
+const loginFlag = ref(false)
 const init = () => {
-  getSysTokenLogin()
+  const token = getToken()
+  if (token) {
+    loginFlag.value = true
+    getSysTokenLogin()
+  }
 }
 
 const currentUserInfo = reactive(new PersonalInfo())
@@ -71,6 +76,12 @@ const goPersonalAnimal = () => {
 const goPersonalPost = () => {
   router.push({
     path: '/personal/personalPost'
+  })
+}
+
+const goAdoptRecord = () => {
+  router.push({
+    path: '/personal/adoptRecord'
   })
 }
 
@@ -101,6 +112,14 @@ const handleSelect = (key, keyPath) => {
   }
   router.push(toPath)
 }
+
+const goLogin = () => {
+  router.push('/login')
+}
+
+const goRegister = () => {
+  router.push('/register')
+}
 </script>
 
 <template>
@@ -125,11 +144,15 @@ const handleSelect = (key, keyPath) => {
         </div>
         <div>
           <el-dropdown>
-            <div class="w-[50px] h-[50px] mr-[30px]">
-              <el-image class="w-full h-full rounded-[50%]" :src="avatar" fit="cover" />
+            <div class="w-[50px] h-[50px] mr-[50px]">
+              <el-image
+                class="w-full h-full rounded-[50%]"
+                :src="loginFlag === true ? avatar : '/src/assets/user/unlogin_avatar.png'"
+                fit="cover"
+              />
             </div>
             <template #dropdown>
-              <el-dropdown-menu>
+              <el-dropdown-menu v-if="loginFlag === true">
                 <el-dropdown-item @click="goPersonalAnimal">
                   <el-icon>
                     <Star />
@@ -142,12 +165,12 @@ const handleSelect = (key, keyPath) => {
                   </el-icon>
                   我的帖子
                 </el-dropdown-item>
-                <!-- <el-dropdown-item @click="goPersonalApply">
+                <el-dropdown-item divided @click="goAdoptRecord">
                   <el-icon>
                     <Bell />
                   </el-icon>
-                  我的申请
-                </el-dropdown-item> -->
+                  申领记录
+                </el-dropdown-item>
                 <div v-if="currentUserInfo.userType === 'PLATFORM_ADMIN'">
                   <el-dropdown-item divided @click="goAdminHomePage">
                     <el-icon>
@@ -163,6 +186,34 @@ const handleSelect = (key, keyPath) => {
                   退 出
                 </el-dropdown-item>
               </el-dropdown-menu>
+              <div v-else>
+                <div class="w-[400px] p-[20px] text-[14px]">
+                  <div>
+                    <span>登录后你可以：</span>
+                  </div>
+                  <div class="mt-[20px] grid grid-cols-2 gap-x-[10px] gap-y-[10px]">
+                    <div class="flex items-end">
+                      <el-icon size="22" color="#00aeec">
+                        <Star />
+                      </el-icon>
+                      <span class="ml-[5px]">领养/捐助流浪动物</span>
+                    </div>
+                    <div class="flex items-end">
+                      <el-icon size="22" color="#00aeec">
+                        <Star />
+                      </el-icon>
+                      <span class="ml-[5px]">发布帖子/评论</span>
+                    </div>
+                  </div>
+                  <div class="mt-[20px]">
+                    <el-button class="w-full" type="primary" @click="goLogin">登录</el-button>
+                  </div>
+                  <div class="mt-[20px] flex justify-center">
+                    <span>还没有账号？</span>
+                    <span class="text-[#00aeec] cursor-pointer" @click="goRegister">点击注册</span>
+                  </div>
+                </div>
+              </div>
             </template>
           </el-dropdown>
         </div>

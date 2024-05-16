@@ -307,7 +307,17 @@ const router = createRouter({
   ]
 })
 
-const whiteList = ['/login', '/register']
+const whiteList = [
+  '/login',
+  '/register',
+  '/home',
+  '/animal',
+  '/animal/detail',
+  '/post',
+  '/post/detail',
+  '/notice',
+  '/notice/detail'
+]
 
 router.beforeEach(async (to, from, next) => {
   if (whiteList.includes(to.path)) {

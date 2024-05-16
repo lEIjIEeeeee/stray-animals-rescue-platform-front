@@ -18,6 +18,7 @@ import { SearchParams, SearchReplayParams, SendComment } from '@/views/user/comm
 import { ElMessage } from 'element-plus'
 import { get } from 'lodash'
 import { getUserAvatar } from '@/utils/avatar'
+import { getToken } from '@/utils/auth'
 
 const { mainLoading, openMainLoading, closeMainLoading } = useMainLoading()
 const loading = computed(() => unref(mainLoading))
@@ -32,12 +33,18 @@ onMounted(() => {
 
 let postId: any = ''
 const statusShow = ref(false)
+const loginFlag = ref(false)
 const init = async () => {
   postId = unref(router.currentRoute).query?.id
-  await sysTokenLogin()
   await getDetail()
   await getCommentList()
   await getCommentCounts()
+  console.log(loginFlag)
+  const token = getToken()
+  if (token) {
+    loginFlag.value = true
+    await sysTokenLogin()
+  }
 }
 
 const detail = reactive(new PostDetailInfo())
@@ -149,7 +156,8 @@ const replayInputRef = (el, index) => {
     replayInputRefList.value[index] = el
   }
 }
-const handleReplayButtonClick = (key: string, index: number, toUserName: string) => {
+const handleReplayButtonClick = async (key: string, index: number, toUserName: string) => {
+  await getSysTokenLoginApi()
   replayIndex.value = index
   toUserNameRef.value = toUserName
   if (sendReplay.id === key) {
@@ -252,6 +260,10 @@ const handleCommentMouseLeave = () => {
   console.log('----------执行div移出事件----------')
   commentDeleteIndex.value = -1
 }
+
+const goLogin = () => {
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -262,7 +274,7 @@ const handleCommentMouseLeave = () => {
           <div class="flex items-center">
             <el-image
               class="w-[48px] h-[48px] rounded-[50%]"
-              :src="getUserAvatar(currentUser.avatar)"
+              :src="getUserAvatar(detail.avatar)"
               fit="cover"
             ></el-image>
             <div class="ml-[10px] flex-1 flex flex-col">
@@ -349,12 +361,40 @@ const handleCommentMouseLeave = () => {
               <div class="w-[80px] flex justify-center">
                 <el-image
                   class="w-[48px] h-[48px] rounded-[50%]"
-                  :src="getUserAvatar(currentUser.avatar)"
+                  :src="
+                    loginFlag === true
+                      ? getUserAvatar(currentUser.avatar)
+                      : '/src/assets/user/unlogin_avatar.png'
+                  "
                   fit="cover"
                 ></el-image>
               </div>
               <div class="flex-1 flex items-center">
+                <div v-if="!loginFlag" class="w-full relative">
+                  <el-input
+                    type="textarea"
+                    resize="none"
+                    :autosize="{ minRows: 2, maxRows: 5 }"
+                    disabled="false"
+                  >
+                  </el-input>
+                  <div
+                    class="w-full h-full absolute top-0 left-0 flex justify-center items-center text-[14px]"
+                  >
+                    <span class="text-[#9499a0]">请先</span>
+                    <el-button
+                      type="primary"
+                      class="mx-[5px]"
+                      style="width: 42px; height: 26px"
+                      @click="goLogin"
+                    >
+                      登录
+                    </el-button>
+                    <span class="text-[#9499a0]">后发表评论</span>
+                  </div>
+                </div>
                 <el-input
+                  v-else
                   type="textarea"
                   v-model="sendComment.content"
                   resize="none"
@@ -417,8 +457,9 @@ const handleCommentMouseLeave = () => {
                       <span
                         v-if="detail.createId === item.createId"
                         class="w-[30px] h-[16px] ml-[10px] text-[12px] text-[#fff] whitespace-nowrap rounded-[2px] flex justify-center items-center bg-[#fb7299]"
-                        >作者</span
                       >
+                        作者
+                      </span>
                     </div>
                     <div class="mt-[15px] text-[16px]">
                       <span>{{ item.content }}</span>
@@ -507,7 +548,7 @@ const handleCommentMouseLeave = () => {
                               >
                                 作者
                               </span>
-                              <span class="ml-[10px]">回复 </span>
+                              <span class="ml-[10px]">回复</span>
                               <span class="cursor-pointer text-[#008ac5] hover:text-[#40c5f1]"
                                 >@{{ replay.toUserName }}</span
                               >

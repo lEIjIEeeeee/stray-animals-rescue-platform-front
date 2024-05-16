@@ -170,7 +170,7 @@ const editPersonalInfo = () => {
                     <span class="text-[20px] font-semibold mr-[5px]">
                       {{ userBizCounts.applyAmount }}
                     </span>
-                    <span>申请领养数</span>
+                    <span>申领数</span>
                   </span>
                 </a>
               </li>

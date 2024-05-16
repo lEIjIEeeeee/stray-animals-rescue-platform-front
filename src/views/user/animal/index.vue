@@ -103,7 +103,7 @@ const getAnimalDetail = (animalId: string) => {
 }
 
 const animalAdoptRef = ref<InstanceType<typeof AnimalAdopt>>()
-const handleAdoptApply = (animalId: string) => {
+const handleAdoptApply = async (animalId: string) => {
   animalAdoptRef.value?.open(animalId)
 }
 
@@ -117,7 +117,6 @@ const handleReset = () => {
   searchParams.pageNo = 1
   searchParams.pageSize = 20
   categoryCascaderPanelRef.value?.clearCheckedNodes()
-  // getAnimalList()
 }
 
 const categoryCascaderPanelRef = ref(null)
